@@ -882,11 +882,16 @@ let loadBoardUI = ()=> {
         switch (e.target.name) {
           case 'duration':
             metadataView.frames = Math.round(Number(this.duration)/1000*24)
-            boardData.boards[currentBoard].duration = Number(this.duration)
+            
+            for (b of this.selectedBoards) {
+              b.duration = Number(this.duration)
+            }
             break
           case 'frames':
             this.duration = Math.round(Number(this.frames)/24*1000)
-            boardData.boards[currentBoard].duration = Number(this.duration)
+            for (b of this.selectedBoards) {
+              b.duration = Number(this.duration)
+            }
             break
           case 'dialogue':
             if (util.isBlank(this.action)) {
@@ -931,7 +936,6 @@ let loadBoardUI = ()=> {
         this.frames = !util.isUndefined(board.duration)
                                 ? Math.round(board.duration/1000*24)
                                 : null
-        this.selectedBoards = [board]
 
         this.dialogue = board.dialogue
         this.action = board.action
@@ -1502,6 +1506,7 @@ let renderMetaData = () => {
     let board = boardData.boards[currentBoard]
 
     metadataView.fromBoard(board)
+    metadataView.selectedBoards = [board]
 
     if (!board.dialogue) {
       document.querySelector('#canvas-caption').style.display = 'none'
@@ -1524,11 +1529,7 @@ let renderMetaData = () => {
 
   } else {
     let selectedBoards = [...selections].sort(util.compareNumbers).map(index => boardData.boards[index])
-    let uniqueDurations = new Set(selectedBoards.map(b => b.duration))
-
-    console.log('\n')
-    console.log('selections', selectedBoards)
-    console.log('\n')
+    let uniqueDurations = [...new Set(selectedBoards.map(b => b.duration))]
 
     if (uniqueDurations.length == 1) {
       // unified
@@ -1541,6 +1542,7 @@ let renderMetaData = () => {
       metadataView.duration = null
       metadataView.frames = null
     }
+
     metadataView.selectedBoards = selectedBoards
   }
 
