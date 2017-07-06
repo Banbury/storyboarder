@@ -850,7 +850,7 @@ let loadBoardUI = ()=> {
       // TODO focus/blur on:
       //    for (var item of document.querySelectorAll(
       //      '#board-metadata input:not(.layers-ui-reference-opacity), textarea')) {
-      
+
       focus: function (event) {
         textInputMode = true
         switch (event.target.name) {
@@ -913,6 +913,31 @@ let loadBoardUI = ()=> {
 
       isMultiSelection: function () {
         return this.selectedBoards.length > 1
+      },
+
+      setBoard: function (board) {
+        // reset all data
+        Object.assign(this.$data, this.$options.data.apply(this))
+
+        this.newShot = !!board.newShot
+
+        this.shot = board.shot
+        this.curr = board.number
+        this.total = boardData.boards.length
+
+        this.duration = board.duration
+        this.frames = !util.isUndefined(board.duration)
+                                ? Math.round(board.duration/1000*24)
+                                : null
+        this.selectedBoards = [board]
+
+        this.dialogue = board.dialogue
+        this.action = board.action
+        this.notes = board.notes
+
+        this.lineMileage = board.lineMileage > 0
+                                    ? (board.lineMileage/5280).toFixed(1)
+                                    : 0
       }
     }
   })
@@ -1471,49 +1496,19 @@ let renderMarkerPosition = () => {
 }
 
 let renderMetaData = () => {
-  console.log('renderMetaData', selections, selections.size)
-
-  // reset all data
-  Object.assign(metadataView.$data, metadataView.$options.data.apply(this))
-
   if (selections.size == 1) {
     let board = boardData.boards[currentBoard]
 
-    // RESET VALUES
-    /*
-    for (var item of document.querySelectorAll('#board-metadata input:not(.layers-ui-reference-opacity), textarea')) {
-      item.value = ''
-      item.checked = false
-    }
-    */
+    metadataView.setBoard(board)
+
     if (!board.dialogue) {
       document.querySelector('#canvas-caption').style.display = 'none'
     }
-
-    metadataView.newShot = !!board.newShot
-
-    metadataView.shot = board.shot
-    metadataView.curr = board.number
-    metadataView.total = boardData.boards.length
-
-    metadataView.duration = board.duration
-    metadataView.frames = !util.isUndefined(board.duration)
-                            ? Math.round(board.duration/1000*24)
-                            : null
-    metadataView.selectedBoards = [board]
 
     if (board.dialogue && board.dialogue.length) {
       document.querySelector('#canvas-caption').innerHTML = board.dialogue
       document.querySelector('#canvas-caption').style.display = 'block'
     }
-
-    metadataView.dialogue = board.dialogue
-    metadataView.action = board.action
-    metadataView.notes = board.notes
-
-    metadataView.lineMileage = board.lineMileage > 0
-                                ? (board.lineMileage/5280).toFixed(1)
-                                : 0
 
     /*
     // TODO how to regenerate tooltips?
