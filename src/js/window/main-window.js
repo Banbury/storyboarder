@@ -915,7 +915,7 @@ let loadBoardUI = ()=> {
         return this.selectedBoards.length > 1
       },
 
-      setBoard: function (board) {
+      fromBoard: function (board) {
         // reset all data
         Object.assign(this.$data, this.$options.data.apply(this))
 
@@ -1499,7 +1499,7 @@ let renderMetaData = () => {
   if (selections.size == 1) {
     let board = boardData.boards[currentBoard]
 
-    metadataView.setBoard(board)
+    metadataView.fromBoard(board)
 
     if (!board.dialogue) {
       document.querySelector('#canvas-caption').style.display = 'none'
