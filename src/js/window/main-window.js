@@ -400,6 +400,7 @@ let loadBoardUI = ()=> {
     }
   })
 
+  // TODO metadataView
   document.querySelector('.board-metadata-container').addEventListener('pointerdown', (e)=>{
     if (e.pointerType == 'pen' || e.pointerType == 'mouse') {
       dragTarget = document.querySelector('.board-metadata-container')
@@ -412,6 +413,7 @@ let loadBoardUI = ()=> {
   })
 
 
+  // TODO metadataView
   for (var item of document.querySelectorAll('.board-metadata-container input, .board-metadata-container textarea')) {
     item.addEventListener('pointerdown', (e)=>{
       preventDragMode = true
@@ -427,14 +429,14 @@ let loadBoardUI = ()=> {
     // }
 
 
-  // metadataView
+  // TODO metadataView
   // document.querySelector('#show-in-finder-button').addEventListener('pointerdown', (e)=>{
   //   let board = boardData.boards[currentBoard]
   //   let imageFilename = path.join(boardPath, 'images', board.url)
   //   shell.showItemInFolder(imageFilename)
   // })
 
-  // metadataView
+  // TODO metadataView
   // document.querySelector('#open-in-photoshop-button').addEventListener('pointerdown', (e)=>{
   //   let children = ['reference', 'main', 'notes'].map(layerName => {
   //     return {
@@ -758,7 +760,7 @@ let loadBoardUI = ()=> {
 
   guides = new Guides(storyboarderSketchPane.getLayerCanvasByName('guides'))
   onionSkin = new OnionSkin(storyboarderSketchPane, boardPath)
-  // metadataView
+  // TODO metadataView
   // layersEditor = new LayersEditor(storyboarderSketchPane, sfx, notifications)
 
   sfx.init()
