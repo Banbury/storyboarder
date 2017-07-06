@@ -53,7 +53,8 @@
   },
   "devDependencies": {
     "electron": "1.7.2",
-    "electron-builder": "19.8.0"
+    "electron-builder": "19.8.0",
+    "vue": "2.3.4"
   },
   "dependencies": {
     "ag-psd": "^1.0.0",

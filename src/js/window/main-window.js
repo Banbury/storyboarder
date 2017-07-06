@@ -90,6 +90,7 @@ let transport
 let guides
 let onionSkin
 let layersEditor
+let metadataView
 
 let storyboarderSketchPane
 
@@ -105,7 +106,7 @@ menu.setMenu()
 // Loading / Init Operations
 ///////////////////////////////////////////////////////////////
 
-const load = (event, args) => {
+let load = (event, args) => {
   if (args[1]) {
     // there is scriptData - the window opening is a script type
     scriptData = args[1]
@@ -386,59 +387,6 @@ let loadBoardUI = ()=> {
 
 
 
-  for (var item of document.querySelectorAll('#board-metadata input:not(.layers-ui-reference-opacity), textarea')) {
-    item.addEventListener('focus', (e)=> {
-      textInputMode = true
-      textInputAllowAdvance = false
-      switch (e.target.name) {
-        case 'duration':
-        case 'frames':
-          textInputAllowAdvance = true
-          break
-      }
-    })
-
-    item.addEventListener('blur', (e)=> {
-      textInputMode = false
-      textInputAllowAdvance = false
-    })
-
-    item.addEventListener('change', (e)=> {
-      switch (e.target.name) {
-        case 'newShot':
-          boardData.boards[currentBoard].newShot = e.target.checked
-          sfx.playEffect(e.target.checked ? 'on' : 'off')
-          markBoardFileDirty()
-          textInputMode = false
-          break
-      }
-      renderThumbnailDrawer()
-    })
-
-    item.addEventListener('input', (e)=> {
-      switch (e.target.name) {
-        case 'duration':
-          boardData.boards[currentBoard].duration = Number(e.target.value)
-          document.querySelector('input[name="frames"]').value = Math.round(Number(e.target.value)/1000*24)
-          break
-        case 'frames':
-          boardData.boards[currentBoard].duration = Math.round(Number(e.target.value)/24*1000)
-          document.querySelector('input[name="duration"]').value =  Math.round(Number(e.target.value)/24*1000)
-          break
-        case 'dialogue':
-          boardData.boards[currentBoard].dialogue = (e.target.value)
-          break
-        case 'action':
-          boardData.boards[currentBoard].action = (e.target.value)
-          break
-        case 'notes':
-          boardData.boards[currentBoard].notes = (e.target.value)
-          break
-      }
-      markBoardFileDirty()
-    })
-  }
-
   document.querySelector('#thumbnail-container').addEventListener('pointerdown', (e)=>{
     if (e.pointerType == 'pen' || e.pointerType == 'mouse') {
       dragTarget = document.querySelector('#thumbnail-container')
@@ -479,50 +427,51 @@ let loadBoardUI = ()=> {
     // }
 
 
+  // metadataView
+  // document.querySelector('#show-in-finder-button').addEventListener('pointerdown', (e)=>{
+  //   let board = boardData.boards[currentBoard]
+  //   let imageFilename = path.join(boardPath, 'images', board.url)
+  //   shell.showItemInFolder(imageFilename)
+  // })
 
-  document.querySelector('#show-in-finder-button').addEventListener('pointerdown', (e)=>{
-    let board = boardData.boards[currentBoard]
-    let imageFilename = path.join(boardPath, 'images', board.url)
-    shell.showItemInFolder(imageFilename)
-  })
-
-  document.querySelector('#open-in-photoshop-button').addEventListener('pointerdown', (e)=>{
-    let children = ['reference', 'main', 'notes'].map(layerName => {
-      return {
-        "name": layerName,
-        "canvas": storyboarderSketchPane.getLayerCanvasByName(layerName)
-      }
-    });
-    let psd = {
-      width: storyboarderSketchPane.canvasSize[0],
-      height: storyboarderSketchPane.canvasSize[1],
-      children: children
-    };
-    let board = boardData.boards[currentBoard]
-    let imageFilePath = path.join(boardPath, 'images', `board-${board.number}.psd`)
-    const buffer = writePsd(psd);
-    fs.writeFileSync(imageFilePath, buffer);
-    shell.openItem(imageFilePath);
-
-    fs.watchFile(imageFilePath, (cur, prev) => {
-      let referenceCanvas = storyboarderSketchPane.getLayerCanvasByName("reference")
-      let mainCanvas = storyboarderSketchPane.getLayerCanvasByName("main")
-
-      let readerOptions = {
-        mainCanvas: mainCanvas,
-        referenceCanvas: referenceCanvas,
-        notesCanvas: storyboarderSketchPane.getLayerCanvasByName("notes")
-      }
-      var psdData = FileReader.getBase64ImageDataFromFilePath(imageFilePath, readerOptions)
-      if(!psdData || !psdData.main) {
-        return;
-      }
-
-      markImageFileDirty([0, 1, 3]) // reference, main, notes layers
-      saveImageFile()
-      
-    });
-  })
+  // metadataView
+  // document.querySelector('#open-in-photoshop-button').addEventListener('pointerdown', (e)=>{
+  //   let children = ['reference', 'main', 'notes'].map(layerName => {
+  //     return {
+  //       "name": layerName,
+  //       "canvas": storyboarderSketchPane.getLayerCanvasByName(layerName)
+  //     }
+  //   });
+  //   let psd = {
+  //     width: storyboarderSketchPane.canvasSize[0],
+  //     height: storyboarderSketchPane.canvasSize[1],
+  //     children: children
+  //   };
+  //   let board = boardData.boards[currentBoard]
+  //   let imageFilePath = path.join(boardPath, 'images', `board-${board.number}.psd`)
+  //   const buffer = writePsd(psd);
+  //   fs.writeFileSync(imageFilePath, buffer);
+  //   shell.openItem(imageFilePath);
+  // 
+  //   fs.watchFile(imageFilePath, (cur, prev) => {
+  //     let referenceCanvas = storyboarderSketchPane.getLayerCanvasByName("reference")
+  //     let mainCanvas = storyboarderSketchPane.getLayerCanvasByName("main")
+  // 
+  //     let readerOptions = {
+  //       mainCanvas: mainCanvas,
+  //       referenceCanvas: referenceCanvas,
+  //       notesCanvas: storyboarderSketchPane.getLayerCanvasByName("notes")
+  //     }
+  //     var psdData = FileReader.getBase64ImageDataFromFilePath(imageFilePath, readerOptions)
+  //     if(!psdData || !psdData.main) {
+  //       return;
+  //     }
+  // 
+  //     markImageFileDirty([0, 1, 3]) // reference, main, notes layers
+  //     saveImageFile()
+  //     
+  //   });
+  // })
 
   window.addEventListener('pointermove', (e)=>{
     lastPointer = { x: e.clientX, y: e.clientY }
@@ -809,7 +758,8 @@ let loadBoardUI = ()=> {
 
   guides = new Guides(storyboarderSketchPane.getLayerCanvasByName('guides'))
   onionSkin = new OnionSkin(storyboarderSketchPane, boardPath)
-  layersEditor = new LayersEditor(storyboarderSketchPane, sfx, notifications)
+  // metadataView
+  // layersEditor = new LayersEditor(storyboarderSketchPane, sfx, notifications)
 
   sfx.init()
 
@@ -865,6 +815,105 @@ let loadBoardUI = ()=> {
       boardData.defaultBoardTiming = newPrefs.defaultBoardTiming
       saveBoardFile()
       renderMetaData()
+    }
+  })
+  
+  metadataView = new Vue({
+    el: '.board-metadata-container',
+    template: '#metadata-view-template',
+    data: {
+      newShot: false,
+      duration: null,
+      frames: null,
+      shot: null,
+      dialogue: null,
+      action: null,
+      notes: null,
+      lineMileage: 0,
+
+      curr: 0,
+      total: 0,
+
+      selectedBoards: []
+    },
+    computed: {
+      suggestedDialogueDuration: function () {
+        if (this.dialogue && this.dialogue.length) {
+          console.log('suggestedDialogueDuration', this.dialogue)
+          return util.durationOfWords(this.dialogue, 300) + 300 + "ms"
+        } else {
+          return null
+        }
+      },
+    },
+    methods: {
+      // TODO focus/blur on:
+      //    for (var item of document.querySelectorAll(
+      //      '#board-metadata input:not(.layers-ui-reference-opacity), textarea')) {
+      
+      focus: function (event) {
+        textInputMode = true
+        switch (event.target.name) {
+          case 'duration':
+          case 'frames':
+            textInputAllowAdvance = true
+            break
+        }
+      },
+      blur: function (event) {
+        textInputMode = false
+        textInputAllowAdvance = false
+      },
+      change: function (event) {
+        switch (event.target.name) {
+          case 'newShot':
+            boardData.boards[currentBoard].newShot = event.target.checked
+            sfx.playEffect(event.target.checked ? 'on' : 'off')
+            markBoardFileDirty()
+            textInputMode = false
+            break
+        }
+        renderThumbnailDrawer()
+      },
+      input: function (e) {
+        console.log('metadataView#input', e.target.name)
+        switch (e.target.name) {
+          case 'duration':
+            metadataView.frames = Math.round(Number(this.duration)/1000*24)
+            boardData.boards[currentBoard].duration = Number(this.duration)
+            break
+          case 'frames':
+            this.duration = Math.round(Number(this.frames)/24*1000)
+            boardData.boards[currentBoard].duration = Number(this.duration)
+            break
+          case 'dialogue':
+            if (util.isBlank(this.action)) {
+              delete boardData.boards[currentBoard].dialogue
+            } else {
+              boardData.boards[currentBoard].dialogue = this.dialogue
+            }
+            break
+          case 'action':
+            if (util.isBlank(this.action)) {
+              delete boardData.boards[currentBoard].action
+            } else {
+              boardData.boards[currentBoard].action = this.action
+            }
+            break
+          case 'notes':
+            if (util.isBlank(this.notes)) {
+              delete boardData.boards[currentBoard].notes
+            } else {
+              boardData.boards[currentBoard].notes = this.notes
+            }
+            break
+        }
+        markBoardFileDirty()
+      },
+
+      isMultiSelection: function () {
+        return this.selectedBoards.length > 1
+      }
     }
   })
 
@@ -1421,49 +1470,81 @@ let renderMarkerPosition = () => {
   document.querySelector('#timeline .right-block').innerHTML = util.msToTime(totalTime)
 }
 
-let renderMetaData = ()=> {
-  document.querySelector('#board-metadata #shot').innerHTML = 'Shot: ' + boardData.boards[currentBoard].shot
-  document.querySelector('#board-metadata #board-numbers').innerHTML = 'Board: ' + boardData.boards[currentBoard].number + ' of ' + boardData.boards.length
-  for (var item of document.querySelectorAll('#board-metadata input:not(.layers-ui-reference-opacity), textarea')) {
-    item.value = ''
-    item.checked = false
-  }
-  if (boardData.boards[currentBoard].newShot) {
-    document.querySelector('input[name="newShot"]').checked = true
-  }
-  if (!boardData.boards[currentBoard].dialogue) {
-    document.querySelector('#canvas-caption').style.display = 'none'
-  }
-  if (boardData.boards[currentBoard].duration) {
-    document.querySelector('input[name="duration"]').value = boardData.boards[currentBoard].duration
-    document.querySelector('input[name="frames"]').value = Math.round(boardData.boards[currentBoard].duration/1000*24)
-  }
-  if (boardData.boards[currentBoard].dialogue) {
-    document.querySelector('textarea[name="dialogue"]').value = boardData.boards[currentBoard].dialogue
-    document.querySelector('#canvas-caption').innerHTML = boardData.boards[currentBoard].dialogue
-    document.querySelector('#canvas-caption').style.display = 'block'
-    document.querySelector('#suggested-dialogue-duration').innerHTML = util.durationOfWords(boardData.boards[currentBoard].dialogue, 300)+300 + "ms"
-  } else {
-    document.querySelector('#suggested-dialogue-duration').innerHTML = ''
-  }
-  if (boardData.boards[currentBoard].action) {
-    document.querySelector('textarea[name="action"]').value = boardData.boards[currentBoard].action
-  }
-  if (boardData.boards[currentBoard].notes) {
-    document.querySelector('textarea[name="notes"]').value = boardData.boards[currentBoard].notes
-  }
-  if (boardData.boards[currentBoard].lineMileage){
-    document.querySelector('#line-miles').innerHTML = (boardData.boards[currentBoard].lineMileage/5280).toFixed(1) + ' line miles'
-  } else {
-    document.querySelector('#line-miles').innerHTML = '0 line miles'
-  }
+let renderMetaData = () => {
+  console.log('renderMetaData', selections, selections.size)
 
-  // TODO how to regenerate tooltips?
-  if (boardData.defaultBoardTiming) {
-    document.querySelector('input[name="duration"]').dataset.tooltipDescription = `Enter the number of milliseconds for a board. There are 1000 milliseconds in a second. ${boardData.defaultBoardTiming} milliseconds is the default.`
+  // reset all data
+  Object.assign(metadataView.$data, metadataView.$options.data.apply(this))
 
-    let defaultFramesPerBoard = Math.round(boardData.defaultBoardTiming / 1000 * 24)
-    document.querySelector('input[name="frames"]').dataset.tooltipDescription = `Enter the number of frames for a board. There are 24 frames in a second. ${defaultFramesPerBoard} frames is the default.`
+  if (selections.size == 1) {
+    let board = boardData.boards[currentBoard]
+
+    // RESET VALUES
+    /*
+    for (var item of document.querySelectorAll('#board-metadata input:not(.layers-ui-reference-opacity), textarea')) {
+      item.value = ''
+      item.checked = false
+    }
+    */
+    if (!board.dialogue) {
+      document.querySelector('#canvas-caption').style.display = 'none'
+    }
+
+    metadataView.newShot = !!board.newShot
+
+    metadataView.shot = board.shot
+    metadataView.curr = board.number
+    metadataView.total = boardData.boards.length
+
+    metadataView.duration = board.duration
+    metadataView.frames = !util.isUndefined(board.duration)
+                            ? Math.round(board.duration/1000*24)
+                            : null
+    metadataView.selectedBoards = [board]
+
+    if (board.dialogue && board.dialogue.length) {
+      document.querySelector('#canvas-caption').innerHTML = board.dialogue
+      document.querySelector('#canvas-caption').style.display = 'block'
+    }
+
+    metadataView.dialogue = board.dialogue
+    metadataView.action = board.action
+    metadataView.notes = board.notes
+
+    metadataView.lineMileage = board.lineMileage > 0
+                                ? (board.lineMileage/5280).toFixed(1)
+                                : 0
+
+    /*
+    // TODO how to regenerate tooltips?
+    if (boardData.defaultBoardTiming) {
+      document.querySelector('input[name="duration"]').dataset.tooltipDescription = `Enter the number of milliseconds for a board. There are 1000 milliseconds in a second. ${boardData.defaultBoardTiming} milliseconds is the default.`
+
+      let defaultFramesPerBoard = Math.round(boardData.defaultBoardTiming / 1000 * 24)
+      document.querySelector('input[name="frames"]').dataset.tooltipDescription = `Enter the number of frames for a board. There are 24 frames in a second. ${defaultFramesPerBoard} frames is the default.`
+    }
+    */
+
+  } else {
+    let selectedBoards = [...selections].sort(util.compareNumbers).map(index => boardData.boards[index])
+    let uniqueDurations = new Set(selectedBoards.map(b => b.duration))
+
+    console.log('\n')
+    console.log('selections', selectedBoards)
+    console.log('\n')
+
+    if (uniqueDurations.length == 1) {
+      // unified
+      let duration = uniqueDurations[0]
+      metadataView.duration = duration
+      metadataView.frames = !util.isUndefined(duration)
+                              ? Math.round(duration/1000*24)
+                              : null
+    } else {
+      metadataView.duration = null
+      metadataView.frames = null
+    }
+    metadataView.selectedBoards = selectedBoards
   }
 
   renderStats()
@@ -3541,3 +3622,27 @@ ipcRenderer.on('importWorksheets', (event, args) => {
 ipcRenderer.on('save', (event, args) => {
   save()
 })
+
+// HACK to support Cmd+R reloading
+let isDev = require('electron-is-dev')
+if (isDev) {
+  setTimeout(() => {
+    // have we initialized yet?
+    if (!boardFilename) {
+      // were we passed a filename in the `npm start` arguments?
+      let filePath = process.env.npm_package_scripts_start
+      filePath = filePath.replace(/\"/g, '')
+      filePath = filePath.replace('electron .', '')
+      filePath = filePath.replace(/^\s/, '')
+      if (filePath.length) {
+        // try to load that file again
+        load(null, [
+          path.resolve(
+            path.join(__dirname, '../../../' + filePath)
+          )
+        ])
+      }
+    }
+  // wait 250 msecs for load to occur before attempting this
+  }, 250)
+}

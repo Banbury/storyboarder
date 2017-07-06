@@ -85,6 +85,8 @@ let stringifyClone = (object) => JSON.parse(JSON.stringify(object))
 // via https://github.com/skellock/ramdasauce/blob/master/lib/isUndefined.js
 let isUndefined = (x) => typeof x === 'undefined'
 
+let isBlank = (x) => isUndefined(x) || x == null || x === ''
+
 // return a copy of an array with elements swapped
 let swap = (arr, x, y) => {
   let a = arr.slice(0)
@@ -170,6 +172,7 @@ module.exports = {
   clamp,
   stringifyClone,
   isUndefined,
+  isBlank,
   swap,
   acceleratorAsHtml,
   shuffle,

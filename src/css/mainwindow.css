@@ -547,6 +547,14 @@ textarea:focus, input:focus {
   bottom: 70px;
 }
 
+#board-metadata input:disabled,
+#board-metadata textarea:disabled,
+#board-metadata .disabled,
+#board-metadata input[type="checkbox"] + label.disabled span {
+  opacity: 0.25;
+  cursor: pointer;
+}
+
 /*
 
 http://slides.com/sarasoueidan/building-better-interfaces-with-svg#/2
