@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="./css/transport.css">
     <link rel="stylesheet" href="./css/notifications.css">
     <link rel="stylesheet" href="./css/guides.css">
+    <link rel="stylesheet" href="./css/pomodoro-timer.css">
   </head>
   <body>
     <div id="drag-handle"></div>
@@ -200,6 +201,25 @@
               data-tooltip-keys="c"
               data-tooltip-position="bottom center">
               <svg class="icon"><use xlink:href="./img/symbol-defs.svg#icon-caption"></use></svg>
+            </div>
+          </div>
+        </div>
+        <div class="column">
+          <div class="group">
+            <div id="toolbar-pomodoro-rest" class="button" data-tooltip
+                data-tooltip-title="Pomodoro Timer"
+                data-tooltip-description="Start a pomodoro timer."
+                data-tooltip-keys="c"
+                data-tooltip-position="bottom center">
+                <svg class="icon"><use xlink:href="./img/symbol-defs.svg#icon-timer"></use></svg>
+            </div>
+            <div id="toolbar-pomodoro-running" class="button toolbar-pomodoro-running" data-tooltip
+                data-tooltip-title="Pomodoro Timer"
+                data-tooltip-description="Pomodoro timer status."
+                data-tooltip-keys="c"
+                data-tooltip-position="bottom center"
+                style="display: none;">
+                <div id="toolbar-pomodoro-running-status" class="toolbar-pomodoro-running-status"></div>
             </div>
           </div>
         </div>

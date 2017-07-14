@@ -286,3 +286,7 @@
   color: #444;
   cursor: pointer;
 }
+
+.toolbar-pomodoro-running-status {
+  color: white;
+}

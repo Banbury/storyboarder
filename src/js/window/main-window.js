@@ -14,6 +14,7 @@ const Toolbar = require('./toolbar.js')
 const tooltips = require('./tooltips.js')
 const ContextMenu = require('./context-menu.js')
 const ColorPicker = require('./color-picker.js')
+const PomodoroTimerView = require('./pomodoro-timer-view.js')
 const Transport = require('./transport.js')
 const notifications = require('./notifications.js')
 const NotificationData = require('../../data/messages.json')
@@ -90,6 +91,7 @@ let transport
 let guides
 let onionSkin
 let layersEditor
+let pomodoroTimerView
 
 let storyboarderSketchPane
 
@@ -811,7 +813,24 @@ let loadBoardUI = ()=> {
   undoStack.on('undo', onUndoStackAction)
   undoStack.on('redo', onUndoStackAction)
 
+  // Pomodoro Timer
+  pomodoroTimerView = new PomodoroTimerView()
+  toolbar.on('pomodoro-rest', () => {
+    sfx.positive()
+    pomodoroTimerView.attachTo(document.getElementById('toolbar-pomodoro-rest'))
+    // colorPicker.removeAllListeners('color') // HACK
 
+    pomodoroTimerView.addListener('update', (data)=>{
+      toolbar.updatePomodoroTimer(data)
+    })
+    pomodoroTimerView.addListener('start', ()=>{
+      toolbar.startPomodoroTimer()
+    })
+
+  })
+  toolbar.on('pomodoro-running', () => {
+    pomodoroTimerView.attachTo(document.getElementById('toolbar-pomodoro-running'))
+  })
 
   // Devtools
   ipcRenderer.on('devtools-focused', () => {

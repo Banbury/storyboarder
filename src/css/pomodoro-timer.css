@@ -1,0 +1,36 @@
+.pomodoro-timer-container {
+  pointer-events: none; /* no pointer events until animated visible */
+  z-index: 999;
+}
+
+.pomodoro-timer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.pomodoro-timer-minutes-input {
+  background: none;
+  color: white;
+  border: none;
+  font-size: 4em;
+  width: 100%;
+  text-align: center;
+  font-weight: bold;
+}
+
+.pomodoro-timer-remaining {
+  font-size: 4em;
+  font-weight: bold;
+}
+
+.pomodoro-timer-success {
+  font-size: 4em;
+  font-weight: bold;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
