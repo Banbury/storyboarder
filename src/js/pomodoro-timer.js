@@ -19,7 +19,7 @@ class PomodoroTimer extends EventEmitter {
    * @param {int} duration in minutes.
    */
   setDuration(duration) {
-    this.duration = duration * 1000 // * 60
+    this.duration = duration * 1000 * 60
   }
 
   start() {
