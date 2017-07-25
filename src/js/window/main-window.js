@@ -20,7 +20,7 @@ const NotificationData = require('../../data/messages.json')
 const Guides = require('./guides.js')
 const OnionSkin = require('./onion-skin.js')
 // const Sonifier = require('./sonifier/index.js')
-const LayersEditor = require('./layers-editor.js')
+// const LayersEditor = require('./layers-editor.js')
 // const sfx = require('../wonderunit-sound.js')
 const keytracker = require('../utils/keytracker.js')
 const storyTips = new(require('./story-tips'))(null, notifications)
@@ -504,16 +504,16 @@ let loadBoardUI = ()=> {
     }
   })
 
-  document.querySelector('.board-metadata-container').addEventListener('pointerdown', (e)=>{
-    if (e.pointerType == 'pen' || e.pointerType == 'mouse') {
-      dragTarget = document.querySelector('.board-metadata-container')
-      dragTarget.style.overflow = 'hidden'
-      dragTarget.style.scrollBehavior = 'unset'
-      dragMode = true
-      dragPoint = [e.pageX, e.pageY]
-      scrollPoint = [dragTarget.scrollLeft, dragTarget.scrollTop]
-    }
-  })
+  // document.querySelector('.board-metadata-container').addEventListener('pointerdown', (e)=>{
+  //   if (e.pointerType == 'pen' || e.pointerType == 'mouse') {
+  //     dragTarget = document.querySelector('.board-metadata-container')
+  //     dragTarget.style.overflow = 'hidden'
+  //     dragTarget.style.scrollBehavior = 'unset'
+  //     dragMode = true
+  //     dragPoint = [e.pageX, e.pageY]
+  //     scrollPoint = [dragTarget.scrollLeft, dragTarget.scrollTop]
+  //   }
+  // })
 
 
   for (var item of document.querySelectorAll('.board-metadata-container input, .board-metadata-container textarea')) {
@@ -532,11 +532,11 @@ let loadBoardUI = ()=> {
 
 
 
-  document.querySelector('#show-in-finder-button').addEventListener('pointerdown', (e)=>{
-    let board = boardData.boards[currentBoard]
-    let imageFilename = path.join(boardPath, 'images', board.url)
-    shell.showItemInFolder(imageFilename)
-  })
+  // document.querySelector('#show-in-finder-button').addEventListener('pointerdown', (e)=>{
+  //   let board = boardData.boards[currentBoard]
+  //   let imageFilename = path.join(boardPath, 'images', board.url)
+  //   shell.showItemInFolder(imageFilename)
+  // })
 
   window.addEventListener('pointermove', (e)=>{
     lastPointer = { x: e.clientX, y: e.clientY }
@@ -824,9 +824,9 @@ let loadBoardUI = ()=> {
     toolbar.changeCurrentColor(color)
   })
 
-  guides = new Guides(storyboarderSketchPane.getLayerCanvasByName('guides'))
-  onionSkin = new OnionSkin(storyboarderSketchPane, boardPath)
-  layersEditor = new LayersEditor(storyboarderSketchPane, null, notifications)
+  //guides = new Guides(storyboarderSketchPane.getLayerCanvasByName('guides'))
+  //onionSkin = new OnionSkin(storyboarderSketchPane, boardPath)
+  //layersEditor = new LayersEditor(storyboarderSketchPane, sfx, notifications)
 
   //sfx.init()
 
@@ -1605,84 +1605,84 @@ let renderMarkerPosition = () => {
 }
 
 let renderMetaData = () => {
-  document.querySelector('#board-metadata #shot').innerHTML = 'Shot: ' + boardData.boards[currentBoard].shot
-  document.querySelector('#board-metadata #board-numbers').innerHTML = 'Board: ' + boardData.boards[currentBoard].number + ' of ' + boardData.boards.length
+  // document.querySelector('#board-metadata #shot').innerHTML = 'Shot: ' + boardData.boards[currentBoard].shot
+  // document.querySelector('#board-metadata #board-numbers').innerHTML = 'Board: ' + boardData.boards[currentBoard].number + ' of ' + boardData.boards.length
 
-  // reset values
-  let editableInputs = document.querySelectorAll('#board-metadata input:not(.layers-ui-reference-opacity), textarea')
-  for (var item of editableInputs) {
-    item.value = ''
-    item.checked = false
-  }
-
-  if (boardData.boards[currentBoard].newShot) {
-    document.querySelector('input[name="newShot"]').checked = true
-  }
-  if (!boardData.boards[currentBoard].dialogue) {
-    document.querySelector('#canvas-caption').style.display = 'none'
-  }
-
-  if (boardData.boards[currentBoard].duration) {
-    if (selections.size == 1) {
-      // show current board
-      for (let input of editableInputs) {
-        input.disabled = false
-        let label = document.querySelector(`label[for="${input.name}"]`)
-        label && label.classList.remove('disabled')
-      }
-
-      document.querySelector('input[name="duration"]').value = boardData.boards[currentBoard].duration
-      document.querySelector('input[name="frames"]').value = msecsToFrames(boardData.boards[currentBoard].duration)
-    } else {
-      for (let input of editableInputs) {
-        input.disabled = (input.name !== 'duration' && input.name !== 'frames')
-        let label = document.querySelector(`label[for="${input.name}"]`)
-        label && label.classList.add('disabled')
-      }
-
-      let uniqueDurations = util.uniq(boardData.boards.map(b => b.duration))
-
-      if (uniqueDurations.length == 1) {
-        // unified
-        let duration = uniqueDurations[0]
-        document.querySelector('input[name="duration"]').value = duration
-        document.querySelector('input[name="frames"]').value = msecsToFrames(duration)
-      } else {
-        document.querySelector('input[name="duration"]').value = null
-        document.querySelector('input[name="frames"]').value = null
-      }
-    }
-  }
-
-  if (boardData.boards[currentBoard].dialogue) {
-    document.querySelector('textarea[name="dialogue"]').value = boardData.boards[currentBoard].dialogue
-    document.querySelector('#canvas-caption').innerHTML = boardData.boards[currentBoard].dialogue
-    document.querySelector('#canvas-caption').style.display = 'block'
-    document.querySelector('#suggested-dialogue-duration').innerHTML = util.durationOfWords(boardData.boards[currentBoard].dialogue, 300)+300 + "ms"
-  } else {
-    document.querySelector('#suggested-dialogue-duration').innerHTML = ''
-  }
-  if (boardData.boards[currentBoard].action) {
-    document.querySelector('textarea[name="action"]').value = boardData.boards[currentBoard].action
-  }
-  if (boardData.boards[currentBoard].notes) {
-    document.querySelector('textarea[name="notes"]').value = boardData.boards[currentBoard].notes
-  }
-  if (boardData.boards[currentBoard].lineMileage){
-    document.querySelector('#line-miles').innerHTML = (boardData.boards[currentBoard].lineMileage/5280).toFixed(1) + ' line miles'
-  } else {
-    document.querySelector('#line-miles').innerHTML = '0 line miles'
-  }
-
-  // TODO how to regenerate tooltips?
-  // if (boardData.defaultBoardTiming) {
-  //   document.querySelector('input[name="duration"]').dataset.tooltipDescription = `Enter the number of milliseconds for a board. There are 1000 milliseconds in a second. ${boardData.defaultBoardTiming} milliseconds is the default.`
-  // 
-  //   let defaultFramesPerBoard = Math.round(boardData.defaultBoardTiming / 1000 * 24)
-  //   document.querySelector('input[name="frames"]').dataset.tooltipDescription = `Enter the number of frames for a board. There are 24 frames in a second. ${defaultFramesPerBoard} frames is the default.`
+  // // reset values
+  // let editableInputs = document.querySelectorAll('#board-metadata input:not(.layers-ui-reference-opacity), textarea')
+  // for (var item of editableInputs) {
+  //   item.value = ''
+  //   item.checked = false
   // }
 
-  renderStats()
+  // if (boardData.boards[currentBoard].newShot) {
+  //   document.querySelector('input[name="newShot"]').checked = true
+  // }
+  // if (!boardData.boards[currentBoard].dialogue) {
+  //   document.querySelector('#canvas-caption').style.display = 'none'
+  // }
+
+  // if (boardData.boards[currentBoard].duration) {
+  //   if (selections.size == 1) {
+  //     // show current board
+  //     for (let input of editableInputs) {
+  //       input.disabled = false
+  //       let label = document.querySelector(`label[for="${input.name}"]`)
+  //       label && label.classList.remove('disabled')
+  //     }
+
+  //     document.querySelector('input[name="duration"]').value = boardData.boards[currentBoard].duration
+  //     document.querySelector('input[name="frames"]').value = msecsToFrames(boardData.boards[currentBoard].duration)
+  //   } else {
+  //     for (let input of editableInputs) {
+  //       input.disabled = (input.name !== 'duration' && input.name !== 'frames')
+  //       let label = document.querySelector(`label[for="${input.name}"]`)
+  //       label && label.classList.add('disabled')
+  //     }
+
+  //     let uniqueDurations = util.uniq(boardData.boards.map(b => b.duration))
+
+  //     if (uniqueDurations.length == 1) {
+  //       // unified
+  //       let duration = uniqueDurations[0]
+  //       document.querySelector('input[name="duration"]').value = duration
+  //       document.querySelector('input[name="frames"]').value = msecsToFrames(duration)
+  //     } else {
+  //       document.querySelector('input[name="duration"]').value = null
+  //       document.querySelector('input[name="frames"]').value = null
+  //     }
+  //   }
+  // }
+
+  // if (boardData.boards[currentBoard].dialogue) {
+  //   document.querySelector('textarea[name="dialogue"]').value = boardData.boards[currentBoard].dialogue
+  //   document.querySelector('#canvas-caption').innerHTML = boardData.boards[currentBoard].dialogue
+  //   document.querySelector('#canvas-caption').style.display = 'block'
+  //   document.querySelector('#suggested-dialogue-duration').innerHTML = util.durationOfWords(boardData.boards[currentBoard].dialogue, 300)+300 + "ms"
+  // } else {
+  //   document.querySelector('#suggested-dialogue-duration').innerHTML = ''
+  // }
+  // if (boardData.boards[currentBoard].action) {
+  //   document.querySelector('textarea[name="action"]').value = boardData.boards[currentBoard].action
+  // }
+  // if (boardData.boards[currentBoard].notes) {
+  //   document.querySelector('textarea[name="notes"]').value = boardData.boards[currentBoard].notes
+  // }
+  // if (boardData.boards[currentBoard].lineMileage){
+  //   document.querySelector('#line-miles').innerHTML = (boardData.boards[currentBoard].lineMileage/5280).toFixed(1) + ' line miles'
+  // } else {
+  //   document.querySelector('#line-miles').innerHTML = '0 line miles'
+  // }
+
+  // // TODO how to regenerate tooltips?
+  // // if (boardData.defaultBoardTiming) {
+  // //   document.querySelector('input[name="duration"]').dataset.tooltipDescription = `Enter the number of milliseconds for a board. There are 1000 milliseconds in a second. ${boardData.defaultBoardTiming} milliseconds is the default.`
+  // // 
+  // //   let defaultFramesPerBoard = Math.round(boardData.defaultBoardTiming / 1000 * 24)
+  // //   document.querySelector('input[name="frames"]').dataset.tooltipDescription = `Enter the number of frames for a board. There are 24 frames in a second. ${defaultFramesPerBoard} frames is the default.`
+  // // }
+
+  // renderStats()
 }
 
 const renderStats = () => {
