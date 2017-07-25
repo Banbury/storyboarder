@@ -11,7 +11,7 @@ const StoryboarderSketchPane = require('./storyboarder-sketch-pane.js')
 const undoStack = require('../undo-stack.js')
 
 const Toolbar = require('./toolbar.js')
-const tooltips = require('./tooltips.js')
+// const tooltips = require('./tooltips.js')
 const ContextMenu = require('./context-menu.js')
 const ColorPicker = require('./color-picker.js')
 const Transport = require('./transport.js')
@@ -762,7 +762,7 @@ let loadBoardUI = ()=> {
   toolbar.setState({ brush: 'light-pencil' })
   //sfx.setMute(false)
 
-  tooltips.init()
+  // tooltips.init()
 
   transport = new Transport()
   transport.on('previousScene', () => {
@@ -2143,7 +2143,7 @@ let renderThumbnailButtons = () => {
     // NOTE tooltips.setupTooltipForElement checks prefs each time, e.g.:
     // if (sharedObj.prefs['enableTooltips']) { }
     // ... which is slow
-    tooltips.setupTooltipForElement(el)
+    // tooltips.setupTooltipForElement(el)
   }
 }
 
