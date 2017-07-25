@@ -3811,224 +3811,224 @@ const fillContext = (context, fillStyle = 'white') => {
   context.fillRect(0, 0, context.canvas.width, context.canvas.height)
 }
 
-// ipcRenderer.on('setTool', (e, arg)=> {
-//   if (!toolbar) return
+ipcRenderer.on('setTool', (e, arg)=> {
+  if (!toolbar) return
 
-//   if (!textInputMode && !storyboarderSketchPane.getIsDrawingOrStabilizing()) {
-//     console.log('setTool', arg)
-//     switch(arg) {
-//       case 'lightPencil':
-//         toolbar.setState({ brush: 'light-pencil' })
-//         break
-//       case 'pencil':
-//         toolbar.setState({ brush: 'pencil' })
-//         break
-//       case 'pen':
-//         toolbar.setState({ brush: 'pen' })
-//         break
-//       case 'brush':
-//         toolbar.setState({ brush: 'brush' })
-//         break
-//       case 'notePen':
-//         toolbar.setState({ brush: 'note-pen' })
-//         break
-//       case 'eraser':
-//         toolbar.setState({ brush: 'eraser' })
-//         break
-//     }
-//   }
-// })
+  if (!textInputMode && !storyboarderSketchPane.getIsDrawingOrStabilizing()) {
+    console.log('setTool', arg)
+    switch(arg) {
+      case 'lightPencil':
+        toolbar.setState({ brush: 'light-pencil' })
+        break
+      case 'pencil':
+        toolbar.setState({ brush: 'pencil' })
+        break
+      case 'pen':
+        toolbar.setState({ brush: 'pen' })
+        break
+      case 'brush':
+        toolbar.setState({ brush: 'brush' })
+        break
+      case 'notePen':
+        toolbar.setState({ brush: 'note-pen' })
+        break
+      case 'eraser':
+        toolbar.setState({ brush: 'eraser' })
+        break
+    }
+  }
+})
 
-// ipcRenderer.on('useColor', (e, arg)=> {
-//   if (!toolbar) return
+ipcRenderer.on('useColor', (e, arg)=> {
+  if (!toolbar) return
 
-//   if (!textInputMode) {
-//     if (toolbar.getCurrentPalette()) {
-//       toolbar.emit('current-set-color', toolbar.getCurrentPalette()[arg-1])
-//     }
-//   }
-// })
-
-
-// ipcRenderer.on('clear', (e, arg) => {
-//   if (!textInputMode) {
-//     clearLayers(arg)
-//   }
-// })
-
-// ipcRenderer.on('brushSize', (e, direction) => {
-//   if (!textInputMode) {
-//     if (direction > 0) {
-//       toolbar.changeBrushSize(1)
-//       sfx.playEffect('brush-size-up')
-//     } else {
-//       toolbar.changeBrushSize(-1)
-//       sfx.playEffect('brush-size-down')
-//     }
-//   }
-// })
-
-// ipcRenderer.on('flipBoard', (e, arg)=> {
-//   if (!textInputMode) {
-//     storyboarderSketchPane.flipLayers(arg)
-//     sfx.playEffect('metal')
-//     //notifications.notify({message: 'I flipped the board.', timing: 5})
-//   }
-// })
-
-// ipcRenderer.on('deleteBoards', (event, args)=>{
-//   if (!textInputMode) {
-//     deleteBoards(args)
-//   }
-// })
-
-// ipcRenderer.on('duplicateBoard', (event, args)=>{
-//   if (!textInputMode) {
-//     duplicateBoard()
-//   }
-// })
-
-// ipcRenderer.on('reorderBoardsLeft', (event, args)=>{
-//   if (!textInputMode) {
-//     reorderBoardsLeft()
-//   }
-// })
-
-// ipcRenderer.on('reorderBoardsRight', (event, args)=>{
-//   if (!textInputMode) {
-//     reorderBoardsRight()
-//   }
-// })
-
-// ipcRenderer.on('cycleViewMode', (event, args)=>{
-//   if (!textInputMode) {
-//     cycleViewMode()
-//   }
-// })
-
-// ipcRenderer.on('toggleCaptions', (event, args)=>{
-//   if (!textInputMode) {
-//     toggleCaptions()
-//   }
-// })
-
-// ipcRenderer.on('textInputMode', (event, args)=>{
-//   textInputMode = args
-//   textInputAllowAdvance = false
-// })
-
-// ipcRenderer.on('insertNewBoardsWithFiles', (event, filepaths)=> {
-//   insertNewBoardsWithFiles(filepaths)
-// })
-
-// ipcRenderer.on('importImage', (event, args)=> {
-//   //console.log(args)
-//   importImage(args)
-// })
-
-// ipcRenderer.on('toggleGuide', (event, args) => {
-//   if (!textInputMode) {
-//     toolbar.setState({ [args]: !toolbar.state[args] })
-//     toolbar.emit(args, toolbar.state[args])
-//   }
-// })
-
-// ipcRenderer.on('toggleNewShot', (event, args) => {
-//   if (!textInputMode) {
-//     toggleNewShot()
-//   }
-// })
-
-// ipcRenderer.on('toggleSpeaking', (event, args) => {
-//   speakingMode = !speakingMode
-// })
-
-// ipcRenderer.on('showTip', (event, args) => {
-//   storyTips.show()
-// })
-
-// ipcRenderer.on('exportAnimatedGif', (event, args) => {
-//   exportAnimatedGif()
-// })
-
-// ipcRenderer.on('exportFcp', (event, args) => {
-//   exportFcp()
-// })
-
-// ipcRenderer.on('exportImages', (event, args) => {
-//   exportImages()
-// })
-
-// ipcRenderer.on('exportPDF', (event, args) => {
-//   exportPDF()
-// })
-
-// let printWindow
-// let importWindow
+  if (!textInputMode) {
+    if (toolbar.getCurrentPalette()) {
+      toolbar.emit('current-set-color', toolbar.getCurrentPalette()[arg-1])
+    }
+  }
+})
 
 
-// ipcRenderer.on('printWorksheet', (event, args) => {
-//   console.log(boardData)
+ipcRenderer.on('clear', (e, arg) => {
+  if (!textInputMode) {
+    clearLayers(arg)
+  }
+})
 
-//   if (!printWindow) {
-//     printWindow = new remote.BrowserWindow({
-//       width: 1200, 
-//       height: 800, 
-//       minWidth: 600, 
-//       minHeight: 600, 
-//       backgroundColor: '#333333',
-//       show: false, 
-//       center: true, 
-//       parent: remote.getCurrentWindow(), 
-//       resizable: true, 
-//       frame: false, 
-//       modal: true
-//     })
-//     printWindow.loadURL(`file://${__dirname}/../../print-window.html`)
-//   } else {
-//     if (!printWindow.isVisible()) {
-//       printWindow.show()
-//       printWindow.webContents.send('worksheetData',boardData.aspectRatio, currentScene, scriptData)
-//     }
-//   }
+ipcRenderer.on('brushSize', (e, direction) => {
+  if (!textInputMode) {
+    if (direction > 0) {
+      toolbar.changeBrushSize(1)
+      //sfx.playEffect('brush-size-up')
+    } else {
+      toolbar.changeBrushSize(-1)
+      //sfx.playEffect('brush-size-down')
+    }
+  }
+})
 
-//   printWindow.once('ready-to-show', () => {
-//     printWindow.show()
-//     printWindow.webContents.send('worksheetData',boardData.aspectRatio, currentScene, scriptData)
-//   })
-// })
+ipcRenderer.on('flipBoard', (e, arg)=> {
+  if (!textInputMode) {
+    storyboarderSketchPane.flipLayers(arg)
+    // sfx.playEffect('metal')
+    //notifications.notify({message: 'I flipped the board.', timing: 5})
+  }
+})
 
-// ipcRenderer.on('importFromWorksheet', (event, args) => {
-//   importFromWorksheet(args)
-// })
+ipcRenderer.on('deleteBoards', (event, args)=>{
+  if (!textInputMode) {
+    deleteBoards(args)
+  }
+})
 
-// ipcRenderer.on('importWorksheets', (event, args) => {
-//   if (!importWindow) {
-//     importWindow = new remote.BrowserWindow({
-//       width: 1200, 
-//       height: 800, 
-//       minWidth: 600, 
-//       minHeight: 600, 
-//       backgroundColor: '#333333',
-//       show: false, 
-//       center: true, 
-//       parent: remote.getCurrentWindow(), 
-//       resizable: true, 
-//       frame: false, 
-//       modal: true
-//     })
-//     importWindow.loadURL(`file://${__dirname}/../../import-window.html`)
-//   } else {
-//     if (!importWindow.isVisible()) {
-//       importWindow.webContents.send('worksheetImage',args)
-//     }
-//   }
+ipcRenderer.on('duplicateBoard', (event, args)=>{
+  if (!textInputMode) {
+    duplicateBoard()
+  }
+})
 
-//   importWindow.once('ready-to-show', () => {
-//     importWindow.webContents.send('worksheetImage',args)
-//   })
-// })
+ipcRenderer.on('reorderBoardsLeft', (event, args)=>{
+  if (!textInputMode) {
+    reorderBoardsLeft()
+  }
+})
 
-// ipcRenderer.on('save', (event, args) => {
-//   save()
-// })
+ipcRenderer.on('reorderBoardsRight', (event, args)=>{
+  if (!textInputMode) {
+    reorderBoardsRight()
+  }
+})
+
+ipcRenderer.on('cycleViewMode', (event, args)=>{
+  if (!textInputMode) {
+    cycleViewMode()
+  }
+})
+
+ipcRenderer.on('toggleCaptions', (event, args)=>{
+  if (!textInputMode) {
+    toggleCaptions()
+  }
+})
+
+ipcRenderer.on('textInputMode', (event, args)=>{
+  textInputMode = args
+  textInputAllowAdvance = false
+})
+
+ipcRenderer.on('insertNewBoardsWithFiles', (event, filepaths)=> {
+  insertNewBoardsWithFiles(filepaths)
+})
+
+ipcRenderer.on('importImage', (event, args)=> {
+  //console.log(args)
+  importImage(args)
+})
+
+ipcRenderer.on('toggleGuide', (event, args) => {
+  if (!textInputMode) {
+    toolbar.setState({ [args]: !toolbar.state[args] })
+    toolbar.emit(args, toolbar.state[args])
+  }
+})
+
+ipcRenderer.on('toggleNewShot', (event, args) => {
+  if (!textInputMode) {
+    toggleNewShot()
+  }
+})
+
+ipcRenderer.on('toggleSpeaking', (event, args) => {
+  speakingMode = !speakingMode
+})
+
+ipcRenderer.on('showTip', (event, args) => {
+  storyTips.show()
+})
+
+ipcRenderer.on('exportAnimatedGif', (event, args) => {
+  exportAnimatedGif()
+})
+
+ipcRenderer.on('exportFcp', (event, args) => {
+  exportFcp()
+})
+
+ipcRenderer.on('exportImages', (event, args) => {
+  exportImages()
+})
+
+ipcRenderer.on('exportPDF', (event, args) => {
+  exportPDF()
+})
+
+let printWindow
+let importWindow
+
+
+ipcRenderer.on('printWorksheet', (event, args) => {
+  console.log(boardData)
+
+  if (!printWindow) {
+    printWindow = new remote.BrowserWindow({
+      width: 1200, 
+      height: 800, 
+      minWidth: 600, 
+      minHeight: 600, 
+      backgroundColor: '#333333',
+      show: false, 
+      center: true, 
+      parent: remote.getCurrentWindow(), 
+      resizable: true, 
+      frame: false, 
+      modal: true
+    })
+    printWindow.loadURL(`file://${__dirname}/../../print-window.html`)
+  } else {
+    if (!printWindow.isVisible()) {
+      printWindow.show()
+      printWindow.webContents.send('worksheetData',boardData.aspectRatio, currentScene, scriptData)
+    }
+  }
+
+  printWindow.once('ready-to-show', () => {
+    printWindow.show()
+    printWindow.webContents.send('worksheetData',boardData.aspectRatio, currentScene, scriptData)
+  })
+})
+
+ipcRenderer.on('importFromWorksheet', (event, args) => {
+  importFromWorksheet(args)
+})
+
+ipcRenderer.on('importWorksheets', (event, args) => {
+  if (!importWindow) {
+    importWindow = new remote.BrowserWindow({
+      width: 1200, 
+      height: 800, 
+      minWidth: 600, 
+      minHeight: 600, 
+      backgroundColor: '#333333',
+      show: false, 
+      center: true, 
+      parent: remote.getCurrentWindow(), 
+      resizable: true, 
+      frame: false, 
+      modal: true
+    })
+    importWindow.loadURL(`file://${__dirname}/../../import-window.html`)
+  } else {
+    if (!importWindow.isVisible()) {
+      importWindow.webContents.send('worksheetImage',args)
+    }
+  }
+
+  importWindow.once('ready-to-show', () => {
+    importWindow.webContents.send('worksheetImage',args)
+  })
+})
+
+ipcRenderer.on('save', (event, args) => {
+  save()
+})
