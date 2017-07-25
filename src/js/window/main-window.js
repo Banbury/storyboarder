@@ -10,7 +10,7 @@ const Color = require('color-js')
 const StoryboarderSketchPane = require('./storyboarder-sketch-pane.js')
 const undoStack = require('../undo-stack.js')
 
-const Toolbar = require('./toolbar.js')
+// const Toolbar = require('./toolbar.js')
 // const tooltips = require('./tooltips.js')
 // const ContextMenu = require('./context-menu.js')
 // const ColorPicker = require('./color-picker.js')
@@ -606,73 +606,73 @@ let loadBoardUI = ()=> {
     }
   })
 
-  toolbar = new Toolbar(document.getElementById("toolbar"))
-  toolbar.on('add', () => {
-    newBoard()
-    gotoBoard(currentBoard+1)
-  })
-  toolbar.on('delete', () => {
-    deleteBoards()
-  })
-  toolbar.on('duplicate', () => {
-    duplicateBoard()
-  })
-  toolbar.on('import', () => {
-    alert('Import. This feature is not ready yet :(')
-  })
-  toolbar.on('print', () => {
-    alert('Print. This feature is not ready yet :(')
-  })
+  // toolbar = new Toolbar(document.getElementById("toolbar"))
+  // toolbar.on('add', () => {
+  //   newBoard()
+  //   gotoBoard(currentBoard+1)
+  // })
+  // toolbar.on('delete', () => {
+  //   deleteBoards()
+  // })
+  // toolbar.on('duplicate', () => {
+  //   duplicateBoard()
+  // })
+  // toolbar.on('import', () => {
+  //   alert('Import. This feature is not ready yet :(')
+  // })
+  // toolbar.on('print', () => {
+  //   alert('Print. This feature is not ready yet :(')
+  // })
 
-  toolbar.on('brush', (kind, options) => {
-    toolbar.emit('cancelTransform')
-    storyboarderSketchPane.setBrushTool(kind, options)
-    //sfx.playEffect('tool-' + kind)
-  })
-  toolbar.on('brush:size', size => {
-    toolbar.emit('cancelTransform')
-    storyboarderSketchPane.setBrushSize(size)
-  })
-  toolbar.on('brush:color', color => {
-    toolbar.emit('cancelTransform')
-    //sfx.playEffect('metal')
-    storyboarderSketchPane.setBrushColor(color)
-  })
-
-
-  toolbar.on('trash', () => {
-    clearLayers()
-  })
-  toolbar.on('fill', color => {
-    if (toolbar.state.brush !== 'eraser') {
-      storyboarderSketchPane.fillLayer(color.toCSS())
-      //sfx.playEffect('fill')
-    }
-  })
+  // toolbar.on('brush', (kind, options) => {
+  //   toolbar.emit('cancelTransform')
+  //   storyboarderSketchPane.setBrushTool(kind, options)
+  //   sfx.playEffect('tool-' + kind)
+  // })
+  // toolbar.on('brush:size', size => {
+  //   toolbar.emit('cancelTransform')
+  //   storyboarderSketchPane.setBrushSize(size)
+  // })
+  // toolbar.on('brush:color', color => {
+  //   toolbar.emit('cancelTransform')
+  //   sfx.playEffect('metal')
+  //   storyboarderSketchPane.setBrushColor(color)
+  // })
 
 
-  toolbar.on('move', () => {
-    if (storyboarderSketchPane.isPointerDown) return
-      //sfx.playEffect('metal')
-    toolbar.setState({ transformMode: 'move' })
-    storyboarderSketchPane.moveContents()
-  })
-  toolbar.on('scale', () => {
-    if (storyboarderSketchPane.isPointerDown) return
-      //sfx.playEffect('metal')
-    toolbar.setState({ transformMode: 'scale' })
-    storyboarderSketchPane.scaleContents()
-  })
-  toolbar.on('cancelTransform', () => {
-    // FIXME prevent this case from happening
-    if (storyboarderSketchPane.isPointerDown) {
-      console.warn('pointer is already down')
-      return
-    }
+  // toolbar.on('trash', () => {
+  //   clearLayers()
+  // })
+  // toolbar.on('fill', color => {
+  //   if (toolbar.state.brush !== 'eraser') {
+  //     storyboarderSketchPane.fillLayer(color.toCSS())
+  //     sfx.playEffect('fill')
+  //   }
+  // })
 
-    toolbar.setState({ transformMode: null })
-    storyboarderSketchPane.cancelTransform()
-  })
+
+  // toolbar.on('move', () => {
+  //   if (storyboarderSketchPane.isPointerDown) return
+  //     sfx.playEffect('metal')
+  //   toolbar.setState({ transformMode: 'move' })
+  //   storyboarderSketchPane.moveContents()
+  // })
+  // toolbar.on('scale', () => {
+  //   if (storyboarderSketchPane.isPointerDown) return
+  //     sfx.playEffect('metal')
+  //   toolbar.setState({ transformMode: 'scale' })
+  //   storyboarderSketchPane.scaleContents()
+  // })
+  // toolbar.on('cancelTransform', () => {
+  //   // FIXME prevent this case from happening
+  //   if (storyboarderSketchPane.isPointerDown) {
+  //     console.warn('pointer is already down')
+  //     return
+  //   }
+
+  //   toolbar.setState({ transformMode: null })
+  //   storyboarderSketchPane.cancelTransform()
+  // })
   // sketchPane.on('moveMode', enabled => {
   //   if (enabled) {
   //     toolbar.setState({ transformMode: 'move' })
@@ -688,79 +688,79 @@ let loadBoardUI = ()=> {
   // })
 
 
-  toolbar.on('undo', () => {
-    if (undoStack.getCanUndo()) {
-      undoStack.undo()
-      //sfx.rollover()
-    } else {
-      // sfx.error()
-      //notifications.notify({message: 'Nothing left to undo!', timing: 5})
-    }
-    //sfx.playEffect('metal')
-  })
-  toolbar.on('redo', () => {
-    if (undoStack.getCanRedo()) {
-      undoStack.redo()
-      //sfx.rollover()
-    } else {
-      // sfx.error()
-      //notifications.notify({message: 'Nothing more to redo!', timing: 5})
-    }
-    //sfx.playEffect('metal')
-  })
+  // toolbar.on('undo', () => {
+  //   if (undoStack.getCanUndo()) {
+  //     undoStack.undo()
+  //     sfx.rollover()
+  //   } else {
+  //     sfx.error()
+  //     //notifications.notify({message: 'Nothing left to undo!', timing: 5})
+  //   }
+  //   sfx.playEffect('metal')
+  // })
+  // toolbar.on('redo', () => {
+  //   if (undoStack.getCanRedo()) {
+  //     undoStack.redo()
+  //     sfx.rollover()
+  //   } else {
+  //     sfx.error()
+  //     //notifications.notify({message: 'Nothing more to redo!', timing: 5})
+  //   }
+  //   sfx.playEffect('metal')
+  // })
   
-  toolbar.on('grid', value => {
-    // //guides.setState({ grid: value })
-    // sfx.playEffect('metal')
-  })
-  toolbar.on('center', value => {
-    //guides.setState({ center: value })
-    // sfx.playEffect('metal')
-  })
-  toolbar.on('thirds', value => {
-    //guides.setState({ thirds: value })
-    // sfx.playEffect('metal')
-  })
-  toolbar.on('diagonals', value => {
-    //guides.setState({ diagonals: value })
-    // sfx.playEffect('metal')
-  })
-  toolbar.on('onion', value => {
-    // onionSkin.setEnabled(value)
-    // if (onionSkin.getEnabled()) {
-    //   if (!onionSkin.isLoaded) {
-    //     onionSkin.load(
-    //       boardData.boards[currentBoard],
-    //       boardData.boards[currentBoard - 1],
-    //       boardData.boards[currentBoard + 1]
-    //     ).catch(err => console.warn(err))
-    //   }
-    //}
-    sfx.playEffect('metal')
-  })
-  toolbar.on('captions', () => {
-    // HACK!!!
-    let el = document.querySelector('#canvas-caption')
-    el.style.visibility = el.style.visibility == 'hidden'
-      ? 'visible'
-      : 'hidden'
-    //sfx.playEffect('metal')
-  })
-  toolbar.on('open-in-editor', () => {
-    openInEditor()
-  })
+  // toolbar.on('grid', value => {
+  //   //guides.setState({ grid: value })
+  //   sfx.playEffect('metal')
+  // })
+  // toolbar.on('center', value => {
+  //   //guides.setState({ center: value })
+  //   sfx.playEffect('metal')
+  // })
+  // toolbar.on('thirds', value => {
+  //   //guides.setState({ thirds: value })
+  //   sfx.playEffect('metal')
+  // })
+  // toolbar.on('diagonals', value => {
+  //   //guides.setState({ diagonals: value })
+  //   sfx.playEffect('metal')
+  // })
+  // toolbar.on('onion', value => {
+  //   // onionSkin.setEnabled(value)
+  //   // if (onionSkin.getEnabled()) {
+  //   //   if (!onionSkin.isLoaded) {
+  //   //     onionSkin.load(
+  //   //       boardData.boards[currentBoard],
+  //   //       boardData.boards[currentBoard - 1],
+  //   //       boardData.boards[currentBoard + 1]
+  //   //     ).catch(err => console.warn(err))
+  //   //   }
+  //   //}
+  //   sfx.playEffect('metal')
+  // })
+  // toolbar.on('captions', () => {
+  //   // HACK!!!
+  //   let el = document.querySelector('#canvas-caption')
+  //   el.style.visibility = el.style.visibility == 'hidden'
+  //     ? 'visible'
+  //     : 'hidden'
+  //   sfx.playEffect('metal')
+  // })
+  // toolbar.on('open-in-editor', () => {
+  //   openInEditor()
+  // })
 
-  storyboarderSketchPane.toolbar = toolbar
+  // storyboarderSketchPane.toolbar = toolbar
 
-  if (!toolbar.getState().captions) {
-    let el = document.querySelector('#canvas-caption')
-    el.style.visibility = 'hidden'
-  }
+  // if (!toolbar.getState().captions) {
+  //   let el = document.querySelector('#canvas-caption')
+  //   el.style.visibility = 'hidden'
+  // }
 
-  // HACK force initialize
-  //sfx.setMute(true)
-  toolbar.setState({ brush: 'light-pencil' })
-  //sfx.setMute(false)
+  // // HACK force initialize
+  // sfx.setMute(true)
+  // toolbar.setState({ brush: 'light-pencil' })
+  // sfx.setMute(false)
 
   // tooltips.init()
 
@@ -868,7 +868,7 @@ let loadBoardUI = ()=> {
   window.addEventListener('beforeunload', event => {
     console.log('Close requested! Saving ...')
     // TODO THIS IS SLOW AS HELL. NEED TO FIX PREFS
-    toolbar.savePrefs()
+   // toolbar.savePrefs()
     saveImageFile() // NOTE image is saved first, which ensures layers are present in data
     saveBoardFile() // ... then project data can be saved
   })
@@ -1485,22 +1485,20 @@ let duplicateBoard = () => {
  *       we should erase ONLY the current layer
  */
 const clearLayers = shouldEraseCurrentLayer => {
-  if (toolbar.state.brush !== 'eraser' && (keytracker('<alt>') || shouldEraseCurrentLayer)) {
-    storyboarderSketchPane.clearLayers([storyboarderSketchPane.sketchPane.getCurrentLayerIndex()])
-    saveImageFile()
-    //sfx.playEffect('trash')
-  } else {
-    if (storyboarderSketchPane.isEmpty()) {
-      deleteBoards()
-    } else {
-      storyboarderSketchPane.clearLayers()
-      saveImageFile()
-      //sfx.playEffect('trash')
-      notifications.notify({message: 'Cleared canvas.', timing: 5})
-      // sfx.playEffect('trash')
-      //notifications.notify({message: 'Cleared canvas.', timing: 5})
-    }
-  }
+  // if (toolbar.state.brush !== 'eraser' && (keytracker('<alt>') || shouldEraseCurrentLayer)) {
+  //   storyboarderSketchPane.clearLayers([storyboarderSketchPane.sketchPane.getCurrentLayerIndex()])
+  //   saveImageFile()
+  //   sfx.playEffect('trash')
+  // } else {
+  //   if (storyboarderSketchPane.isEmpty()) {
+  //     deleteBoards()
+  //   } else {
+  //     storyboarderSketchPane.clearLayers()
+  //     saveImageFile()
+  //     sfx.playEffect('trash')
+  //     //notifications.notify({message: 'Cleared canvas.', timing: 5})
+  //   }
+  // }
 }
 
 ///////////////////////////////////////////////////////////////
@@ -1520,7 +1518,7 @@ let goNextBoard = (direction, shouldPreserveSelections = false)=> {
 let animatedScrollingTimer = +new Date()
 
 let gotoBoard = (boardNumber, shouldPreserveSelections = false) => {
-  toolbar.emit('cancelTransform')
+  //toolbar.emit('cancelTransform')
   return new Promise((resolve, reject) => {
     currentBoard = boardNumber
     currentBoard = Math.max(currentBoard, 0)
@@ -2542,13 +2540,13 @@ window.onmousedown = (e) => {
 
 const resize = () => {
   // measure the main area
-  const mainEl = document.getElementById('storyboarder-main')
-  const toolbarEl = document.getElementById('toolbar')
-  if (mainEl && toolbarEl) {
-    const rect = mainEl.getBoundingClientRect()
-    const isReducedWidth = rect.width < 1505
-    toolbarEl.classList.toggle('with-reduced-width', isReducedWidth)
-  }
+  // const mainEl = document.getElementById('storyboarder-main')
+  // //const toolbarEl = document.getElementById('toolbar')
+  // if (mainEl && toolbarEl) {
+  //   const rect = mainEl.getBoundingClientRect()
+  //   const isReducedWidth = rect.width < 1505
+  //   toolbarEl.classList.toggle('with-reduced-width', isReducedWidth)
+  // }
 }
 
 window.onkeydown = (e)=> {
@@ -2834,7 +2832,7 @@ const renderViewMode = () => {
 }
 
 const toggleCaptions = () => {
-  toolbar.toggleCaptions()
+//  toolbar.toggleCaptions()
 }
 
 ipcRenderer.on('newBoard', (event, args)=>{
@@ -3794,7 +3792,7 @@ const applyUndoStateForImage = (state) => {
   })
   .then(() => saveThumbnailFile(state.boardIndex))
   .then(index => updateThumbnailDisplay(index))
-  .then(() => toolbar.emit('cancelTransform'))
+  // .then(() => toolbar.emit('cancelTransform'))
   .catch(e => console.error(e))
 }
 
