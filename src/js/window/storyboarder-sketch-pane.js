@@ -57,7 +57,7 @@ class StoryboarderSketchPane extends EventEmitter {
     this.brushPointerContainer.className = 'brush-pointer'
     this.brushPointerContainer.style.position = 'absolute'
     this.brushPointerContainer.style.pointerEvents = 'none'
-    document.body.appendChild(this.brushPointerContainer)
+    // document.body.appendChild(this.brushPointerContainer)
 
     // container
     this.containerEl = document.createElement('div')
@@ -199,13 +199,13 @@ class StoryboarderSketchPane extends EventEmitter {
   }
 
   canvasPointerOver () {
-    this.sketchPaneDOMElement.addEventListener('pointermove', this.canvasCursorMove)
-    this.brushPointerContainer.style.display = 'block'
+    // this.sketchPaneDOMElement.addEventListener('pointermove', this.canvasCursorMove)
+    // this.brushPointerContainer.style.display = 'block'
   }
 
   canvasPointerOut () {
-    this.sketchPaneDOMElement.removeEventListener('pointermove', this.canvasCursorMove)
-    this.brushPointerContainer.style.display = 'none'
+    // this.sketchPaneDOMElement.removeEventListener('pointermove', this.canvasCursorMove)
+    // this.brushPointerContainer.style.display = 'none'
   }
 
   onFrame (timestep) {
@@ -220,7 +220,7 @@ class StoryboarderSketchPane extends EventEmitter {
     // render the cursor
     if (this.lastCursorEvent) {
       // update the position of the cursor
-      this.brushPointerContainer.style.transform = 'translate(' + this.lastCursorEvent.clientX + 'px, ' + this.lastCursorEvent.clientY + 'px)'
+      // this.brushPointerContainer.style.transform = 'translate(' + this.lastCursorEvent.clientX + 'px, ' + this.lastCursorEvent.clientY + 'px)'
       this.lastCursorEvent = null
     }
 

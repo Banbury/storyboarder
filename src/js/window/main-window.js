@@ -538,26 +538,26 @@ let loadBoardUI = ()=> {
     shell.showItemInFolder(imageFilename)
   })
 
-  window.addEventListener('pointermove', (e)=>{
-    lastPointer = { x: e.clientX, y: e.clientY }
-
-    // if you move enough,
-    // we switch into dragging mode
-    // and clear any possible editModeTimer
-    if (Math.abs(mouseDragStartX - e.clientX) > 15 * boardData.aspectRatio) {
-      clearTimeout(editModeTimer)
-    }
-
-    if (isEditMode && dragMode) {
-      // defer to periodicDragUpdate()
-      return
-    }
-
-    if (dragMode && !preventDragMode) {
-      dragTarget.scrollLeft = scrollPoint[0] + (dragPoint[0] - e.pageX)
-      dragTarget.scrollTop = scrollPoint[1] + (dragPoint[1] - e.pageY)
-    }
-  })
+  // window.addEventListener('pointermove', (e)=>{
+  //   lastPointer = { x: e.clientX, y: e.clientY }
+  // 
+  //   // if you move enough,
+  //   // we switch into dragging mode
+  //   // and clear any possible editModeTimer
+  //   if (Math.abs(mouseDragStartX - e.clientX) > 15 * boardData.aspectRatio) {
+  //     clearTimeout(editModeTimer)
+  //   }
+  // 
+  //   if (isEditMode && dragMode) {
+  //     // defer to periodicDragUpdate()
+  //     return
+  //   }
+  // 
+  //   if (dragMode && !preventDragMode) {
+  //     dragTarget.scrollLeft = scrollPoint[0] + (dragPoint[0] - e.pageX)
+  //     dragTarget.scrollTop = scrollPoint[1] + (dragPoint[1] - e.pageY)
+  //   }
+  // })
 
   window.addEventListener('pointerup', (e)=>{
     if (dragMode) {
@@ -831,7 +831,7 @@ let loadBoardUI = ()=> {
   sfx.init()
 
   storyboarderSketchPane.on('pointerdown', Sonifier.start)
-  storyboarderSketchPane.on('pointermove', Sonifier.trigger)
+  // storyboarderSketchPane.on('pointermove', Sonifier.trigger)
   storyboarderSketchPane.sketchPane.on('onup', Sonifier.stop)
   Sonifier.init(storyboarderSketchPane.sketchPane.getCanvasSize())
   window.addEventListener('resize', () => {
@@ -2062,11 +2062,11 @@ let renderThumbnailDrawer = ()=> {
         contextMenu.remove()
       }
     })
-    thumb.addEventListener('pointermove', (e) => {
-      if (!isEditMode && selections.size <= 1 && e.target.dataset.thumbnail == currentBoard) {
-        contextMenu.attachTo(e.target)
-      }
-    })
+    // thumb.addEventListener('pointermove', (e) => {
+    //   if (!isEditMode && selections.size <= 1 && e.target.dataset.thumbnail == currentBoard) {
+    //     contextMenu.attachTo(e.target)
+    //   }
+    // })
     thumb.addEventListener('pointerdown', (e)=>{
       console.log("DOWN")
       if (!isEditMode && selections.size <= 1) contextMenu.attachTo(e.target)
