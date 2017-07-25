@@ -246,13 +246,13 @@ class StoryboarderSketchPane extends EventEmitter {
   }
 
   unsetQuickErase () {
-    if (this.toolbar.getIsQuickErasing()) {
-      this.toolbar.setIsQuickErasing(false)
-      if (this.prevTool) {
-        this.setBrushTool(this.prevTool.kind, this.prevTool)
-      }
-      this.prevTool = null
-    }
+    // if (this.toolbar.getIsQuickErasing()) {
+    //   this.toolbar.setIsQuickErasing(false)
+    //   if (this.prevTool) {
+    //     this.setBrushTool(this.prevTool.kind, this.prevTool)
+    //   }
+    //   this.prevTool = null
+    // }
   }
 
   startMultiLayerOperation () {
@@ -627,10 +627,10 @@ class DrawingStrategy {
     // quick erase : on
     this.container.setQuickEraseIfRequested()
 
-    if (!this.container.toolbar.getIsQuickErasing() && this.container.sketchPane.getPaintingKnockout()) {
-      this.container.startMultiLayerOperation()
-      this.container.setCompositeLayerVisibility(true)
-    }
+    // if (!this.container.toolbar.getIsQuickErasing() && this.container.sketchPane.getPaintingKnockout()) {
+    //   this.container.startMultiLayerOperation()
+    //   this.container.setCompositeLayerVisibility(true)
+    // }
 
     let pointerPosition = this.container.getRelativePosition(e.clientX, e.clientY)
     this.container.lineMileageCounter.reset()
