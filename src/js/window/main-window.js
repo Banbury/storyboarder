@@ -21,9 +21,9 @@ const undoStack = require('../undo-stack.js')
 //const OnionSkin = require('./onion-skin.js')
 // const Sonifier = require('./sonifier/index.js')
 // const LayersEditor = require('./layers-editor.js')
-const sfx = require('../wonderunit-sound.js')
+//const //sfx = require('../wonderunit-sound.js')
 const keytracker = require('../utils/keytracker.js')
-const storyTips = new(require('./story-tips'))(sfx, notifications)
+//const storyTips = new(require('./story-tips'))//(//sfx, notifications)
 const exporter = require('./exporter.js')
 const exporterCommon = require('../exporters/common')
 const prefsModule = require('electron').remote.require('./prefs.js')
@@ -179,7 +179,7 @@ ipcRenderer.on('load', load)
 let toggleNewShot = () => {
   storeUndoStateForScene(true)
   boardData.boards[currentBoard].newShot = !boardData.boards[currentBoard].newShot
-  sfx.playEffect(boardData.boards[currentBoard].newShot ? 'on' : 'off')
+  //sfx.playEffect(boardData.boards[currentBoard].newShot ? 'on' : 'off')
   document.querySelector('input[name="newShot"]').checked = boardData.boards[currentBoard].newShot
   markBoardFileDirty()
   renderThumbnailDrawer()
@@ -217,7 +217,7 @@ const commentOnLineMileage = (miles) => {
         "Let's keep the line miles to a minimum.",
       ]
       message.push(otherMessages[Math.floor(Math.random()*otherMessages.length)])
-      sfx.playEffect('tool-pencil')
+      //sfx.playEffect('tool-pencil')
       break
     case 5: 
       message.push('5 line miles.')
@@ -233,7 +233,7 @@ const commentOnLineMileage = (miles) => {
         "You make me proud.",
       ]
       message.push(otherMessages[Math.floor(Math.random()*otherMessages.length)])
-      sfx.playEffect('tool-light-pencil')
+      //sfx.playEffect('tool-light-pencil')
       break
     case 8: 
       message.push('8 line miles.')
@@ -249,7 +249,7 @@ const commentOnLineMileage = (miles) => {
         "Wrap it up!",
       ]
       message.push(otherMessages[Math.floor(Math.random()*otherMessages.length)])
-      sfx.playEffect('tool-brush')
+      //sfx.playEffect('tool-brush')
       break
     case 10: 
       message.push('10 miles!')
@@ -265,7 +265,7 @@ const commentOnLineMileage = (miles) => {
         "Sweet!",
       ]
       message.push(otherMessages[Math.floor(Math.random()*otherMessages.length)])
-      sfx.positive()
+      //sfx.positive()
       break
     case 20: 
       message.push('20 miles!!!')
@@ -280,7 +280,7 @@ const commentOnLineMileage = (miles) => {
         "How did you learn to draw so well?",
       ]
       message.push(otherMessages[Math.floor(Math.random()*otherMessages.length)])
-      sfx.negative()
+      //sfx.negative()
       break
     case 50: 
       message.push('50 miles!!!')
@@ -295,7 +295,7 @@ const commentOnLineMileage = (miles) => {
         "How about starting a new board?",
       ]
       message.push(otherMessages[Math.floor(Math.random()*otherMessages.length)])
-      sfx.negative()
+      //sfx.negative()
       break
     case 100: 
       message.push('100 miles!!!')
@@ -311,7 +311,7 @@ const commentOnLineMileage = (miles) => {
         "Post this one to twitter, it's a fucking masterpiece.",
       ]
       message.push(otherMessages[Math.floor(Math.random()*otherMessages.length)])
-      sfx.error()
+      //sfx.error()
       break
     case 200: 
       message.push('200 miles!!!')
@@ -322,7 +322,7 @@ const commentOnLineMileage = (miles) => {
         "I think your pen is going to break.",
       ]
       message.push(otherMessages[Math.floor(Math.random()*otherMessages.length)])
-      sfx.error()
+      //sfx.error()
       break
     case 300: 
       message.push('300 miles!!!')
@@ -333,7 +333,7 @@ const commentOnLineMileage = (miles) => {
         "I hate you.",
       ]
       message.push(otherMessages[Math.floor(Math.random()*otherMessages.length)])
-      sfx.error()
+      //sfx.error()
       break
     case 500: 
       message.push('500 miles!!!')
@@ -341,7 +341,7 @@ const commentOnLineMileage = (miles) => {
         "So close to 1000!!!",
       ]
       message.push(otherMessages[Math.floor(Math.random()*otherMessages.length)])
-      sfx.error()
+      //sfx.error()
       break
     case 1000: 
       message.push('1000 miles!!!')
@@ -349,7 +349,7 @@ const commentOnLineMileage = (miles) => {
         "Great job. :/ See ya.",
       ]
       message.push(otherMessages[Math.floor(Math.random()*otherMessages.length)])
-      sfx.error()
+      //sfx.error()
       setTimeout(()=> {window.close()}, 5000);
       break
   }
@@ -449,7 +449,7 @@ let loadBoardUI = ()=> {
       switch (e.target.name) {
         case 'newShot':
           boardData.boards[currentBoard].newShot = e.target.checked
-          sfx.playEffect(e.target.checked ? 'on' : 'off')
+          //sfx.playEffect(e.target.checked ? 'on' : 'off')
           markBoardFileDirty()
           textInputMode = false
           break
@@ -627,7 +627,7 @@ let loadBoardUI = ()=> {
   // toolbar.on('brush', (kind, options) => {
   //   toolbar.emit('cancelTransform')
   //   storyboarderSketchPane.setBrushTool(kind, options)
-  //   sfx.playEffect('tool-' + kind)
+  //   //sfx.playEffect('tool-' + kind)
   // })
   // toolbar.on('brush:size', size => {
   //   toolbar.emit('cancelTransform')
@@ -635,7 +635,7 @@ let loadBoardUI = ()=> {
   // })
   // toolbar.on('brush:color', color => {
   //   toolbar.emit('cancelTransform')
-  //   sfx.playEffect('metal')
+  //   //sfx.playEffect('metal')
   //   storyboarderSketchPane.setBrushColor(color)
   // })
 
@@ -646,20 +646,20 @@ let loadBoardUI = ()=> {
   // toolbar.on('fill', color => {
   //   if (toolbar.state.brush !== 'eraser') {
   //     storyboarderSketchPane.fillLayer(color.toCSS())
-  //     sfx.playEffect('fill')
+  //     //sfx.playEffect('fill')
   //   }
   // })
 
 
   // toolbar.on('move', () => {
   //   if (storyboarderSketchPane.isPointerDown) return
-  //     sfx.playEffect('metal')
+  //     //sfx.playEffect('metal')
   //   toolbar.setState({ transformMode: 'move' })
   //   storyboarderSketchPane.moveContents()
   // })
   // toolbar.on('scale', () => {
   //   if (storyboarderSketchPane.isPointerDown) return
-  //     sfx.playEffect('metal')
+  //     //sfx.playEffect('metal')
   //   toolbar.setState({ transformMode: 'scale' })
   //   storyboarderSketchPane.scaleContents()
   // })
@@ -691,39 +691,39 @@ let loadBoardUI = ()=> {
   // toolbar.on('undo', () => {
   //   if (undoStack.getCanUndo()) {
   //     undoStack.undo()
-  //     sfx.rollover()
+  //     //sfx.rollover()
   //   } else {
-  //     sfx.error()
+  //     //sfx.error()
   //     //notifications.notify({message: 'Nothing left to undo!', timing: 5})
   //   }
-  //   sfx.playEffect('metal')
+  //   //sfx.playEffect('metal')
   // })
   // toolbar.on('redo', () => {
   //   if (undoStack.getCanRedo()) {
   //     undoStack.redo()
-  //     sfx.rollover()
+  //     //sfx.rollover()
   //   } else {
-  //     sfx.error()
+  //     //sfx.error()
   //     //notifications.notify({message: 'Nothing more to redo!', timing: 5})
   //   }
-  //   sfx.playEffect('metal')
+  //   //sfx.playEffect('metal')
   // })
   
   // toolbar.on('grid', value => {
   //   //guides.setState({ grid: value })
-  //   sfx.playEffect('metal')
+  //   //sfx.playEffect('metal')
   // })
   // toolbar.on('center', value => {
   //   //guides.setState({ center: value })
-  //   sfx.playEffect('metal')
+  //   //sfx.playEffect('metal')
   // })
   // toolbar.on('thirds', value => {
   //   //guides.setState({ thirds: value })
-  //   sfx.playEffect('metal')
+  //   //sfx.playEffect('metal')
   // })
   // toolbar.on('diagonals', value => {
   //   //guides.setState({ diagonals: value })
-  //   sfx.playEffect('metal')
+  //   //sfx.playEffect('metal')
   // })
   // toolbar.on('onion', value => {
   //   // onionSkin.setEnabled(value)
@@ -736,7 +736,7 @@ let loadBoardUI = ()=> {
   //   //     ).catch(err => console.warn(err))
   //   //   }
   //   //}
-  //   sfx.playEffect('metal')
+  //   //sfx.playEffect('metal')
   // })
   // toolbar.on('captions', () => {
   //   // HACK!!!
@@ -744,7 +744,7 @@ let loadBoardUI = ()=> {
   //   el.style.visibility = el.style.visibility == 'hidden'
   //     ? 'visible'
   //     : 'hidden'
-  //   sfx.playEffect('metal')
+  //   //sfx.playEffect('metal')
   // })
   // toolbar.on('open-in-editor', () => {
   //   openInEditor()
@@ -758,9 +758,9 @@ let loadBoardUI = ()=> {
   // }
 
   // // HACK force initialize
-  // sfx.setMute(true)
+  // //sfx.setMute(true)
   // toolbar.setState({ brush: 'light-pencil' })
-  // sfx.setMute(false)
+  // //sfx.setMute(false)
 
   // tooltips.init()
 
@@ -799,7 +799,7 @@ let loadBoardUI = ()=> {
   //   colorPicker.setState({ color: color.toCSS() })
   // }
   // toolbar.on('current-color-picker', color => {
-  //   sfx.positive()
+  //   //sfx.positive()
   //   colorPicker.attachTo(document.getElementById('toolbar-current-color'))
   //   colorPicker.removeAllListeners('color') // HACK
 
@@ -809,7 +809,7 @@ let loadBoardUI = ()=> {
   //   colorPicker.addListener('color', setCurrentColor)
   // })
   // toolbar.on('palette-color-picker', (color, target, brush, index) => {
-  //   sfx.positive()
+  //   //sfx.positive()
 
   //   colorPicker.attachTo(target)
   //   colorPicker.removeAllListeners('color') // HACK
@@ -826,9 +826,9 @@ let loadBoardUI = ()=> {
 
   //guides = new Guides(storyboarderSketchPane.getLayerCanvasByName('guides'))
   //onionSkin = new OnionSkin(storyboarderSketchPane, boardPath)
-  //layersEditor = new LayersEditor(storyboarderSketchPane, sfx, notifications)
+  //layersEditor = new LayersEditor(storyboarderSketchPane, //sfx, notifications)
 
-  sfx.init()
+  ////sfx.init()
 
   // storyboarderSketchPane.on('pointerdown', Sonifier.start)
   // storyboarderSketchPane.on('pointermove', Sonifier.trigger)
@@ -947,8 +947,8 @@ let newBoard = (position, shouldAddToUndoStack = true) => {
 
   // is this not a brand new storyboarder project?
   if (shouldAddToUndoStack) {
-    //sfx.bip('c6')
-    sfx.down(-2,0)
+    ////sfx.bip('c6')
+    ////sfx.down(-2,0)
 
   }
 }
@@ -1033,7 +1033,7 @@ let insertNewBoardsWithFiles = (filepaths) => {
         let count = imageFilePromises.length
         let message = `Imported ${count} image${count !== 1 ? 's':''}.\n\nThe image${count !== 1 ? 's are':' is'} on the reference layer, so you can draw over ${count !== 1 ? 'them':'it'}. If you'd like ${count !== 1 ? 'them':'it'} to be the main layer, you can merge ${count !== 1 ? 'them':'it'} up on the sidebar`
         //notifications.notify({message: message, timing: 10})
-        sfx.positive()
+        ////sfx.positive()
       })
   }, 1000)
 
@@ -1393,10 +1393,10 @@ let deleteBoards = (args)=> {
       }
     }
     gotoBoard(currentBoard)
-    sfx.playEffect('trash')
-    sfx.negative()
+    ////sfx.playEffect('trash')
+    ////sfx.negative()
   } else {
-    sfx.error()
+    ////sfx.error()
     //notifications.notify({message: "Cannot delete. You have to have at least one board, silly.", timing: 8})
   }
 }
@@ -1466,8 +1466,8 @@ let duplicateBoard = () => {
       // go to board
       gotoBoard(insertAt)
 
-      // sfx.bip('c7')
-      sfx.down(-1, 2)
+      // //sfx.bip('c7')
+      ////sfx.down(-1, 2)
       //notifications.notify({ message: 'Duplicated board.', timing: 5 })
     } catch (err) {
       console.error(err)
@@ -1488,14 +1488,14 @@ const clearLayers = shouldEraseCurrentLayer => {
   // if (toolbar.state.brush !== 'eraser' && (keytracker('<alt>') || shouldEraseCurrentLayer)) {
   //   storyboarderSketchPane.clearLayers([storyboarderSketchPane.sketchPane.getCurrentLayerIndex()])
   //   saveImageFile()
-  //   sfx.playEffect('trash')
+  //   //sfx.playEffect('trash')
   // } else {
   //   if (storyboarderSketchPane.isEmpty()) {
   //     deleteBoards()
   //   } else {
   //     storyboarderSketchPane.clearLayers()
   //     saveImageFile()
-  //     sfx.playEffect('trash')
+  //     //sfx.playEffect('trash')
   //     //notifications.notify({message: 'Cleared canvas.', timing: 5})
   //   }
   // }
@@ -1769,7 +1769,7 @@ let nextScene = ()=> {
       currentBoard = (boardData.boards.length -1)
       gotoBoard(currentBoard)
     } else {
-      sfx.error()
+      //sfx.error()
       //notifications.notify({message: "Sorry buddy. I can't go back further.", timing: 5})
     }
   }
@@ -1793,7 +1793,7 @@ let previousScene = ()=> {
       currentBoard = 0
       gotoBoard(currentBoard)
     } else {
-      sfx.error()
+      //sfx.error()
       //notifications.notify({message: "Nope. I can't go any further.", timing: 5})
     }
   }
@@ -2021,7 +2021,7 @@ let renderThumbnailDrawer = ()=> {
 
   //   // external
   //   contextMenu.on('shown', () => {
-  //     sfx.playEffect('metal')
+  //     //sfx.playEffect('metal')
   //   })
   //   contextMenu.on('add', () => {
   //     newBoard()
@@ -2585,17 +2585,17 @@ window.onkeydown = (e)=> {
           if (e.shiftKey) {
             if (undoStack.getCanRedo()) {
               undoStack.redo()
-              sfx.rollover()
+              //sfx.rollover()
             } else {
-              sfx.error()
+              //sfx.error()
               //notifications.notify({message: 'Nothing more to redo!', timing: 5})
             }
           } else {
             if (undoStack.getCanUndo()) {
               undoStack.undo()
-              sfx.rollover()
+              //sfx.rollover()
             } else {
-              sfx.error()
+              //sfx.error()
               //notifications.notify({message: 'Nothing left to undo!', timing: 5})
             }
           }
@@ -2881,9 +2881,9 @@ ipcRenderer.on('undo', (e, arg) => {
   if (!textInputMode) {
     if (undoStack.getCanUndo()) {
       undoStack.undo()
-      sfx.rollover()
+      //sfx.rollover()
     } else {
-      sfx.error()
+      //sfx.error()
       //notifications.notify({message: 'Nothing more to redo!', timing: 5})
     }
   }
@@ -2893,9 +2893,9 @@ ipcRenderer.on('redo', (e, arg) => {
   if (!textInputMode) {
     if (undoStack.getCanRedo()) {
       undoStack.redo()
-      sfx.rollover()
+      //sfx.rollover()
     } else {
-      sfx.error()
+      //sfx.error()
       //notifications.notify({message: 'Nothing left to undo!', timing: 5})
     }
   }
@@ -3080,7 +3080,7 @@ let exportAnimatedGif = () => {
   let boardSize = storyboarderSketchPane.sketchPane.getCanvasSize()
 
   //notifications.notify({message: "Exporting " + boards.length + " boards. Please wait...", timing: 5})
-  sfx.down()
+  //sfx.down()
   setTimeout(()=>{
     exporter.exportAnimatedGif(boards, boardSize, 800, boardPath, true, boardData)
   }, 1000)
@@ -3088,17 +3088,17 @@ let exportAnimatedGif = () => {
 
 exporter.on('complete', path => {
   //notifications.notify({message: "I exported your board selection as a GIF. Share it with your friends! Post it to you twitter thing or your slack dingus.", timing: 20})
-  sfx.positive()
+  //sfx.positive()
   shell.showItemInFolder(path)
 })
 
 const exportFcp = () => {
   //notifications.notify({message: "Exporting " + boardData.boards.length + " boards to FCP and Premiere. Please wait...", timing: 5})
-  sfx.down()
+  //sfx.down()
   setTimeout(()=>{
     exporter.exportFcp(boardData, boardFilename).then(outputPath => {
       //notifications.notify({message: "Your scene has been exported for Final Cut Pro X and Premiere.", timing: 20})
-      sfx.positive()
+      //sfx.positive()
       shell.showItemInFolder(outputPath)
     })
   }, 1000)
@@ -3106,11 +3106,11 @@ const exportFcp = () => {
 
 const exportImages = () => {
   //notifications.notify({message: "Exporting " + boardData.boards.length + " to a folder. Please wait...", timing: 5})
-  sfx.down()
+  //sfx.down()
   setTimeout(()=>{
     exporter.exportImages(boardData, boardFilename).then(outputPath => {
       //notifications.notify({message: "Your scene has been exported as images.", timing: 20})
-      sfx.positive()
+      //sfx.positive()
       shell.showItemInFolder(outputPath)
     })
   }, 1000)
@@ -3119,11 +3119,11 @@ const exportImages = () => {
 
 const exportPDF = () => {
   //notifications.notify({message: "Exporting " + boardData.boards.length + " boards to PDF. Please wait...", timing: 5})
-  sfx.down()
+  //sfx.down()
   setTimeout(()=>{
     exporter.exportPDF(boardData, boardFilename).then(outputPath => {
       //notifications.notify({message: "Your scene has been exported as a PDF.", timing: 20})
-      sfx.positive()
+      //sfx.positive()
       shell.showItemInFolder(outputPath)
     })
   }, 1000)
@@ -3132,9 +3132,9 @@ const exportPDF = () => {
 let save = () => {
   saveImageFile()
   saveBoardFile()
-  sfx.positive()
+  //sfx.positive()
   //notifications.notify({message: "Saving is automatic. I already saved before you pressed this, so you don't really need to save at all. \n\nBut I did want you to know, that I think you're special - and I like you just the way you are.\n\nHere's a story tip..." , timing: 15})
-  setTimeout(()=>{storyTips.show()}, 1000)
+  //setTimeout(()=>{storyTips.show()}, 1000)
 }
 
 
@@ -3233,7 +3233,7 @@ let pasteBoards = () => {
       return renderThumbnailDrawer()
     }).then(() => {
       console.log('paste complete')
-      sfx.positive()
+      //sfx.positive()
       return gotoBoard(insertAt)
     }).catch(err => {
       //notifications.notify({ message: "Whoops. Could not paste boards. Got an error for some reason.", timing: 8 })
@@ -3242,7 +3242,7 @@ let pasteBoards = () => {
 
   } else {
     //notifications.notify({ message: "There's nothing in the clipboard that I can paste. Are you sure you copied it right?", timing: 8 })
-    sfx.error()
+    //sfx.error()
   }
 }
 
@@ -3391,7 +3391,7 @@ const importFromWorksheet = (imageArray) => {
     return renderThumbnailDrawer()
   }).then(() => {
     console.log('import complete')
-    sfx.positive()
+    //sfx.positive()
     return gotoBoard(insertAt)
   }).catch(err => {
     //notifications.notify({ message: "Whoops. Could not import.", timing: 8 })
@@ -3484,7 +3484,7 @@ let reorderBoardsLeft = () => {
     moveSelectedBoards(position)
     renderThumbnailDrawer()
     gotoBoard(currentBoard, true)
-    sfx.playEffect('on')
+    //sfx.playEffect('on')
     //notifications.notify({message: 'Reordered to the left!', timing: 5})
   }
 }
@@ -3498,7 +3498,7 @@ let reorderBoardsRight = () => {
     moveSelectedBoards(position)
     renderThumbnailDrawer()
     gotoBoard(currentBoard, true)
-    sfx.playEffect('metal')
+    //sfx.playEffect('metal')
     //notifications.notify({message: 'Reordered to the right!', timing: 5})
   }
 }
@@ -3510,16 +3510,16 @@ let enableEditMode = () => {
     renderThumbnailCursor()
     renderThumbnailDrawerSelections()
    // contextMenu.remove()
-    sfx.positive()
-    sfx.playEffect('on')
+    //sfx.positive()
+    //sfx.playEffect('on')
 
   }
 }
 
 let disableEditMode = () => {
   if (isEditMode) {
-    sfx.playEffect('metal')
-    sfx.negative()
+    //sfx.playEffect('metal')
+    //sfx.negative()
     isEditMode = false
     thumbnailCursor.visible = false
     renderThumbnailCursor()
@@ -3853,10 +3853,10 @@ const fillContext = (context, fillStyle = 'white') => {
 //   if (!textInputMode) {
 //     if (direction > 0) {
 //       toolbar.changeBrushSize(1)
-//       sfx.playEffect('brush-size-up')
+//       //sfx.playEffect('brush-size-up')
 //     } else {
 //       toolbar.changeBrushSize(-1)
-//       sfx.playEffect('brush-size-down')
+//       //sfx.playEffect('brush-size-down')
 //     }
 //   }
 // })
@@ -3864,7 +3864,7 @@ const fillContext = (context, fillStyle = 'white') => {
 // ipcRenderer.on('flipBoard', (e, arg)=> {
 //   if (!textInputMode) {
 //     storyboarderSketchPane.flipLayers(arg)
-//     sfx.playEffect('metal')
+//     //sfx.playEffect('metal')
 //     //notifications.notify({message: 'I flipped the board.', timing: 5})
 //   }
 // })
