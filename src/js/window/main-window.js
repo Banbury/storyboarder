@@ -14,7 +14,7 @@ const undoStack = require('../undo-stack.js')
 // const tooltips = require('./tooltips.js')
 // const ContextMenu = require('./context-menu.js')
 // const ColorPicker = require('./color-picker.js')
-const Transport = require('./transport.js')
+//const Transport = require('./transport.js')
 //const notifications = require('./notifications.js')
 //const NotificationData = require('../../data/messages.json')
 // const Guides = require('./guides.js')
@@ -764,22 +764,22 @@ let loadBoardUI = ()=> {
 
   // tooltips.init()
 
-  transport = new Transport()
-  transport.on('previousScene', () => {
-    previousScene()
-  })
-  transport.on('prevBoard', () => {
-    goNextBoard(-1)
-  })
-  transport.on('togglePlayback', () => {
-    togglePlayback()
-  })
-  transport.on('nextBoard', () => {
-    goNextBoard(+1)
-  })
-  transport.on('nextScene', () => {
-    nextScene()
-  })
+  // transport = new Transport()
+  // transport.on('previousScene', () => {
+  //   previousScene()
+  // })
+  // transport.on('prevBoard', () => {
+  //   goNextBoard(-1)
+  // })
+  // transport.on('togglePlayback', () => {
+  //   togglePlayback()
+  // })
+  // transport.on('nextBoard', () => {
+  //   goNextBoard(+1)
+  // })
+  // transport.on('nextScene', () => {
+  //   nextScene()
+  // })
 
   //notifications.init(document.getElementById('notifications'))
   //setupRandomizedNotifications()
@@ -2678,7 +2678,7 @@ let stopPlaying = () => {
   utter.onend = null
   ipcRenderer.send('resumeSleep')
   speechSynthesis.cancel()
-  if (transport) transport.setState({ playbackMode })
+  //if (transport) transport.setState({ playbackMode })
 }
 
 let togglePlayback = ()=> {
@@ -2689,7 +2689,7 @@ let togglePlayback = ()=> {
   } else {
     stopPlaying()
   }
-  transport.setState({ playbackMode })
+  //transport.setState({ playbackMode })
 }
 
 let playAdvance = function(first) {
