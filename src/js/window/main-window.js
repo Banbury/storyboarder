@@ -33,6 +33,8 @@ const writePsd = require('ag-psd').writePsd;
 const readPsd = require('ag-psd').readPsd;
 const initializeCanvas = require('ag-psd').initializeCanvas;
 
+const Stats = require('stats.js')
+
 const pkg = require('../../../package.json')
 
 const sharedObj = remote.getGlobal('sharedObj')
@@ -156,6 +158,21 @@ const load = (event, args) => {
   setTimeout(()=>{storyboarderSketchPane.resize()}, 500)
   // wait for reflow
   setTimeout(() => { remote.getCurrentWindow().show() }, 200)
+
+  //
+  //
+  // FPS
+  //
+  var stats = new Stats()
+  stats.showPanel(0) // 0: fps, 1: ms, 2: mb, 3+: custom
+  document.body.appendChild(stats.dom)
+  function animateStats () {
+  	// stats.begin()
+  	// // monitored code goes here
+  	// stats.end()
+  	requestAnimationFrame(animateStats)
+  }
+  requestAnimationFrame(animateStats)
 }
 ipcRenderer.on('load', load)
 

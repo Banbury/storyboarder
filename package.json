@@ -61,6 +61,7 @@
     "electron-builder": "19.8.0",
     "electron-mocha": "4.0.0",
     "mocha": "3.4.2",
+    "stats.js": "0.17.0",
     "tmp": "0.0.31"
   },
   "dependencies": {
