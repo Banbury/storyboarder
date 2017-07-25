@@ -2,7 +2,7 @@ const { remote } = require('electron')
 let { acceleratorAsHtml } = require('../utils/index.js')
 const prefsModule = require('electron').remote.require('./prefs.js')
 const Tooltip = require('tether-tooltip')
-const sfx = require('../wonderunit-sound.js')
+// const sfx = require('../wonderunit-sound.js')
 
 let enableTooltips
 
@@ -63,7 +63,7 @@ const setupTooltipForElement = (el) => {
   })
   // HACK! force close immediately unless we allow tooltips in preferences
   tooltip.drop.on('open', () => {
-    sfx.playEffect('metal')
+    //sfx.playEffect('metal')
     if (!enableTooltips) {
       tooltip.close()
     }

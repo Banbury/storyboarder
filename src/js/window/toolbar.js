@@ -5,7 +5,7 @@ const prefsModule = require('electron').remote.require('./../js/prefs')
 const Color = require('color-js')
 
 const util = require('../utils/index.js')
-const sfx = require('../wonderunit-sound.js')
+// const sfx = require('../wonderunit-sound.js')
 
 // TODO why even have these constants if we don't use them consistently?
 const BRUSH_PENCIL = 'pencil'
@@ -530,7 +530,7 @@ class Toolbar extends EventEmitter {
   
   onButtonOver (event) {
     // console.log('onButtonOver', event)
-    sfx.rollover()
+    //sfx.rollover()
   }
 }
 

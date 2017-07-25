@@ -4,7 +4,7 @@ const tips = require('./tips.js')
 
 class StoryTips {
   constructor (sfx, notifications) {
-    this.sfx = sfx
+    // this.sfx = sfx
     this.notifications = notifications
     this.tips = util.shuffle(tips)
   }
@@ -14,7 +14,7 @@ class StoryTips {
       this.tips = util.shuffle(tips)
     }
     let tip = this.tips.shift()
-    this.sfx.positive()
+    // this.sfx.positive()
     this.notifications.notify({message: tip, timing: 20})
   }
 

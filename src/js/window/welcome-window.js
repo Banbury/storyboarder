@@ -36,8 +36,8 @@ let updateRecentDocuments = () => {
         console.log(e.currentTarget.dataset.filename)
         ipcRenderer.send('openFile', e.currentTarget.dataset.filename)
       }
-      recentDivs[i].addEventListener("mouseenter", ()=>{sfx.rollover()})
-      recentDivs[i].addEventListener("pointerdown", ()=>{sfx.down()})
+      recentDivs[i].addEventListener("mouseenter", ()=>{/*sfx.rollover()}*/)
+      recentDivs[i].addEventListener("pointerdown", ()=>{/*sfx.down()}*/)
     }
   }
   document.querySelector('#recent').scrollTop = 0
@@ -57,8 +57,8 @@ document.querySelector('iframe').onload = ()=>{
       shell.openExternal(e.currentTarget.href)
       e.preventDefault()
     }
-    element.addEventListener("mouseover", ()=>{sfx.rollover()})
-    element.addEventListener("pointerdown", ()=>{sfx.down()})
+    element.addEventListener("mouseover", ()=>{/*sfx.rollover()}*/)
+    element.addEventListener("pointerdown", ()=>{/*sfx.down()}*/)
   })
 }
 
@@ -78,30 +78,30 @@ document.querySelector('#new-storyboard').onclick = ()=> {
   ipcRenderer.send('openNewWindow')
 }
 
-document.querySelector('#getting-started').addEventListener("mouseover", ()=>{sfx.rollover()})
-document.querySelector('#open-storyboard').addEventListener("mouseover", ()=>{sfx.rollover()})
-document.querySelector('#new-storyboard' ).addEventListener("mouseover", ()=>{sfx.rollover()})
-document.querySelector('#getting-started').addEventListener("pointerdown", ()=>{sfx.error()})
-document.querySelector('#open-storyboard').addEventListener("pointerdown", ()=>{sfx.down()})
-document.querySelector('#new-storyboard' ).addEventListener("pointerdown", ()=>{sfx.positive()})
+document.querySelector('#getting-started').addEventListener("mouseover", ()=>{/*sfx.rollover()*/})
+document.querySelector('#open-storyboard').addEventListener("mouseover", ()=>{/*sfx.rollover()*/})
+document.querySelector('#new-storyboard' ).addEventListener("mouseover", ()=>{/*sfx.rollover()*/})
+document.querySelector('#getting-started').addEventListener("pointerdown", ()=>{/*sfx.error()*/})
+document.querySelector('#open-storyboard').addEventListener("pointerdown", ()=>{/*sfx.down()*/})
+document.querySelector('#new-storyboard' ).addEventListener("pointerdown", ()=>{/*sfx.positive()*/})
 
 document.querySelector("span[data-js='version-number']").innerHTML = ` v${pkg.version}`
 
 ipcRenderer.on('playsfx', (event, args)=>{
   switch (args) {
     case 'negative':
-      sfx.negative()
+      //sfx.negative()
       break
     case 'rollover':
-      sfx.rollover()
+      //sfx.rollover()
       break
     case 'down':
-      sfx.down()
+      //sfx.down()
       break
   }
 })
 
-sfx.init()
+//sfx.init()
 
 ipcRenderer.on('updateRecentDocuments', (event, args)=>{
   updateRecentDocuments()
