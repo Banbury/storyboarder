@@ -16,9 +16,9 @@ const Toolbar = require('./toolbar.js')
 // const ColorPicker = require('./color-picker.js')
 const Transport = require('./transport.js')
 //const notifications = require('./notifications.js')
-//const NotificationData = require('../../data/messages.json')
-// const Guides = require('./guides.js')
-//const OnionSkin = require('./onion-skin.js')
+const NotificationData = require('../../data/messages.json')
+const Guides = require('./guides.js')
+const OnionSkin = require('./onion-skin.js')
 // const Sonifier = require('./sonifier/index.js')
 const LayersEditor = require('./layers-editor.js')
 // const sfx = require('../wonderunit-sound.js')
@@ -710,33 +710,33 @@ let loadBoardUI = ()=> {
   })
   
   toolbar.on('grid', value => {
-    // //guides.setState({ grid: value })
-    // sfx.playEffect('metal')
+    guides.setState({ grid: value })
+    //sfx.playEffect('metal')
   })
   toolbar.on('center', value => {
-    //guides.setState({ center: value })
-    // sfx.playEffect('metal')
+    guides.setState({ center: value })
+    //sfx.playEffect('metal')
   })
   toolbar.on('thirds', value => {
-    //guides.setState({ thirds: value })
-    // sfx.playEffect('metal')
+    guides.setState({ thirds: value })
+    //sfx.playEffect('metal')
   })
   toolbar.on('diagonals', value => {
-    //guides.setState({ diagonals: value })
-    // sfx.playEffect('metal')
+    guides.setState({ diagonals: value })
+    //sfx.playEffect('metal')
   })
   toolbar.on('onion', value => {
-    // onionSkin.setEnabled(value)
-    // if (onionSkin.getEnabled()) {
-    //   if (!onionSkin.isLoaded) {
-    //     onionSkin.load(
-    //       boardData.boards[currentBoard],
-    //       boardData.boards[currentBoard - 1],
-    //       boardData.boards[currentBoard + 1]
-    //     ).catch(err => console.warn(err))
-    //   }
-    //}
-    sfx.playEffect('metal')
+    onionSkin.setEnabled(value)
+    if (onionSkin.getEnabled()) {
+      if (!onionSkin.isLoaded) {
+        onionSkin.load(
+          boardData.boards[currentBoard],
+          boardData.boards[currentBoard - 1],
+          boardData.boards[currentBoard + 1]
+        ).catch(err => console.warn(err))
+      }
+    }
+    //sfx.playEffect('metal')
   })
   toolbar.on('captions', () => {
     // HACK!!!
@@ -824,9 +824,9 @@ let loadBoardUI = ()=> {
   //   toolbar.changeCurrentColor(color)
   // })
 
-  //guides = new Guides(storyboarderSketchPane.getLayerCanvasByName('guides'))
-  //onionSkin = new OnionSkin(storyboarderSketchPane, boardPath)
-  // layersEditor = new LayersEditor(storyboarderSketchPane, sfx, notifications)
+  guides = new Guides(storyboarderSketchPane.getLayerCanvasByName('guides'))
+  onionSkin = new OnionSkin(storyboarderSketchPane, boardPath)
+  layersEditor = new LayersEditor(storyboarderSketchPane, null, notifications)
 
   //sfx.init()
 
@@ -1882,16 +1882,16 @@ let updateSketchPaneBoard = () => {
         }
       }
 
-      // onionSkin.reset()
-      // if (onionSkin.getEnabled()) {
-      //   onionSkin.load(
-      //     boardData.boards[currentBoard],
-      //     boardData.boards[currentBoard - 1],
-      //     boardData.boards[currentBoard + 1]
-      //   ).then(() => resolve()).catch(err => console.warn(err))
-      // } else {
-      //   resolve()
-      // }
+      onionSkin.reset()
+      if (onionSkin.getEnabled()) {
+        onionSkin.load(
+          boardData.boards[currentBoard],
+          boardData.boards[currentBoard - 1],
+          boardData.boards[currentBoard + 1]
+        ).then(() => resolve()).catch(err => console.warn(err))
+      } else {
+        resolve()
+      }
     }).catch(err => console.warn(err))
   })
 }
@@ -2528,9 +2528,9 @@ let loadScene = (sceneNumber) => {
   boardPath = boardPath.join(path.sep)
   console.log('BOARD PATH:', boardPath)
 
-  // if (onionSkin) {
-  //   onionSkin.setBoardPath(boardPath)
-  // }
+  if (onionSkin) {
+    onionSkin.setBoardPath(boardPath)
+  }
 
   dragTarget = document.querySelector('#thumbnail-container')
   dragTarget.style.scrollBehavior = 'unset'
