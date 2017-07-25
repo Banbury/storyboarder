@@ -80,7 +80,7 @@ class StoryboarderSketchPane extends EventEmitter {
     this.sketchPane.addLayer(5) // composite
     this.sketchPane.selectLayer(1)
 
-    this.sketchPane.setToolStabilizeLevel(0)
+    this.sketchPane.setToolStabilizeLevel(10)
     this.sketchPane.setToolStabilizeWeight(0.2)
 
     this.el.addEventListener('pointerdown', this.canvasPointerDown)
