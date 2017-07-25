@@ -19,7 +19,7 @@ const notifications = require('./notifications.js')
 const NotificationData = require('../../data/messages.json')
 const Guides = require('./guides.js')
 const OnionSkin = require('./onion-skin.js')
-const Sonifier = require('./sonifier/index.js')
+// const Sonifier = require('./sonifier/index.js')
 const LayersEditor = require('./layers-editor.js')
 const sfx = require('../wonderunit-sound.js')
 const keytracker = require('../utils/keytracker.js')
@@ -830,13 +830,13 @@ let loadBoardUI = ()=> {
 
   sfx.init()
 
-  storyboarderSketchPane.on('pointerdown', Sonifier.start)
+  // storyboarderSketchPane.on('pointerdown', Sonifier.start)
   // storyboarderSketchPane.on('pointermove', Sonifier.trigger)
-  storyboarderSketchPane.sketchPane.on('onup', Sonifier.stop)
-  Sonifier.init(storyboarderSketchPane.sketchPane.getCanvasSize())
-  window.addEventListener('resize', () => {
-    Sonifier.setSize(storyboarderSketchPane.sketchPane.getCanvasSize())
-  })
+  // storyboarderSketchPane.sketchPane.on('onup', Sonifier.stop)
+  // Sonifier.init(storyboarderSketchPane.sketchPane.getCanvasSize())
+  // window.addEventListener('resize', () => {
+  //   Sonifier.setSize(storyboarderSketchPane.sketchPane.getCanvasSize())
+  // })
 
   let onUndoStackAction = (state) => {
     if (state.type == 'image') {
