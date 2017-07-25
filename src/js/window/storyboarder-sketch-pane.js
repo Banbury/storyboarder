@@ -147,9 +147,9 @@ class StoryboarderSketchPane extends EventEmitter {
 
   onKeyDown (e) {
     if (keytracker('<alt>') && keytracker('<meta>')) {
-      //if (!this.getIsDrawingOrStabilizing()) this.toolbar.emit('scale')
+      if (!this.getIsDrawingOrStabilizing()) this.toolbar.emit('scale')
     } else if (keytracker('<meta>')) {
-      //if (!this.getIsDrawingOrStabilizing()) this.toolbar.emit('move')
+      if (!this.getIsDrawingOrStabilizing()) this.toolbar.emit('move')
     } else {
       this.setQuickEraseIfRequested()
     }
@@ -160,9 +160,9 @@ class StoryboarderSketchPane extends EventEmitter {
       !(keytracker('<alt>') && keytracker('<meta>')) &&
       !keytracker('<meta>')
     ) {
-      // if (this.toolbar.state.transformMode) {
-      //   if (!this.getIsDrawingOrStabilizing()) this.toolbar.emit('cancelTransform')
-      // }
+      if (this.toolbar.state.transformMode) {
+        if (!this.getIsDrawingOrStabilizing()) this.toolbar.emit('cancelTransform')
+      }
     }
     
     if (!this.getIsDrawingOrStabilizing()) {
@@ -237,22 +237,22 @@ class StoryboarderSketchPane extends EventEmitter {
   setQuickEraseIfRequested () {
     if (keytracker('<alt>')) {
       // don't switch if we're already on an eraser
-      // if (this.toolbar.getBrushOptions().kind !== 'eraser') {
-      //   this.toolbar.setIsQuickErasing(true)
-      //   this.prevTool = this.toolbar.getBrushOptions()
-      //   this.setBrushTool('eraser', this.toolbar.getBrushOptions('eraser'))
-      // }
+      if (this.toolbar.getBrushOptions().kind !== 'eraser') {
+        this.toolbar.setIsQuickErasing(true)
+        this.prevTool = this.toolbar.getBrushOptions()
+        this.setBrushTool('eraser', this.toolbar.getBrushOptions('eraser'))
+      }
     }
   }
 
   unsetQuickErase () {
-    // if (this.toolbar.getIsQuickErasing()) {
-    //   this.toolbar.setIsQuickErasing(false)
-    //   if (this.prevTool) {
-    //     this.setBrushTool(this.prevTool.kind, this.prevTool)
-    //   }
-    //   this.prevTool = null
-    // }
+    if (this.toolbar.getIsQuickErasing()) {
+      this.toolbar.setIsQuickErasing(false)
+      if (this.prevTool) {
+        this.setBrushTool(this.prevTool.kind, this.prevTool)
+      }
+      this.prevTool = null
+    }
   }
 
   startMultiLayerOperation () {
@@ -503,30 +503,30 @@ class StoryboarderSketchPane extends EventEmitter {
     this.brush.setFlow(options.flow)
     this.brush.setHardness(options.hardness)
 
-    // if (!this.toolbar.getIsQuickErasing()) {
-    //   let selectedLayerIndex
-    //   switch (kind) {
-    //     case 'light-pencil':
-    //       selectedLayerIndex = 0 // HACK hardcoded
-    //       break
-    //     case 'note-pen':
-    //       selectedLayerIndex = 3 // HACK hardcoded
-    //       break
-    //     default:
-    //       selectedLayerIndex = 1 // HACK hardcoded
-    //       break
-    //   }
-    //   this.sketchPane.selectLayer(selectedLayerIndex)
+    if (!this.toolbar.getIsQuickErasing()) {
+      let selectedLayerIndex
+      switch (kind) {
+        case 'light-pencil':
+          selectedLayerIndex = 0 // HACK hardcoded
+          break
+        case 'note-pen':
+          selectedLayerIndex = 3 // HACK hardcoded
+          break
+        default:
+          selectedLayerIndex = 1 // HACK hardcoded
+          break
+      }
+      this.sketchPane.selectLayer(selectedLayerIndex)
 
-    //   // fat eraser
-    //   if (kind === 'eraser') {
-    //     this.setCompositeLayerVisibility(false)
-    //     this.startMultiLayerOperation()
-    //   } else {
-    //     this.stopMultiLayerOperation() // force stop, in case we didn't get `onbeforeup` event
-    //     this.isMultiLayerOperation = false // ensure we reset the var
-    //   }
-    // }
+      // fat eraser
+      if (kind === 'eraser') {
+        this.setCompositeLayerVisibility(false)
+        this.startMultiLayerOperation()
+      } else {
+        this.stopMultiLayerOperation() // force stop, in case we didn't get `onbeforeup` event
+        this.isMultiLayerOperation = false // ensure we reset the var
+      }
+    }
 
     this.sketchPane.setPaintingOpacity(options.opacity)
     this.sketchPane.setTool(this.brush)
@@ -609,9 +609,9 @@ class StoryboarderSketchPane extends EventEmitter {
 
     if (this.strategy) this.strategy.dispose()
     this.strategy = new DrawingStrategy(this)
-    // if (this.toolbar) {
-    //   this.setBrushTool(this.toolbar.getBrushOptions().kind, this.toolbar.getBrushOptions())
-    // }
+    if (this.toolbar) {
+      this.setBrushTool(this.toolbar.getBrushOptions().kind, this.toolbar.getBrushOptions())
+    }
   }  
 }
 
@@ -627,10 +627,10 @@ class DrawingStrategy {
     // quick erase : on
     this.container.setQuickEraseIfRequested()
 
-    // if (!this.container.toolbar.getIsQuickErasing() && this.container.sketchPane.getPaintingKnockout()) {
-    //   this.container.startMultiLayerOperation()
-    //   this.container.setCompositeLayerVisibility(true)
-    // }
+    if (!this.container.toolbar.getIsQuickErasing() && this.container.sketchPane.getPaintingKnockout()) {
+      this.container.startMultiLayerOperation()
+      this.container.setCompositeLayerVisibility(true)
+    }
 
     let pointerPosition = this.container.getRelativePosition(e.clientX, e.clientY)
     this.container.lineMileageCounter.reset()
