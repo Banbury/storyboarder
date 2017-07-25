@@ -230,7 +230,7 @@ class StoryboarderSketchPane extends EventEmitter {
       this.lineMileageCounter.add({ x: this.lastMoveEvent.y, y: this.lastMoveEvent.y })
 
       // report only the most recent event back to the app
-      this.emit('pointermove', this.lastMoveEvent.x, this.lastMoveEvent.y, this.lastMoveEvent.pointerType === "pen" ? this.lastMoveEvent.pressure : 1, this.lastMoveEvent.pointerType)
+      // this.emit('pointermove', this.lastMoveEvent.x, this.lastMoveEvent.y, this.lastMoveEvent.pointerType === "pen" ? this.lastMoveEvent.pressure : 1, this.lastMoveEvent.pointerType)
     }
   }
 
