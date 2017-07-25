@@ -26,7 +26,7 @@ class Engine extends EventEmitter {
         return
     this.running = true
     this.last = now()
-    this._timer = setTimeout(this._tick, this._delay)
+    // this._timer = setTimeout(this._tick, this._delay)
     return this
   }
 
@@ -38,7 +38,7 @@ class Engine extends EventEmitter {
   }
 
   tick () {
-    this._timer = setTimeout(this._tick, this._delay)
+    // this._timer = setTimeout(this._tick, this._delay)
     var time = now()
     var dt = time - this.last
     this.emit('tick', dt)
