@@ -1569,11 +1569,11 @@ let gotoBoard = (boardNumber, shouldPreserveSelections = false) => {
     renderMetaData()
     renderMarkerPosition()
 
-    let opacity = Number(document.querySelector('.layers-ui-reference-opacity').value)
-    if (opacity !== 72) {
-      document.querySelector('.layers-ui-reference-opacity').value = 72
-      storyboarderSketchPane.sketchPane.setLayerOpacity(72/100, 0)
-    }
+    // let opacity = Number(document.querySelector('.layers-ui-reference-opacity').value)
+    // if (opacity !== 72) {
+    //   document.querySelector('.layers-ui-reference-opacity').value = 72
+    //   storyboarderSketchPane.sketchPane.setLayerOpacity(72/100, 0)
+    // }
     
     updateSketchPaneBoard().then(() => resolve()).catch(e => console.error(e))
   })
