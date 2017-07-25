@@ -12,10 +12,10 @@ const undoStack = require('../undo-stack.js')
 
 const Toolbar = require('./toolbar.js')
 // const tooltips = require('./tooltips.js')
-const ContextMenu = require('./context-menu.js')
-const ColorPicker = require('./color-picker.js')
+// const ContextMenu = require('./context-menu.js')
+// const ColorPicker = require('./color-picker.js')
 const Transport = require('./transport.js')
-const notifications = require('./notifications.js')
+//const notifications = require('./notifications.js')
 const NotificationData = require('../../data/messages.json')
 const Guides = require('./guides.js')
 const OnionSkin = require('./onion-skin.js')
@@ -353,7 +353,7 @@ const commentOnLineMileage = (miles) => {
       setTimeout(()=> {window.close()}, 5000);
       break
   }
-  notifications.notify({message: message.join(' '), timing: 10})
+  //notifications.notify({message: message.join(' '), timing: 10})
 }
 
 let addToLineMileage = value => {
@@ -693,8 +693,8 @@ let loadBoardUI = ()=> {
       undoStack.undo()
       //sfx.rollover()
     } else {
-      //sfx.error()
-      notifications.notify({message: 'Nothing left to undo!', timing: 5})
+      // sfx.error()
+      //notifications.notify({message: 'Nothing left to undo!', timing: 5})
     }
     //sfx.playEffect('metal')
   })
@@ -703,8 +703,8 @@ let loadBoardUI = ()=> {
       undoStack.redo()
       //sfx.rollover()
     } else {
-      //sfx.error()
-      notifications.notify({message: 'Nothing more to redo!', timing: 5})
+      // sfx.error()
+      //notifications.notify({message: 'Nothing more to redo!', timing: 5})
     }
     //sfx.playEffect('metal')
   })
@@ -781,48 +781,48 @@ let loadBoardUI = ()=> {
     nextScene()
   })
 
-  notifications.init(document.getElementById('notifications'))
-  setupRandomizedNotifications()
+  //notifications.init(document.getElementById('notifications'))
+  //setupRandomizedNotifications()
 
   //
   //
   // Current Color, Palette, and Color Picker connections
   //
-  colorPicker = new ColorPicker()
-  const setCurrentColor = color => {
-    storyboarderSketchPane.setBrushColor(color)
-    toolbar.changeCurrentColor(color)
-    colorPicker.setState({ color: color.toCSS() })
-  }
-  const setPaletteColor = (brush, index, color) => {
-    toolbar.changePaletteColor(brush, index, color)
-    colorPicker.setState({ color: color.toCSS() })
-  }
-  toolbar.on('current-color-picker', color => {
-    //sfx.positive()
-    colorPicker.attachTo(document.getElementById('toolbar-current-color'))
-    colorPicker.removeAllListeners('color') // HACK
+  // colorPicker = new ColorPicker()
+  // const setCurrentColor = color => {
+  //   storyboarderSketchPane.setBrushColor(color)
+  //   toolbar.changeCurrentColor(color)
+  //   colorPicker.setState({ color: color.toCSS() })
+  // }
+  // const setPaletteColor = (brush, index, color) => {
+  //   toolbar.changePaletteColor(brush, index, color)
+  //   colorPicker.setState({ color: color.toCSS() })
+  // }
+  // toolbar.on('current-color-picker', color => {
+  //   sfx.positive()
+  //   colorPicker.attachTo(document.getElementById('toolbar-current-color'))
+  //   colorPicker.removeAllListeners('color') // HACK
 
-    // initialize color picker active swatch
-    colorPicker.setState({ color: color.toCSS() })
+  //   // initialize color picker active swatch
+  //   colorPicker.setState({ color: color.toCSS() })
 
-    colorPicker.addListener('color', setCurrentColor)
-  })
-  toolbar.on('palette-color-picker', (color, target, brush, index) => {
-    //sfx.positive()
+  //   colorPicker.addListener('color', setCurrentColor)
+  // })
+  // toolbar.on('palette-color-picker', (color, target, brush, index) => {
+  //   sfx.positive()
 
-    colorPicker.attachTo(target)
-    colorPicker.removeAllListeners('color') // HACK
+  //   colorPicker.attachTo(target)
+  //   colorPicker.removeAllListeners('color') // HACK
 
-    // initialize color picker active swatch
-    colorPicker.setState({ color: color.toCSS() })
+  //   // initialize color picker active swatch
+  //   colorPicker.setState({ color: color.toCSS() })
 
-    colorPicker.addListener('color', setPaletteColor.bind(this, brush, index))
-  })
-  toolbar.on('current-set-color', color => {
-    storyboarderSketchPane.setBrushColor(color)
-    toolbar.changeCurrentColor(color)
-  })
+  //   colorPicker.addListener('color', setPaletteColor.bind(this, brush, index))
+  // })
+  // toolbar.on('current-set-color', color => {
+  //   storyboarderSketchPane.setBrushColor(color)
+  //   toolbar.changeCurrentColor(color)
+  // })
 
   guides = new Guides(storyboarderSketchPane.getLayerCanvasByName('guides'))
   onionSkin = new OnionSkin(storyboarderSketchPane, boardPath)
@@ -931,7 +931,7 @@ let newBoard = (position, shouldAddToUndoStack = true) => {
   if (shouldAddToUndoStack) {
     saveImageFile() // force-save any current work
     storeUndoStateForScene(true)
-    notifications.notify({message: "Added a new board. Let's make it a great one!", timing: 5})
+    //notifications.notify({message: "Added a new board. Let's make it a great one!", timing: 5})
   }
 
   if (typeof position == "undefined") position = currentBoard + 1
@@ -956,7 +956,7 @@ let newBoard = (position, shouldAddToUndoStack = true) => {
 let insertNewBoardsWithFiles = (filepaths) => {
   let count = filepaths.length
   let message = `Importing ${count} image${count !== 1 ? 's':''}.\nPlease wait...`
-  notifications.notify({message: message, timing: 2})
+  //notifications.notify({message: message, timing: 2})
 
   setTimeout(()=> {
     let insertionIndex = currentBoard+1
@@ -967,7 +967,7 @@ let insertNewBoardsWithFiles = (filepaths) => {
       }
       let imageData = FileHelper.getBase64ImageDataFromFilePath(filepath)
       if(!imageData) {
-        notifications.notify({message: `Oops! There was a problem importing ${filepath}`, timing: 10})
+        //notifications.notify({message: `Oops! There was a problem importing ${filepath}`, timing: 10})
         return new Promise((fulfill)=>fulfill())
       }
       let board = insertNewBoardDataAtPosition(insertionIndex++)
@@ -1032,8 +1032,8 @@ let insertNewBoardsWithFiles = (filepaths) => {
         renderThumbnailDrawer()
         let count = imageFilePromises.length
         let message = `Imported ${count} image${count !== 1 ? 's':''}.\n\nThe image${count !== 1 ? 's are':' is'} on the reference layer, so you can draw over ${count !== 1 ? 'them':'it'}. If you'd like ${count !== 1 ? 'them':'it'} to be the main layer, you can merge ${count !== 1 ? 'them':'it'} up on the sidebar`
-        notifications.notify({message: message, timing: 10})
-        //sfx.positive()
+        //notifications.notify({message: message, timing: 10})
+        // sfx.positive()
       })
   }, 1000)
 
@@ -1374,9 +1374,9 @@ let deleteBoards = (args)=> {
       renderThumbnailDrawer()
       storeUndoStateForScene()
       if (arr.length > 1) {
-        notifications.notify({message: "Deleted " + arr.length + " boards.", timing: 5})
+        //notifications.notify({message: "Deleted " + arr.length + " boards.", timing: 5})
       } else {
-        notifications.notify({message: "Deleted board.", timing: 5})
+        //notifications.notify({message: "Deleted board.", timing: 5})
       }
 
     } else {
@@ -1384,7 +1384,7 @@ let deleteBoards = (args)=> {
       storeUndoStateForScene(true)
       deleteSingleBoard(currentBoard)
       storeUndoStateForScene()
-      notifications.notify({message: "Deleted board", timing: 5})
+      //notifications.notify({message: "Deleted board", timing: 5})
 
       // if not requested to move forward
       // we take action to move intentionally backward
@@ -1396,8 +1396,8 @@ let deleteBoards = (args)=> {
     //sfx.playEffect('trash')
     //sfx.negative()
   } else {
-    //sfx.error()
-    notifications.notify({message: "Cannot delete. You have to have at least one board, silly.", timing: 8})
+    // sfx.error()
+    //notifications.notify({message: "Cannot delete. You have to have at least one board, silly.", timing: 8})
   }
 }
 
@@ -1466,12 +1466,12 @@ let duplicateBoard = () => {
       // go to board
       gotoBoard(insertAt)
 
-      // //sfx.bip('c7')
-      //sfx.down(-1, 2)
-      notifications.notify({ message: 'Duplicated board.', timing: 5 })
+      // sfx.bip('c7')
+      // sfx.down(-1, 2)
+      //notifications.notify({ message: 'Duplicated board.', timing: 5 })
     } catch (err) {
       console.error(err)
-      notifications.notify({ message: 'Error: Could not duplicate board.', timing: 5 })
+      //notifications.notify({ message: 'Error: Could not duplicate board.', timing: 5 })
     }
   })
 }
@@ -1497,6 +1497,8 @@ const clearLayers = shouldEraseCurrentLayer => {
       saveImageFile()
       //sfx.playEffect('trash')
       notifications.notify({message: 'Cleared canvas.', timing: 5})
+      // sfx.playEffect('trash')
+      //notifications.notify({message: 'Cleared canvas.', timing: 5})
     }
   }
 }
@@ -1770,7 +1772,9 @@ let nextScene = ()=> {
       gotoBoard(currentBoard)
     } else {
       //sfx.error()
-      notifications.notify({message: "Sorry buddy. I can't go back further.", timing: 5})
+      // notifications.notify({message: "Sorry buddy. I can't go back further.", timing: 5})
+      // sfx.error()
+      //notifications.notify({message: "Sorry buddy. I can't go back further.", timing: 5})
     }
   }
 }
@@ -1794,7 +1798,7 @@ let previousScene = ()=> {
       gotoBoard(currentBoard)
     } else {
       //sfx.error()
-      notifications.notify({message: "Nope. I can't go any further.", timing: 5})
+      //notifications.notify({message: "Nope. I can't go any further.", timing: 5})
     }
   }
 }
@@ -2012,55 +2016,55 @@ let renderThumbnailDrawer = ()=> {
 
   renderThumbnailDrawerSelections()
 
-  if (!contextMenu) {
-    contextMenu = new ContextMenu()
-    // internal
-    contextMenu.on('pointerleave', () => {
-      contextMenu.remove()
-    })
+  // if (!contextMenu) {
+  //   contextMenu = new ContextMenu()
+  //   // internal
+  //   contextMenu.on('pointerleave', () => {
+  //     contextMenu.remove()
+  //   })
 
-    // external
-    contextMenu.on('shown', () => {
-      //sfx.playEffect('metal')
-    })
-    contextMenu.on('add', () => {
-      newBoard()
-      gotoBoard(currentBoard+1)
-    })
-    contextMenu.on('delete', () => {
-      deleteBoards()
-    })
-    contextMenu.on('duplicate', () => {
-      duplicateBoard()
-    })
-    contextMenu.on('copy', () => {
-      copyBoards()
-    })
-    contextMenu.on('paste', () => {
-      pasteBoards()
-    })
-    contextMenu.on('import', () => {
-      ipcRenderer.send('importImagesDialogue')
-    })
-    contextMenu.on('reorder-left', () => {
-      reorderBoardsLeft()
-    })
-    contextMenu.on('reorder-right', () => {
-      reorderBoardsRight()
-    })
-  }
+  //   // external
+  //   contextMenu.on('shown', () => {
+  //     sfx.playEffect('metal')
+  //   })
+  //   contextMenu.on('add', () => {
+  //     newBoard()
+  //     gotoBoard(currentBoard+1)
+  //   })
+  //   contextMenu.on('delete', () => {
+  //     deleteBoards()
+  //   })
+  //   contextMenu.on('duplicate', () => {
+  //     duplicateBoard()
+  //   })
+  //   contextMenu.on('copy', () => {
+  //     copyBoards()
+  //   })
+  //   contextMenu.on('paste', () => {
+  //     pasteBoards()
+  //   })
+  //   contextMenu.on('import', () => {
+  //     ipcRenderer.send('importImagesDialogue')
+  //   })
+  //   contextMenu.on('reorder-left', () => {
+  //     reorderBoardsLeft()
+  //   })
+  //   contextMenu.on('reorder-right', () => {
+  //     reorderBoardsRight()
+  //   })
+  // }
 
   let thumbnails = document.querySelectorAll('.thumbnail')
   for (var thumb of thumbnails) {
     thumb.addEventListener('pointerenter', (e) => {
       if (!isEditMode && selections.size <= 1 && e.target.dataset.thumbnail == currentBoard) {
-        contextMenu.attachTo(e.target)
+        //contextMenu.attachTo(e.target)
       }
     })
     thumb.addEventListener('pointerleave', (e) => {
-      if (!contextMenu.hasChild(e.relatedTarget)) {
-        contextMenu.remove()
-      }
+      // if (!contextMenu.hasChild(e.relatedTarget)) {
+      //   contextMenu.remove()
+      // }
     })
     thumb.addEventListener('pointermove', (e) => {
       if (!isEditMode && selections.size <= 1 && e.target.dataset.thumbnail == currentBoard) {
@@ -2069,7 +2073,7 @@ let renderThumbnailDrawer = ()=> {
     })
     thumb.addEventListener('pointerdown', (e)=>{
       console.log("DOWN")
-      if (!isEditMode && selections.size <= 1) contextMenu.attachTo(e.target)
+      //if (!isEditMode && selections.size <= 1) contextMenu.attachTo(e.target)
 
       // always track cursor position
       updateThumbnailCursor(e.clientX, e.clientY)
@@ -2589,6 +2593,8 @@ window.onkeydown = (e)=> {
             } else {
               //sfx.error()
               notifications.notify({message: 'Nothing more to redo!', timing: 5})
+              // sfx.error()
+              //notifications.notify({message: 'Nothing more to redo!', timing: 5})
             }
           } else {
             if (undoStack.getCanUndo()) {
@@ -2596,7 +2602,7 @@ window.onkeydown = (e)=> {
               //sfx.rollover()
             } else {
               //sfx.error()
-              notifications.notify({message: 'Nothing left to undo!', timing: 5})
+              //notifications.notify({message: 'Nothing left to undo!', timing: 5})
             }
           }
           e.preventDefault()
@@ -2649,7 +2655,7 @@ window.onkeydown = (e)=> {
     }
   }
 
-  contextMenu && contextMenu.remove()
+  //contextMenu && contextMenu.remove()
 }
 
 let disableDragMode = () => {
@@ -2884,7 +2890,7 @@ ipcRenderer.on('undo', (e, arg) => {
       //sfx.rollover()
     } else {
       //sfx.error()
-      notifications.notify({message: 'Nothing more to redo!', timing: 5})
+      //notifications.notify({message: 'Nothing more to redo!', timing: 5})
     }
   }
 })
@@ -2896,7 +2902,7 @@ ipcRenderer.on('redo', (e, arg) => {
       //sfx.rollover()
     } else {
       //sfx.error()
-      notifications.notify({message: 'Nothing left to undo!', timing: 5})
+      //notifications.notify({message: 'Nothing left to undo!', timing: 5})
     }
   }
 })
@@ -3058,10 +3064,10 @@ let copyBoards = () => {
       }
       clipboard.clear()
       clipboard.write(payload)
-      notifications.notify({ message: "Copied" })
+      //notifications.notify({ message: "Copied" })
     }).catch(err => {
       console.log(err)
-      notifications.notify({ message: "Error. Couldn't copy." })
+      //notifications.notify({ message: "Error. Couldn't copy." })
     })
   }
 }
@@ -3079,38 +3085,39 @@ let exportAnimatedGif = () => {
   }
   let boardSize = storyboarderSketchPane.sketchPane.getCanvasSize()
 
-  notifications.notify({message: "Exporting " + boards.length + " boards. Please wait...", timing: 5})
   //sfx.down()
+  //notifications.notify({message: "Exporting " + boards.length + " boards. Please wait...", timing: 5})
+
   setTimeout(()=>{
     exporter.exportAnimatedGif(boards, boardSize, 800, boardPath, true, boardData)
   }, 1000)
 }
 
 exporter.on('complete', path => {
-  notifications.notify({message: "I exported your board selection as a GIF. Share it with your friends! Post it to you twitter thing or your slack dingus.", timing: 20})
   //sfx.positive()
+  //notifications.notify({message: "I exported your board selection as a GIF. Share it with your friends! Post it to you twitter thing or your slack dingus.", timing: 20})
   shell.showItemInFolder(path)
 })
 
 const exportFcp = () => {
-  notifications.notify({message: "Exporting " + boardData.boards.length + " boards to FCP and Premiere. Please wait...", timing: 5})
-  //sfx.down()
+  //notifications.notify({message: "Exporting " + boardData.boards.length + " boards to FCP and Premiere. Please wait...", timing: 5})
+  // sfx.down()
   setTimeout(()=>{
     exporter.exportFcp(boardData, boardFilename).then(outputPath => {
-      notifications.notify({message: "Your scene has been exported for Final Cut Pro X and Premiere.", timing: 20})
-      //sfx.positive()
+      //notifications.notify({message: "Your scene has been exported for Final Cut Pro X and Premiere.", timing: 20})
+      // sfx.positive()
       shell.showItemInFolder(outputPath)
     })
   }, 1000)
 }
 
 const exportImages = () => {
-  notifications.notify({message: "Exporting " + boardData.boards.length + " to a folder. Please wait...", timing: 5})
-  //sfx.down()
+  //notifications.notify({message: "Exporting " + boardData.boards.length + " to a folder. Please wait...", timing: 5})
+  // sfx.down()
   setTimeout(()=>{
     exporter.exportImages(boardData, boardFilename).then(outputPath => {
-      notifications.notify({message: "Your scene has been exported as images.", timing: 20})
-      //sfx.positive()
+      //notifications.notify({message: "Your scene has been exported as images.", timing: 20})
+      // sfx.positive()
       shell.showItemInFolder(outputPath)
     })
   }, 1000)
@@ -3118,12 +3125,12 @@ const exportImages = () => {
 
 
 const exportPDF = () => {
-  notifications.notify({message: "Exporting " + boardData.boards.length + " boards to PDF. Please wait...", timing: 5})
-  //sfx.down()
+  //notifications.notify({message: "Exporting " + boardData.boards.length + " boards to PDF. Please wait...", timing: 5})
+  // sfx.down()
   setTimeout(()=>{
     exporter.exportPDF(boardData, boardFilename).then(outputPath => {
-      notifications.notify({message: "Your scene has been exported as a PDF.", timing: 20})
-      //sfx.positive()
+      //notifications.notify({message: "Your scene has been exported as a PDF.", timing: 20})
+      // sfx.positive()
       shell.showItemInFolder(outputPath)
     })
   }, 1000)
@@ -3132,8 +3139,8 @@ const exportPDF = () => {
 let save = () => {
   saveImageFile()
   saveBoardFile()
-  //sfx.positive()
-  notifications.notify({message: "Saving is automatic. I already saved before you pressed this, so you don't really need to save at all. \n\nBut I did want you to know, that I think you're special - and I like you just the way you are.\n\nHere's a story tip..." , timing: 15})
+  // sfx.positive()
+  //notifications.notify({message: "Saving is automatic. I already saved before you pressed this, so you don't really need to save at all. \n\nBut I did want you to know, that I think you're special - and I like you just the way you are.\n\nHere's a story tip..." , timing: 15})
   setTimeout(()=>{storyTips.show()}, 1000)
 }
 
@@ -3167,9 +3174,9 @@ let pasteBoards = () => {
       layerDataByBoardIndex = data.layerDataByBoardIndex
 
       if (newBoards.length > 1) {
-        notifications.notify({ message: "Pasting " + newBoards.length + " boards.", timing: 5 })
+        //notifications.notify({ message: "Pasting " + newBoards.length + " boards.", timing: 5 })
       } else {
-        notifications.notify({ message: "Pasting a board.", timing: 5 })
+        //notifications.notify({ message: "Pasting a board.", timing: 5 })
       }
     } catch (err) {
       // if there is an error parsing the JSON
@@ -3208,7 +3215,7 @@ let pasteBoards = () => {
         [LAYER_INDEX_MAIN]: blankCanvas.toDataURL()
       }]
 
-      notifications.notify({ message: "Pasting a sweet image you probably copied from the internet, you dirty dog, you. It's on the reference layer, so feel free to draw over it. You can resize or reposition it." , timing: 10 })
+      //notifications.notify({ message: "Pasting a sweet image you probably copied from the internet, you dirty dog, you. It's on the reference layer, so feel free to draw over it. You can resize or reposition it." , timing: 10 })
     }
   }
 
@@ -3236,13 +3243,13 @@ let pasteBoards = () => {
       //sfx.positive()
       return gotoBoard(insertAt)
     }).catch(err => {
-      notifications.notify({ message: "Whoops. Could not paste boards. Got an error for some reason.", timing: 8 })
+      //notifications.notify({ message: "Whoops. Could not paste boards. Got an error for some reason.", timing: 8 })
       console.log(err)
     })
 
   } else {
-    notifications.notify({ message: "There's nothing in the clipboard that I can paste. Are you sure you copied it right?", timing: 8 })
-    //sfx.error()
+    //notifications.notify({ message: "There's nothing in the clipboard that I can paste. Are you sure you copied it right?", timing: 8 })
+    // sfx.error()
   }
 }
 
@@ -3394,7 +3401,7 @@ const importFromWorksheet = (imageArray) => {
     //sfx.positive()
     return gotoBoard(insertAt)
   }).catch(err => {
-    notifications.notify({ message: "Whoops. Could not import.", timing: 8 })
+    //notifications.notify({ message: "Whoops. Could not import.", timing: 8 })
     console.log(err)
   })
 }
@@ -3484,8 +3491,8 @@ let reorderBoardsLeft = () => {
     moveSelectedBoards(position)
     renderThumbnailDrawer()
     gotoBoard(currentBoard, true)
-    //sfx.playEffect('on')
-    notifications.notify({message: 'Reordered to the left!', timing: 5})
+    // sfx.playEffect('on')
+    //notifications.notify({message: 'Reordered to the left!', timing: 5})
   }
 }
 
@@ -3498,8 +3505,8 @@ let reorderBoardsRight = () => {
     moveSelectedBoards(position)
     renderThumbnailDrawer()
     gotoBoard(currentBoard, true)
-    //sfx.playEffect('metal')
-    notifications.notify({message: 'Reordered to the right!', timing: 5})
+    // sfx.playEffect('metal')
+    //notifications.notify({message: 'Reordered to the right!', timing: 5})
   }
 }
 
@@ -3509,9 +3516,9 @@ let enableEditMode = () => {
     thumbnailCursor.visible = true
     renderThumbnailCursor()
     renderThumbnailDrawerSelections()
-    contextMenu.remove()
-    //sfx.positive()
-    //sfx.playEffect('on')
+   // contextMenu.remove()
+    // sfx.positive()
+    // sfx.playEffect('on')
 
   }
 }
@@ -3524,7 +3531,7 @@ let disableEditMode = () => {
     thumbnailCursor.visible = false
     renderThumbnailCursor()
     renderThumbnailDrawerSelections()
-    notifications.notify({message: 'Reordered!', timing: 5})
+    //notifications.notify({message: 'Reordered!', timing: 5})
   }
 }
 
@@ -3672,21 +3679,21 @@ const welcomeMessage = () => {
     "",
   ]
   message.push(otherMessages[Math.floor(Math.random()*otherMessages.length)])
-  notifications.notify({message: message.join(' '), timing: 10})
+  //notifications.notify({message: message.join(' '), timing: 10})
 } 
 
-const setupRandomizedNotifications = () => {  
-  let defaultMessages = util.shuffle(NotificationData.messages)
-  setTimeout(()=>{welcomeMessage()}, 1000)
-  setTimeout(()=>{runRandomizedNotifications(defaultMessages)}, 3000)
-}
+// const setupRandomizedNotifications = () => {  
+//   let defaultMessages = util.shuffle(NotificationData.messages)
+//   setTimeout(()=>{welcomeMessage()}, 1000)
+//   setTimeout(()=>{runRandomizedNotifications(defaultMessages)}, 3000)
+// }
 
 const runRandomizedNotifications = (messages) => {
   let count = 0, duration = 60 * 60 * 1000, timeout
   const tick = () => {
     // only fire notification if enabled in preferences
     if (prefsModule.getPrefs('aspirational')['enableAspirationalMessages']) {
-      notifications.notify(messages[count++ % messages.length])
+      //notifications.notify(messages[count++ % messages.length])
     }
     timeout = setTimeout(tick, duration)
   }
@@ -3864,8 +3871,8 @@ ipcRenderer.on('brushSize', (e, direction) => {
 ipcRenderer.on('flipBoard', (e, arg)=> {
   if (!textInputMode) {
     storyboarderSketchPane.flipLayers(arg)
-    //sfx.playEffect('metal')
-    notifications.notify({message: 'I flipped the board.', timing: 5})
+    // sfx.playEffect('metal')
+    //notifications.notify({message: 'I flipped the board.', timing: 5})
   }
 })
 
