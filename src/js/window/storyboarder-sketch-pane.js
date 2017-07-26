@@ -487,6 +487,11 @@ class StoryboarderSketchPane extends EventEmitter {
   }
   setBrushTool (kind, options) {
     this.brush = new Brush()
+    this.brush.setSize(options.size)
+    this.brush.setColor(options.color.toCSS())
+    this.brush.setSpacing(options.spacing)
+    this.brush.setFlow(options.flow)
+    this.brush.setHardness(options.hardness)
     this.sketchPane.setTool(this.brush)
     return
 
