@@ -10,7 +10,7 @@ const Color = require('color-js')
 const StoryboarderSketchPane = require('./storyboarder-sketch-pane.js')
 const undoStack = require('../undo-stack.js')
 
-//const Toolbar = require('./toolbar.js')
+const Toolbar = require('./toolbar.js')
 const tooltips = require('./tooltips.js')
 const ContextMenu = require('./context-menu.js')
 const ColorPicker = require('./color-picker.js')
