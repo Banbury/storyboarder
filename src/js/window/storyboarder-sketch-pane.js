@@ -486,6 +486,10 @@ class StoryboarderSketchPane extends EventEmitter {
     this.emit('markDirty', this.visibleLayersIndices)
   }
   setBrushTool (kind, options) {
+    this.brush = new Brush()
+    this.sketchPane.setTool(this.brush)
+    return
+
     if (this.getIsDrawingOrStabilizing()) {
       return false
     }
