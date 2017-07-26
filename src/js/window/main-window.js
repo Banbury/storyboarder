@@ -750,7 +750,7 @@ let loadBoardUI = ()=> {
     openInEditor()
   })
 
-  storyboarderSketchPane.toolbar = toolbar
+ // storyboarderSketchPane.toolbar = toolbar
 
   if (!toolbar.getState().captions) {
     let el = document.querySelector('#canvas-caption')
