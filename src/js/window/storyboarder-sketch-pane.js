@@ -492,6 +492,7 @@ class StoryboarderSketchPane extends EventEmitter {
     this.brush.setSpacing(options.spacing)
     this.brush.setFlow(options.flow)
     this.brush.setHardness(options.hardness)
+    this.sketchPane.setPaintingOpacity(options.opacity)
     this.sketchPane.setTool(this.brush)
     return
 
