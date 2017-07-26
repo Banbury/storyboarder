@@ -50,7 +50,7 @@ const initialState = {
     [BRUSH_PEN]: {
       kind: BRUSH_PEN,
       size: 20,
-      spacing: 0.02,
+      spacing: 3,
       flow: 1,
       hardness: 0.7,
       opacity: 0.9,

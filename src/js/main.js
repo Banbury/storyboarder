@@ -455,10 +455,10 @@ let loadStoryboarderWindow = (filename, scriptData, locations, characters, board
     titleBarStyle: 'hidden-inset',
     webPreferences: {
       webgl: true,
-      experimentalFeatures: true,
+      experimentalFeatures: false,
       experimentalCanvasFeatures: true,
       devTools: true,
-      plugins: true
+      plugins: false
     } 
   })
 
