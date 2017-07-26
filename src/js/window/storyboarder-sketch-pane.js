@@ -414,21 +414,21 @@ class StoryboarderSketchPane extends EventEmitter {
   }
 
   updatePointer () {
-    let image = null
-    let threshold = 0xff
-    // TODO why are we creating a new pointer every time?
-    let brushPointer = this.sketchPane.createBrushPointer(
-      image, 
-      Math.max(6, this.brush.getSize() * this.scaleFactor),
-      this.brush.getAngle(),
-      threshold,
-      true)
-    brushPointer.style.display = 'block'
-    brushPointer.style.setProperty('margin-left', '-' + (brushPointer.width * 0.5) + 'px')
-    brushPointer.style.setProperty('margin-top', '-' + (brushPointer.height * 0.5) + 'px')
+    // let image = null
+    // let threshold = 0xff
+    // // TODO why are we creating a new pointer every time?
+    // let brushPointer = this.sketchPane.createBrushPointer(
+    //   image, 
+    //   Math.max(6, this.brush.getSize() * this.scaleFactor),
+    //   this.brush.getAngle(),
+    //   threshold,
+    //   true)
+    // brushPointer.style.display = 'block'
+    // brushPointer.style.setProperty('margin-left', '-' + (brushPointer.width * 0.5) + 'px')
+    // brushPointer.style.setProperty('margin-top', '-' + (brushPointer.height * 0.5) + 'px')
 
-    this.brushPointerContainer.innerHTML = ''
-    this.brushPointerContainer.appendChild(brushPointer)
+    // this.brushPointerContainer.innerHTML = ''
+    // this.brushPointerContainer.appendChild(brushPointer)
   }
 
   resize () {
