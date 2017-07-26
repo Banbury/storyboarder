@@ -606,156 +606,156 @@ let loadBoardUI = ()=> {
     }
   })
 
-  // toolbar = new Toolbar(document.getElementById("toolbar"))
-  // toolbar.on('add', () => {
-  //   newBoard()
-  //   gotoBoard(currentBoard+1)
-  // })
-  // toolbar.on('delete', () => {
-  //   deleteBoards()
-  // })
-  // toolbar.on('duplicate', () => {
-  //   duplicateBoard()
-  // })
-  // toolbar.on('import', () => {
-  //   alert('Import. This feature is not ready yet :(')
-  // })
-  // toolbar.on('print', () => {
-  //   alert('Print. This feature is not ready yet :(')
-  // })
+  toolbar = new Toolbar(document.getElementById("toolbar"))
+  toolbar.on('add', () => {
+    newBoard()
+    gotoBoard(currentBoard+1)
+  })
+  toolbar.on('delete', () => {
+    deleteBoards()
+  })
+  toolbar.on('duplicate', () => {
+    duplicateBoard()
+  })
+  toolbar.on('import', () => {
+    alert('Import. This feature is not ready yet :(')
+  })
+  toolbar.on('print', () => {
+    alert('Print. This feature is not ready yet :(')
+  })
 
-  // toolbar.on('brush', (kind, options) => {
-  //   toolbar.emit('cancelTransform')
-  //   storyboarderSketchPane.setBrushTool(kind, options)
-  //   //sfx.playEffect('tool-' + kind)
-  // })
-  // toolbar.on('brush:size', size => {
-  //   toolbar.emit('cancelTransform')
-  //   storyboarderSketchPane.setBrushSize(size)
-  // })
-  // toolbar.on('brush:color', color => {
-  //   toolbar.emit('cancelTransform')
-  //   //sfx.playEffect('metal')
-  //   storyboarderSketchPane.setBrushColor(color)
-  // })
+  toolbar.on('brush', (kind, options) => {
+    toolbar.emit('cancelTransform')
+    storyboarderSketchPane.setBrushTool(kind, options)
+    //sfx.playEffect('tool-' + kind)
+  })
+  toolbar.on('brush:size', size => {
+    toolbar.emit('cancelTransform')
+    storyboarderSketchPane.setBrushSize(size)
+  })
+  toolbar.on('brush:color', color => {
+    toolbar.emit('cancelTransform')
+    //sfx.playEffect('metal')
+    storyboarderSketchPane.setBrushColor(color)
+  })
 
 
-  // toolbar.on('trash', () => {
-  //   clearLayers()
-  // })
-  // toolbar.on('fill', color => {
-  //   if (toolbar.state.brush !== 'eraser') {
-  //     storyboarderSketchPane.fillLayer(color.toCSS())
-  //     //sfx.playEffect('fill')
+  toolbar.on('trash', () => {
+    clearLayers()
+  })
+  toolbar.on('fill', color => {
+    if (toolbar.state.brush !== 'eraser') {
+      storyboarderSketchPane.fillLayer(color.toCSS())
+      //sfx.playEffect('fill')
+    }
+  })
+
+
+  toolbar.on('move', () => {
+    if (storyboarderSketchPane.isPointerDown) return
+      //sfx.playEffect('metal')
+    toolbar.setState({ transformMode: 'move' })
+    storyboarderSketchPane.moveContents()
+  })
+  toolbar.on('scale', () => {
+    if (storyboarderSketchPane.isPointerDown) return
+      //sfx.playEffect('metal')
+    toolbar.setState({ transformMode: 'scale' })
+    storyboarderSketchPane.scaleContents()
+  })
+  toolbar.on('cancelTransform', () => {
+    // FIXME prevent this case from happening
+    if (storyboarderSketchPane.isPointerDown) {
+      console.warn('pointer is already down')
+      return
+    }
+
+    toolbar.setState({ transformMode: null })
+    storyboarderSketchPane.cancelTransform()
+  })
+  // sketchPane.on('moveMode', enabled => {
+  //   if (enabled) {
+  //     toolbar.setState({ transformMode: 'move' })
   //   }
   // })
-
-
-  // toolbar.on('move', () => {
-  //   if (storyboarderSketchPane.isPointerDown) return
-  //     //sfx.playEffect('metal')
-  //   toolbar.setState({ transformMode: 'move' })
-  //   storyboarderSketchPane.moveContents()
-  // })
-  // toolbar.on('scale', () => {
-  //   if (storyboarderSketchPane.isPointerDown) return
-  //     //sfx.playEffect('metal')
-  //   toolbar.setState({ transformMode: 'scale' })
-  //   storyboarderSketchPane.scaleContents()
-  // })
-  // toolbar.on('cancelTransform', () => {
-  //   // FIXME prevent this case from happening
-  //   if (storyboarderSketchPane.isPointerDown) {
-  //     console.warn('pointer is already down')
-  //     return
+  // sketchPane.on('scaleMode', enabled => {
+  //   if (enabled) {
+  //     toolbar.setState({ transformMode: 'scale' })
   //   }
-
+  // })
+  // sketchPane.on('cancelTransform', () => {
   //   toolbar.setState({ transformMode: null })
-  //   storyboarderSketchPane.cancelTransform()
   // })
-  // // sketchPane.on('moveMode', enabled => {
-  // //   if (enabled) {
-  // //     toolbar.setState({ transformMode: 'move' })
-  // //   }
-  // // })
-  // // sketchPane.on('scaleMode', enabled => {
-  // //   if (enabled) {
-  // //     toolbar.setState({ transformMode: 'scale' })
-  // //   }
-  // // })
-  // // sketchPane.on('cancelTransform', () => {
-  // //   toolbar.setState({ transformMode: null })
-  // // })
 
 
-  // toolbar.on('undo', () => {
-  //   if (undoStack.getCanUndo()) {
-  //     undoStack.undo()
-  //     //sfx.rollover()
-  //   } else {
-  //     //sfx.error()
-  //     notifications.notify({message: 'Nothing left to undo!', timing: 5})
-  //   }
-  //   //sfx.playEffect('metal')
-  // })
-  // toolbar.on('redo', () => {
-  //   if (undoStack.getCanRedo()) {
-  //     undoStack.redo()
-  //     //sfx.rollover()
-  //   } else {
-  //     //sfx.error()
-  //     notifications.notify({message: 'Nothing more to redo!', timing: 5})
-  //   }
-  //   //sfx.playEffect('metal')
-  // })
+  toolbar.on('undo', () => {
+    if (undoStack.getCanUndo()) {
+      undoStack.undo()
+      //sfx.rollover()
+    } else {
+      //sfx.error()
+      notifications.notify({message: 'Nothing left to undo!', timing: 5})
+    }
+    //sfx.playEffect('metal')
+  })
+  toolbar.on('redo', () => {
+    if (undoStack.getCanRedo()) {
+      undoStack.redo()
+      //sfx.rollover()
+    } else {
+      //sfx.error()
+      notifications.notify({message: 'Nothing more to redo!', timing: 5})
+    }
+    //sfx.playEffect('metal')
+  })
   
-  // toolbar.on('grid', value => {
-  //   guides.setState({ grid: value })
-  //   //sfx.playEffect('metal')
-  // })
-  // toolbar.on('center', value => {
-  //   guides.setState({ center: value })
-  //   //sfx.playEffect('metal')
-  // })
-  // toolbar.on('thirds', value => {
-  //   guides.setState({ thirds: value })
-  //   //sfx.playEffect('metal')
-  // })
-  // toolbar.on('diagonals', value => {
-  //   guides.setState({ diagonals: value })
-  //   //sfx.playEffect('metal')
-  // })
-  // toolbar.on('onion', value => {
-  //   onionSkin.setEnabled(value)
-  //   if (onionSkin.getEnabled()) {
-  //     if (!onionSkin.isLoaded) {
-  //       onionSkin.load(
-  //         boardData.boards[currentBoard],
-  //         boardData.boards[currentBoard - 1],
-  //         boardData.boards[currentBoard + 1]
-  //       ).catch(err => console.warn(err))
-  //     }
-  //   }
-  //   //sfx.playEffect('metal')
-  // })
-  // toolbar.on('captions', () => {
-  //   // HACK!!!
-  //   let el = document.querySelector('#canvas-caption')
-  //   el.style.visibility = el.style.visibility == 'hidden'
-  //     ? 'visible'
-  //     : 'hidden'
-  //   //sfx.playEffect('metal')
-  // })
-  // toolbar.on('open-in-editor', () => {
-  //   openInEditor()
-  // })
+  toolbar.on('grid', value => {
+    guides.setState({ grid: value })
+    //sfx.playEffect('metal')
+  })
+  toolbar.on('center', value => {
+    guides.setState({ center: value })
+    //sfx.playEffect('metal')
+  })
+  toolbar.on('thirds', value => {
+    guides.setState({ thirds: value })
+    //sfx.playEffect('metal')
+  })
+  toolbar.on('diagonals', value => {
+    guides.setState({ diagonals: value })
+    //sfx.playEffect('metal')
+  })
+  toolbar.on('onion', value => {
+    onionSkin.setEnabled(value)
+    if (onionSkin.getEnabled()) {
+      if (!onionSkin.isLoaded) {
+        onionSkin.load(
+          boardData.boards[currentBoard],
+          boardData.boards[currentBoard - 1],
+          boardData.boards[currentBoard + 1]
+        ).catch(err => console.warn(err))
+      }
+    }
+    //sfx.playEffect('metal')
+  })
+  toolbar.on('captions', () => {
+    // HACK!!!
+    let el = document.querySelector('#canvas-caption')
+    el.style.visibility = el.style.visibility == 'hidden'
+      ? 'visible'
+      : 'hidden'
+    //sfx.playEffect('metal')
+  })
+  toolbar.on('open-in-editor', () => {
+    openInEditor()
+  })
 
-  // storyboarderSketchPane.toolbar = toolbar
+  storyboarderSketchPane.toolbar = toolbar
 
-  // if (!toolbar.getState().captions) {
-  //   let el = document.querySelector('#canvas-caption')
-  //   el.style.visibility = 'hidden'
-  // }
+  if (!toolbar.getState().captions) {
+    let el = document.querySelector('#canvas-caption')
+    el.style.visibility = 'hidden'
+  }
 
   // HACK force initialize
   //sfx.setMute(true)
