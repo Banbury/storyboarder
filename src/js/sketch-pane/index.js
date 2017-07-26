@@ -414,7 +414,7 @@ class SketchPane extends EventEmitter {
 
   setPaintingOpacity (opacity) {
     this.paintingOpacity = opacity
-    this.paintingCanvas.style.opacity = opacity
+    // this.paintingCanvas.style.opacity = opacity
   }
 
   getPaintingKnockout () {
