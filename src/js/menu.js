@@ -42,6 +42,18 @@ const template = [
         }
       },
       {
+        label: 'Export a PDF',
+        click (item, focusedWindow, event) {
+          ipcRenderer.send('exportPDF')
+        }
+      },
+      {
+        label: 'Clean Up Scene …',
+        click (item, focusedWindow, event) {
+          ipcRenderer.send('exportCleanup')
+        }
+      },
+      {
         type: 'separator'
       },
       {
@@ -103,13 +115,6 @@ const template = [
       },
       {
         type: 'separator'
-      },
-      {
-        label: 'Open in Editor',
-        accelerator: 'CmdOrCtrl+.',
-        click ( item, focusedWindow, event) {
-          ipcRenderer.send('openInEditor')
-        }
       }
     ]
   },
@@ -357,6 +362,16 @@ const template = [
           ipcRenderer.send('flipBoard', true)
         }
       },
+      {
+        type: 'separator'
+      },
+      {
+        label: 'Edit in Photoshop',
+        accelerator: 'CmdOrCtrl+.',
+        click ( item, focusedWindow, event) {
+          ipcRenderer.send('openInEditor')
+        }
+      }
     ]
   },
   {
@@ -460,6 +475,13 @@ const template = [
       },
       {
         type: 'separator'
+      },
+      {
+        label: 'Key Commands...',
+        accelerator: 'CmdOrCtrl+K',
+        click ( item, focusedWindow, event) {
+          ipcRenderer.send('showKeyCommands')
+        }
       },
       {
         label: 'Show me a story tip!',

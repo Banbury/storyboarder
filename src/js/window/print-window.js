@@ -48,6 +48,8 @@ const print = () => {
       break
   }
 
+  ipcRenderer.send('analyticsEvent', 'Board', 'print', null, document.querySelector('#copies').value)
+
   let output = child_process.execSync(cmd)
 }
 
@@ -169,3 +171,8 @@ ipcRenderer.on('worksheetData', (event, _aspectRatio, _currentScene, _scriptData
   scriptData = _scriptData
   generateWorksheet()
 })
+
+window.ondragover = () => { return false }
+window.ondragleave = () => { return false }
+window.ondragend = () => { return false }
+window.ondrop = () => { return false }

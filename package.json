@@ -1,7 +1,7 @@
 {
   "name": "storyboarder",
   "productName": "Storyboarder",
-  "version": "0.7.0",
+  "version": "0.8.6",
   "description": "The fastest way to storyboard.",
   "main": "src/js/main.js",
   "scripts": {
@@ -9,7 +9,8 @@
     "dist:mac": "build -m",
     "dist:win": "build -w",
     "dist:linux": "build -l",
-    "dist": "build -mwl"
+    "dist": "build -mwl",
+    "test": "./node_modules/.bin/electron-mocha --renderer test/**/*.test.js"
   },
   "repository": {
     "type": "git",
@@ -49,16 +50,28 @@
           "path": "/Applications"
         }
       ]
+    },
+    "fileAssociations": {
+      "ext": "storyboarder",
+      "name": "STORYBOARDER"
+    },
+    "nsis": {
+      "perMachine": true
     }
   },
   "devDependencies": {
     "electron": "1.7.2",
-    "electron-builder": "19.8.0"
+    "electron-builder": "19.8.0",
+    "electron-mocha": "4.0.0",
+    "mocha": "3.4.2",
+    "mock-fs": "4.4.1",
+    "tmp": "0.0.31"
   },
   "dependencies": {
     "ag-psd": "^1.0.0",
     "color-js": "^1.0.4",
     "eases": "1.0.8",
+    "electron-google-analytics": "0.0.16",
     "electron-is-dev": "0.1.2",
     "electron-localshortcut": "^1.0.0",
     "electron-updater": "2.4.3",
@@ -76,6 +89,7 @@
     "tether-tooltip": "1.2.0",
     "tonal": "0.69.1",
     "tone": "^0.10.0",
+    "trash": "4.0.1",
     "vkey": "1.0.1"
   }
 }

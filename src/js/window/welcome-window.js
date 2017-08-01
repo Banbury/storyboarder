@@ -17,7 +17,7 @@ let updateRecentDocuments = () => {
   let recentDocuments = prefsModule.getPrefs('welcome')['recentDocuments']
   if (recentDocuments && recentDocuments.length>0) {
     for (var recentDocument of recentDocuments) {
-      html.push(`<div class="recent-item" data-filename="${recentDocument.filename}"><img src="./img/fileicon.png"><div class="text">`)
+      html.push(`<div class="recent-item" data-filename="${recentDocument.filename}"><img src="./img/fileicon.png" draggable="false"><div class="text">`)
       let filename = recentDocument.filename.split(path.sep)
       filename = filename[filename.length-1]
       html.push(`<h2>${recentDocument.title}</h2>`)
@@ -106,3 +106,20 @@ sfx.init()
 ipcRenderer.on('updateRecentDocuments', (event, args)=>{
   updateRecentDocuments()
 })
+
+window.ondragover = () => { return false }
+window.ondragleave = () => { return false }
+window.ondragend = () => { return false }
+window.ondrop = e => {
+  e.preventDefault()
+  if(!e || !e.dataTransfer || !e.dataTransfer.files || !e.dataTransfer.files.length) {
+    return
+  }
+  for(let file of e.dataTransfer.files) {
+    if(file.name.indexOf(".storyboarder") > -1) {
+      hasStoryboarderFile = true
+      ipcRenderer.send('openFile', file.path)
+      break
+    }
+  }
+}

@@ -1,6 +1,7 @@
 const path = require('path')
 
-const { boardFileImageSize, msecsToFrames, boardFilenameForExport } = require('./common')
+const { msecsToFrames } = require('./common')
+const { boardFileImageSize, boardFilenameForExport } = require('../models/board')
 const util = require('../utils')
 
 // fcp templating
@@ -129,13 +130,13 @@ const generateFinalCutProXml = data =>
 </xmeml>
 `
 
-const generateFinalCutProData = (boardData, { boardAbsolutePath, outputPath }) => {
+const generateFinalCutProData = (boardData, { projectFileAbsolutePath, outputPath }) => {
   let [width, height] = boardFileImageSize(boardData)
 
-  let dirname = path.dirname(boardAbsolutePath)
+  let dirname = path.dirname(projectFileAbsolutePath)
 
-  let extname = path.extname(boardAbsolutePath)
-  let basenameWithoutExt = path.basename(boardAbsolutePath, extname)
+  let extname = path.extname(projectFileAbsolutePath)
+  let basenameWithoutExt = path.basename(projectFileAbsolutePath, extname)
 
   let clipItems = []
   let currFrame = 0
@@ -150,8 +151,6 @@ const generateFinalCutProData = (boardData, { boardAbsolutePath, outputPath }) =
 
     let lastFrame = msecsToFrames(24, duration),
         endFrame = Math.round(currFrame + lastFrame)
-
-    console.log(board.duration)
 
     let clipItem = {
       start: currFrame,

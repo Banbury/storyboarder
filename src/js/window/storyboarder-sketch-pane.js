@@ -1,11 +1,18 @@
 const EventEmitter = require('events').EventEmitter
 
+const {ipcRenderer} = require('electron')
+
+
 const SketchPane = require('../sketch-pane')
 const Brush = require('../sketch-pane/brush')
 const LineMileageCounter = require('./line-mileage-counter')
 
 const keytracker = require('../utils/keytracker')
 const util = require('../utils')
+
+const prefsModule = require('electron').remote.require('./prefs.js')
+const enableBrushCursor = prefsModule.getPrefs('main')['enableBrushCursor']
+const enableStabilizer = prefsModule.getPrefs('main')['enableStabilizer']
 
 /**
  *  Wrap the SketchPane component with features Storyboarder needs
@@ -18,6 +25,8 @@ const util = require('../utils')
 class StoryboarderSketchPane extends EventEmitter {
   constructor (el, canvasSize) {
     super()
+    this.prevTimeStamp = 0
+    this.frameLengthArray = []
 
     this.cancelTransform() // set Drawing Strategy
 
@@ -43,8 +52,8 @@ class StoryboarderSketchPane extends EventEmitter {
     this.scaleFactor = null
 
     this.isPointerDown = false
-    this.moveEventsQueue = []
-    this.cursorEventsQueue = []
+    this.lastMoveEvent = null
+    this.lastCursorEvent = null
     this.lineMileageCounter = new LineMileageCounter()
 
     this.isMultiLayerOperation = false
@@ -52,16 +61,23 @@ class StoryboarderSketchPane extends EventEmitter {
     this.prevTool = null
     this.toolbar = null
 
-    // brush pointer
-    this.brushPointerContainer = document.createElement('div')
-    this.brushPointerContainer.className = 'brush-pointer'
-    this.brushPointerContainer.style.position = 'absolute'
-    this.brushPointerContainer.style.pointerEvents = 'none'
-    document.body.appendChild(this.brushPointerContainer)
-
     // container
     this.containerEl = document.createElement('div')
     this.containerEl.classList.add('container')
+
+    // brush pointer
+    if(enableBrushCursor) {
+      this.brushPointerContainer = document.createElement('div')
+      this.brushPointerContainer.className = 'brush-pointer'
+      this.brushPointerContainer.style.position = 'absolute'
+      this.brushPointerContainer.style.pointerEvents = 'none'
+      document.body.appendChild(this.brushPointerContainer)
+    } else {
+      // the query returns null unless we wait for the next tick.
+      process.nextTick(()=>{
+        document.querySelector('#storyboarder-sketch-pane .container').style.cursor = 'default'
+      })
+    }
 
     // sketchpane
     this.sketchPane = new SketchPane()
@@ -80,7 +96,11 @@ class StoryboarderSketchPane extends EventEmitter {
     this.sketchPane.addLayer(5) // composite
     this.sketchPane.selectLayer(1)
 
-    this.sketchPane.setToolStabilizeLevel(10)
+    let stabilizeLevel = 0
+    if(enableStabilizer) {
+      stabilizeLevel = 10
+    }
+    this.sketchPane.setToolStabilizeLevel(stabilizeLevel)
     this.sketchPane.setToolStabilizeWeight(0.2)
 
     this.el.addEventListener('pointerdown', this.canvasPointerDown)
@@ -178,7 +198,7 @@ class StoryboarderSketchPane extends EventEmitter {
   canvasPointerMove (e) {
     let pointerPosition = this.getRelativePosition(e.clientX, e.clientY)
 
-    this.moveEventsQueue.push({
+    this.lastMoveEvent = {
       clientX: e.clientX,
       clientY: e.clientY,
 
@@ -186,29 +206,53 @@ class StoryboarderSketchPane extends EventEmitter {
       y: pointerPosition.y,
       pointerType: e.pointerType,
       pressure: e.pressure
-    })
+    }
   }
 
   canvasPointerUp (e) {
     this.isPointerDown = false
     this.strategy.canvasPointerUp(event)
+
+    if (this.frameLengthArray.length > 20) {
+      // get average frame duration
+      let sum = this.frameLengthArray.reduce(function(a, b) { return a + b; })
+      let avg = sum / this.frameLengthArray.length
+      // get longest
+      this.frameLengthArray.sort().pop()
+      let max = this.frameLengthArray.reverse()[0]
+      // send data
+      // 1 in 10 chance to send
+      if (Date.now() % 8 == 1) {
+        ipcRenderer.send('analyticsTiming', 'Performance', 'averageframe', avg)
+        ipcRenderer.send('analyticsTiming', 'Performance', 'maxframe', max)
+      }
+    }
+    this.frameLengthArray = []
   }
 
   canvasCursorMove (event) {
-    this.cursorEventsQueue.push({ clientX: event.clientX, clientY: event.clientY })
+    this.lastCursorEvent = { clientX: event.clientX, clientY: event.clientY }
   }
 
   canvasPointerOver () {
     this.sketchPaneDOMElement.addEventListener('pointermove', this.canvasCursorMove)
-    this.brushPointerContainer.style.display = 'block'
+    if(this.brushPointerContainer && this.brushPointerContainer.style) {
+      this.brushPointerContainer.style.visibility = 'visible'
+    }
   }
 
   canvasPointerOut () {
     this.sketchPaneDOMElement.removeEventListener('pointermove', this.canvasCursorMove)
-    this.brushPointerContainer.style.display = 'none'
+    if(this.brushPointerContainer && this.brushPointerContainer.style) {
+      this.brushPointerContainer.style.visibility = 'hidden'
+    }
   }
 
   onFrame (timestep) {
+    if (this.isPointerDown) {
+      this.frameLengthArray.push(timestep - this.prevTimeStamp)
+    }
+    this.prevTimeStamp = timestep
     this.renderEvents()
     requestAnimationFrame(this.onFrame)
   }
@@ -218,25 +262,19 @@ class StoryboarderSketchPane extends EventEmitter {
         moveEvent
 
     // render the cursor
-    if (this.cursorEventsQueue.length) {
-      lastCursorEvent = this.cursorEventsQueue.pop()
-
+    if (this.lastCursorEvent && this.brushPointerContainer && this.brushPointerContainer.style) {
       // update the position of the cursor
-      this.brushPointerContainer.style.transform = 'translate(' + lastCursorEvent.clientX + 'px, ' + lastCursorEvent.clientY + 'px)'
-
-      this.cursorEventsQueue = []
+      this.brushPointerContainer.style.transform = 'translate(' + this.lastCursorEvent.clientX + 'px, ' + this.lastCursorEvent.clientY + 'px)'
+      this.lastCursorEvent = null
     }
 
     // render movements
-    if (this.moveEventsQueue.length) {
-      while (this.moveEventsQueue.length) {
-        moveEvent = this.moveEventsQueue.shift()
-        this.strategy.renderMoveEvent(moveEvent)
-        this.lineMileageCounter.add({ x: moveEvent.y, y: moveEvent.y })
-      }
+    if (this.lastMoveEvent) {
+      this.strategy.renderMoveEvent(this.lastMoveEvent)
+      this.lineMileageCounter.add({ x: this.lastMoveEvent.y, y: this.lastMoveEvent.y })
 
       // report only the most recent event back to the app
-      this.emit('pointermove', moveEvent.x, moveEvent.y, moveEvent.pointerType === "pen" ? moveEvent.pressure : 1, moveEvent.pointerType)
+      this.emit('pointermove', this.lastMoveEvent.x, this.lastMoveEvent.y, this.lastMoveEvent.pointerType === "pen" ? this.lastMoveEvent.pressure : 1, this.lastMoveEvent.pointerType)
     }
   }
 
@@ -420,20 +458,29 @@ class StoryboarderSketchPane extends EventEmitter {
   }
 
   updatePointer () {
+    if(!enableBrushCursor) {
+      return
+    }
     let image = null
     let threshold = 0xff
     // TODO why are we creating a new pointer every time?
-    let brushPointer = this.sketchPane.createBrushPointer(
+    let brushPointerCanvas = this.sketchPane.createBrushPointer(
       image, 
       Math.max(6, this.brush.getSize() * this.scaleFactor),
       this.brush.getAngle(),
       threshold,
       true)
+    
+    let brushPointer = document.createElement('img')
+    brushPointer.src = brushPointerCanvas.toDataURL('image/png')
+    brushPointer.style.width = brushPointerCanvas.width
+    brushPointer.style.height = brushPointerCanvas.height
     brushPointer.style.display = 'block'
-    brushPointer.style.setProperty('margin-left', '-' + (brushPointer.width * 0.5) + 'px')
-    brushPointer.style.setProperty('margin-top', '-' + (brushPointer.height * 0.5) + 'px')
+    brushPointer.style.setProperty('margin-left', '-' + (brushPointerCanvas.width * 0.5) + 'px')
+    brushPointer.style.setProperty('margin-top', '-' + (brushPointerCanvas.height * 0.5) + 'px')
 
     this.brushPointerContainer.innerHTML = ''
+
     this.brushPointerContainer.appendChild(brushPointer)
   }
 
@@ -618,7 +665,27 @@ class StoryboarderSketchPane extends EventEmitter {
     if (this.toolbar) {
       this.setBrushTool(this.toolbar.getBrushOptions().kind, this.toolbar.getBrushOptions())
     }
-  }  
+  }
+  
+  getCanvasImageSources () {
+    return [
+      // reference
+      {
+        canvasImageSource: this.sketchPane.getLayerCanvas(0),
+        opacity: this.sketchPane.getLayerOpacity(0)
+      },
+      // main
+      {
+        canvasImageSource: this.sketchPane.getLayerCanvas(1),
+        opacity: this.sketchPane.getLayerOpacity(1)
+      },
+      // notes
+      {
+        canvasImageSource: this.sketchPane.getLayerCanvas(3),
+        opacity: this.sketchPane.getLayerOpacity(3)
+      }
+    ]
+  }
 }
 
 class DrawingStrategy {
@@ -650,8 +717,8 @@ class DrawingStrategy {
     // force render remaining move events early, before frame loop
     this.container.renderEvents()
     // clear both event queues
-    this.container.moveEventsQueue = []
-    this.container.cursorEventsQueue = []
+    this.container.lastMoveEvent = null
+    this.container.lastCursorEvent = null
 
     let pointerPosition = this.container.getRelativePosition(e.clientX, e.clientY)
     this.container.sketchPane.up(pointerPosition.x, pointerPosition.y, e.pointerType === "pen" ? e.pressure : 1)
@@ -723,7 +790,9 @@ class MovingStrategy {
       }
     }
 
-    this.container.brushPointerContainer.style.visibility = 'hidden'
+    if(this.container.brushPointerContainer && this.container.brushPointerContainer.style) {
+      this.container.brushPointerContainer.style.visibility = 'hidden'
+    }
     document.querySelector('#storyboarder-sketch-pane .container').style.cursor = 'move'
   }
 
@@ -758,8 +827,8 @@ class MovingStrategy {
     // force render remaining move events early, before frame loop
     this.container.renderEvents()
     // clear both event queues
-    this.container.moveEventsQueue = []
-    this.container.cursorEventsQueue = []
+    this.container.lastMoveEvent = null
+    this.container.lastCursorEvent = null
 
     // reset the painting layer
     let size = this.container.sketchPane.getCanvasSize()
@@ -831,9 +900,13 @@ class MovingStrategy {
     // force stop
     this.container.stopMultiLayerOperation()
 
-    this.container.brushPointerContainer.style.visibility = 'visible'
+    if(this.container.brushPointerContainer && this.container.brushPointerContainer.style) {
+      this.container.brushPointerContainer.style.visibility = 'visible'
+      document.querySelector('#storyboarder-sketch-pane .container').style.cursor = 'none'
+    } else {
+      document.querySelector('#storyboarder-sketch-pane .container').style.cursor = 'default'
+    }
     this.container.updatePointer()
-    document.querySelector('#storyboarder-sketch-pane .container').style.cursor = 'none'
 
     this.storedLayers = null
   }
@@ -847,7 +920,9 @@ class ScalingStrategy {
     this.translate = [0, 0]
     this.scale = 1
 
-    this.container.brushPointerContainer.style.visibility = 'hidden'
+    if(this.container.brushPointerContainer && this.container.brushPointerContainer.style) {
+      this.container.brushPointerContainer.style.visibility = 'hidden'
+    }
     document.querySelector('#storyboarder-sketch-pane .container').style.cursor = 'ew-resize'
   }
 
@@ -884,8 +959,8 @@ class ScalingStrategy {
     // force render remaining move events early, before frame loop
     this.container.renderEvents()
     // clear both event queues
-    this.container.moveEventsQueue = []
-    this.container.cursorEventsQueue = []
+    this.container.lastMoveEvent = null
+    this.container.lastCursorEvent = null
 
     // reset the painting layer
     let size = this.container.sketchPane.getCanvasSize()
@@ -968,9 +1043,13 @@ class ScalingStrategy {
     // force stop
     this.container.stopMultiLayerOperation()
 
-    this.container.brushPointerContainer.style.visibility = 'visible'
+    if(this.container.brushPointerContainer && this.container.brushPointerContainer.style) {
+      this.container.brushPointerContainer.style.visibility = 'visible'
+      document.querySelector('#storyboarder-sketch-pane .container').style.cursor = 'none'
+    } else {
+      document.querySelector('#storyboarder-sketch-pane .container').style.cursor = 'default'
+    }
     this.container.updatePointer()
-    document.querySelector('#storyboarder-sketch-pane .container').style.cursor = 'none'
   }
 }
 

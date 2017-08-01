@@ -6,6 +6,8 @@ const isDev = require('electron-is-dev')
 
 const prefModule = require('./prefs')
 
+const analytics = require('./analytics')
+
 const fountain = require('./vendor/fountain')
 const fountainDataParser = require('./fountain-data-parser')
 const fountainSceneIdUtil = require('./fountain-scene-id-util')
@@ -27,6 +29,8 @@ let newWindow
 let mainWindow
 let printWindow
 let sketchWindow
+let keyCommandWindow
+
 let welcomeInprogress
 
 let statWatcher
@@ -40,6 +44,8 @@ let prefs = prefModule.getPrefs('main')
 let currentFile
 let currentPath
 
+let toBeOpenedPath
+
 appServer.on('pointerEvent', (e)=> {
   console.log('pointerEvent')
 })
@@ -50,18 +56,23 @@ appServer.on('image', (e)=> {
   mainWindow.webContents.send('importImage', e.fileData)
 })
 
+// this only works on mac.
+app.on('open-file', (event, path) => {
+  event.preventDefault()
+  if (app.isReady()) {
+    openFile(path)
+  } else {
+    toBeOpenedPath = path
+  }
+})
 
-
-
-app.on('ready', ()=> {
- 
-
-
-
+app.on('ready', () => {
+  analytics.init(prefs.enableAnalytics)
+  openWelcomeWindow()
   // via https://github.com/electron/electron/issues/4690#issuecomment-217435222
   const argv = process.defaultApp ? process.argv.slice(2) : process.argv
 
-  // was an argument passed?
+  //was an argument passed?
   if (isDev && argv[0]) {
     let filePath = path.resolve(argv[0])
     if (fs.existsSync(filePath)) {
@@ -72,10 +83,26 @@ app.on('ready', ()=> {
       console.error('Could not load', filePath)
     }
   }
+ 
+  // this only works on mac.
+  if (toBeOpenedPath) {
+    openFile(toBeOpenedPath)
+    return
+  }
 
-  // open the welcome window when the app loads up first
-  openWelcomeWindow()
+
+  setInterval(()=>{ analytics.ping() }, 60*1000)
+
+  //open the welcome window when the app loads up first
 })
+
+let openKeyCommandWindow = ()=> {
+  keyCommandWindow = new BrowserWindow({width: 1158, height: 925, maximizable: false, center: true, show: false, resizable: false, frame: false, titleBarStyle: 'hidden-inset'})
+  keyCommandWindow.loadURL(`file://${__dirname}/../keycommand-window.html`)
+  keyCommandWindow.once('ready-to-show', () => {
+    setTimeout(()=>{keyCommandWindow.show()},500)
+  })
+}
 
 app.on('activate', ()=> {
   if (!mainWindow && !welcomeWindow) openWelcomeWindow()
@@ -120,12 +147,14 @@ let openWelcomeWindow = ()=> {
     setTimeout(() => {
       welcomeWindow.show()
       autoUpdater.init(welcomeWindow)
+      analytics.screenView('welcome')
     }, 300)
   })
 
   welcomeWindow.once('close', () => {
     welcomeWindow = null
     if (!welcomeInprogress) {
+      analytics.event('Application', 'quit')
       app.quit()
     } else {
       welcomeInprogress = false
@@ -187,7 +216,7 @@ let openFile = (file) => {
           //[scriptData, locations, characters, metadata]
           let processedData = processFountainData(data, true, false)
           addToRecentDocs(currentFile, processedData[3])
-          loadStoryboarderWindow(null, processedData[0], processedData[1], processedData[2], boardSettings, currentPath)
+          loadStoryboarderWindow(currentFile, processedData[0], processedData[1], processedData[2], boardSettings, currentPath)
         })
       } else {
         boardSettings = JSON.parse(fs.readFileSync(path.join(storyboardsPath, 'storyboard.settings')))
@@ -195,7 +224,7 @@ let openFile = (file) => {
         //[scriptData, locations, characters, metadata]
         let processedData = processFountainData(data, true, false)
         addToRecentDocs(currentFile, processedData[3])
-        loadStoryboarderWindow(null, processedData[0], processedData[1], processedData[2], boardSettings, currentPath)
+        loadStoryboarderWindow(currentFile, processedData[0], processedData[1], processedData[2], boardSettings, currentPath)
       }
 
     })
@@ -252,6 +281,26 @@ let importImagesDialogue = () => {
         }
         
         mainWindow.webContents.send('insertNewBoardsWithFiles', filepathsRecursive)
+      }
+    }
+  )
+}
+
+let importWorksheetDialogue = () => {
+  dialog.showOpenDialog(
+    {
+      title:"Import Worksheet", 
+      filters:[
+        {name: 'Images', extensions: ['png', 'jpg', 'jpeg']},
+      ],
+      properties: [
+        "openFile",
+      ]
+    },
+
+    (filepath)=>{
+      if (filepath) {
+        mainWindow.webContents.send('importWorksheets', filepath)
       }
     }
   )
@@ -377,6 +426,8 @@ let createNew = () => {
           addToRecentDocs(filePath, newBoardObject)
 
           loadStoryboarderWindow(filePath)
+
+          analytics.event('Application', 'new', aspects[response])
         })
       } else {
         console.log("error: already exists")
@@ -405,6 +456,8 @@ let loadStoryboarderWindow = (filename, scriptData, locations, characters, board
     width: Math.min(width, 2480),
     height: Math.min(height, 1350),
 
+    title: path.basename(filename),
+
     minWidth: 1024,
     minHeight: 640,
     show: false,
@@ -419,6 +472,7 @@ let loadStoryboarderWindow = (filename, scriptData, locations, characters, board
     } 
   })
 
+
   // http://stackoverflow.com/a/39305399
   const onErrorInWindow = (event, error, url, line) => {
     if (mainWindow) {
@@ -426,12 +480,14 @@ let loadStoryboarderWindow = (filename, scriptData, locations, characters, board
       mainWindow.webContents.openDevTools()
     }
     console.error(error, url, line)
+    analytics.exception(error, url, line)
   }
 
   if (isDev) ipcMain.on('errorInWindow', onErrorInWindow)
   mainWindow.loadURL(`file://${__dirname}/../main-window.html`)
   mainWindow.once('ready-to-show', () => {
     mainWindow.webContents.send('load', [filename, scriptData, locations, characters, boardSettings, currentPath])
+    analytics.screenView('main')
   })
 
   if (isDev) {
@@ -444,6 +500,8 @@ let loadStoryboarderWindow = (filename, scriptData, locations, characters, board
       if (isDev) ipcMain.removeListener('errorInWindow', onErrorInWindow)
       welcomeWindow.webContents.send('updateRecentDocuments')
       welcomeWindow.show()
+      analytics.screenView('welcome')
+      analytics.event('Application', 'close')
     }
   })
 }
@@ -661,6 +719,7 @@ ipcMain.on('textInputMode', (event, arg)=> {
 
 ipcMain.on('preferences', (event, arg) => {
   preferencesUI.show()
+  analytics.screenView('preferences')
 })
 
 ipcMain.on('toggleGuide', (event, arg) => {
@@ -687,6 +746,14 @@ ipcMain.on('exportImages', (event, arg) => {
   mainWindow.webContents.send('exportImages', arg)
 })
 
+ipcMain.on('exportPDF', (event, arg) => {
+  mainWindow.webContents.send('exportPDF', arg)
+})
+
+ipcMain.on('exportCleanup', (event, arg) => {
+  mainWindow.webContents.send('exportCleanup', arg)
+})
+
 ipcMain.on('printWorksheet', (event, arg) => {
   //openPrintWindow()
   mainWindow.webContents.send('printWorksheet', arg)
@@ -694,7 +761,8 @@ ipcMain.on('printWorksheet', (event, arg) => {
 
 ipcMain.on('importWorksheets', (event, arg) => {
   //openPrintWindow()
-  mainWindow.webContents.send('importWorksheets', arg)
+  importWorksheetDialogue()
+  //mainWindow.webContents.send('importWorksheets', arg)
 })
 
 ipcMain.on('save', (event, arg) => {
@@ -703,4 +771,22 @@ ipcMain.on('save', (event, arg) => {
 
 ipcMain.on('prefs:change', (event, arg) => {
   mainWindow.webContents.send('prefs:change', arg)
+})
+
+ipcMain.on('showKeyCommands', (event, arg) => {
+  openKeyCommandWindow()
+  analytics.screenView('key commands')
+})
+
+ipcMain.on('analyticsScreen', (event, screenName) => {
+  analytics.screenView(screenName)
+})
+
+ipcMain.on('analyticsEvent', (event, category, action, label, value) => {
+  analytics.event(category, action, label, value)
+})
+
+
+ipcMain.on('analyticsTiming', (event, category, name, ms) => {
+  analytics.timing(category, name, ms)
 })

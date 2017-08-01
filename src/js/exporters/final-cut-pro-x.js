@@ -1,7 +1,8 @@
 // https://developer.apple.com/library/content/documentation/FinalCutProX/Reference/FinalCutProXXMLFormat
 const path = require('path')
 
-const { boardFileImageSize, msecsToFrames, boardFilenameForExport } = require('./common')
+const { msecsToFrames } = require('./common')
+const { boardFileImageSize, boardFilenameForExport } = require('../models/board')
 const util = require('../utils')
 
 // <asset id="r3" name="board-1-9MZ1P" src="file:///board-1-9MZ1P.png" start="0s" duration="0s" hasVideo="1" format="r2"></asset>
@@ -35,13 +36,13 @@ const generateFinalCutProXXml = data =>
     </library>
 </fcpxml>`
 
-const generateFinalCutProXData = (boardData, { boardAbsolutePath, outputPath }) => {
+const generateFinalCutProXData = (boardData, { projectFileAbsolutePath, outputPath }) => {
   let [width, height] = boardFileImageSize(boardData)
 
-  let dirname = path.dirname(boardAbsolutePath)
+  let dirname = path.dirname(projectFileAbsolutePath)
 
-  let extname = path.extname(boardAbsolutePath)
-  let basenameWithoutExt = path.basename(boardAbsolutePath, extname)
+  let extname = path.extname(projectFileAbsolutePath)
+  let basenameWithoutExt = path.basename(projectFileAbsolutePath, extname)
 
   let assets = [],
       videos = []
