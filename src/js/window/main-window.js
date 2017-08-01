@@ -862,13 +862,32 @@ let loadBoardUI = ()=> {
   toolbar.on('pomodoro-rest', () => {
     sfx.positive()
     pomodoroTimerView.attachTo(document.getElementById('toolbar-pomodoro-rest'))
-    // colorPicker.removeAllListeners('color') // HACK
 
     pomodoroTimerView.addListener('update', (data)=>{
       toolbar.updatePomodoroTimer(data)
+
+      if(isRecording && data.state === "completed") {
+        let snapshotCanvas = storyboarderSketchPane.sketchPane.getLayerCanvas(1)
+        // make sure we capture the last frame
+        canvasRecorder.capture(snapshotCanvas, {force: true})
+        canvasRecorder.stop()
+        isRecording = false
+      }
     })
+
     pomodoroTimerView.addListener('start', ()=>{
       toolbar.startPomodoroTimer()
+
+      isRecording = true
+      let exportsPath = exporterCommon.ensureExportsPathExists(boardFilename)
+      canvasRecorder = new CanvasRecorder({
+        exportsPath: exportsPath,
+        outputStrategy: "CanvasBufferOutputGifStrategy",
+        recordingStrategy: "RecordingStrategyTimeRatio",
+        recordingTime: 10,
+        outputTime: 1,
+      })
+      canvasRecorder.start()
     })
 
   })
