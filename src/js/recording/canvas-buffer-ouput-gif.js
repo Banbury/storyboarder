@@ -19,9 +19,9 @@ class CanvasBufferOutputGifStrategy {
     encoder.createReadStream().pipe(fs.createWriteStream(this.filepath))
     encoder.start()
     encoder.setRepeat(0)   // 0 for repeat, -1 for no-repeat
-    encoder.setDelay(100)  // frame delay in ms
     let i = 0;
     while(buffer.length) {
+      encoder.setDelay(100)  // frame delay in ms
       let bufferData = buffer.splice(0, 1)[0]
       context.fillRect(0, 0, this.width, this.height)
       context.drawImage(bufferData.canvas, 0, 0, this.width, this.height)
@@ -29,7 +29,7 @@ class CanvasBufferOutputGifStrategy {
         encoder.setDelay(bufferData.metaData.duration)
       }
       if(buffer.length === 0) { // hold on the last frame for a second.
-        encoder.setDelay(500)
+        encoder.setDelay(2000)
       }
       encoder.addFrame(context)
       if(pool) {

@@ -66,7 +66,7 @@ class RecordingStrategyTimeRatio {
   constructor(options) {
     this.recordingTime = options.recordingTime || 10
     this.outputTime = options.outputTime || 1
-    this.timeAllowance = (this.recordingTime / this.outputTime)*1000
+    this.timeAllowance = (this.recordingTime / this.outputTime)*500
   }
 
   isFrameRecorded() {
