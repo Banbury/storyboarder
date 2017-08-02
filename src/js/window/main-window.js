@@ -409,8 +409,12 @@ let loadBoardUI = ()=> {
 
     // save progress image
     if(isRecording) {
-      let snapshotCanvas = storyboarderSketchPane.sketchPane.getLayerCanvas(1)
-      canvasRecorder.capture(snapshotCanvas)
+      let snapshotCanvases = [
+        storyboarderSketchPane.sketchPane.getLayerCanvas(0),
+        storyboarderSketchPane.sketchPane.getLayerCanvas(1),
+        storyboarderSketchPane.sketchPane.getLayerCanvas(3),
+      ]
+      canvasRecorder.capture(snapshotCanvases)
     }
   })
   storyboarderSketchPane.on('pointerdown', () => {
@@ -867,7 +871,11 @@ let loadBoardUI = ()=> {
       toolbar.updatePomodoroTimer(data)
 
       if(isRecording && data.state === "completed") {
-        let snapshotCanvas = storyboarderSketchPane.sketchPane.getLayerCanvas(1)
+        let snapshotCanvases = [
+          storyboarderSketchPane.sketchPane.getLayerCanvas(0),
+          storyboarderSketchPane.sketchPane.getLayerCanvas(1),
+          storyboarderSketchPane.sketchPane.getLayerCanvas(3)
+        ]
         // make sure we capture the last frame
         canvasRecorder.capture(snapshotCanvas, {force: true})
         canvasRecorder.stop()
@@ -2648,30 +2656,34 @@ window.onkeydown = (e)=> {
         }
         break
       // r
-      // case 82:
-      //   if(isRecording) {
-      //     let snapshotCanvas = storyboarderSketchPane.sketchPane.getLayerCanvas(1)
-      //     // make sure we capture the last frame
-      //     canvasRecorder.capture(snapshotCanvas, {force: true})
-      //     canvasRecorder.stop()
-      //     isRecording = false
-      //   } else {
-      //     isRecording = true
+      case 82:
+        if(isRecording) {
+          let snapshotCanvases = [
+            storyboarderSketchPane.sketchPane.getLayerCanvas(0),
+            storyboarderSketchPane.sketchPane.getLayerCanvas(1),
+            storyboarderSketchPane.sketchPane.getLayerCanvas(3)
+          ]
+          // make sure we capture the last frame
+          canvasRecorder.capture(snapshotCanvases, {force: true})
+          canvasRecorder.stop()
+          isRecording = false
+        } else {
+          isRecording = true
 
-      //     let outputStrategy = "CanvasBufferOutputGifStrategy"
-      //     if (e.metaKey || e.ctrlKey) {
-      //       outputStrategy = "CanvasBufferOutputFileStrategy"
-      //     }
-      //     let exportsPath = exporterCommon.ensureExportsPathExists(boardFilename)
-      //     canvasRecorder = new CanvasRecorder({
-      //       exportsPath: exportsPath,
-      //       outputStrategy: outputStrategy,
-      //       recordingStrategy: "RecordingStrategyTimeRatio",
-      //       recordingTime: 10,
-      //       outputTime: 1,
-      //     })
-      //     canvasRecorder.start()
-      //   }
+          let outputStrategy = "CanvasBufferOutputGifStrategy"
+          if (e.metaKey || e.ctrlKey) {
+            outputStrategy = "CanvasBufferOutputFileStrategy"
+          }
+          let exportsPath = exporterCommon.ensureExportsPathExists(boardFilename)
+          canvasRecorder = new CanvasRecorder({
+            exportsPath: exportsPath,
+            outputStrategy: outputStrategy,
+            recordingStrategy: "RecordingStrategyFrameRatio", //"RecordingStrategyTimeRatio",
+            recordingTime: 10,
+            outputTime: 1,
+          })
+          canvasRecorder.start()
+        }
       // V
       case 86:
         if (e.metaKey || e.ctrlKey) {

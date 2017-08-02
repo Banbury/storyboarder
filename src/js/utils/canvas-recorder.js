@@ -34,14 +34,14 @@ class Recorder {
         outputStrategy = new CanvasBufferOutputFileStrategy()
         break
     }
-    this.screenRecordingBuffer = this.screenRecordingBuffer = new CanvasBuffer({outputStrategy})
+    this.screenRecordingBuffer = new CanvasBuffer({outputStrategy})
   }
 
   start() {
     this.isRecording = true
   }
 
-  capture(snapshotCanvas, options={force:false}) {
+  capture(snapshotCanvases, options={force:false}) {
     if(!this.isRecording && !options.force) {
       return
     }
@@ -50,8 +50,9 @@ class Recorder {
       return
     }
 
+    
     let filepath = path.join(this.exportsPath, `recording-${this.screenRecordingFrameNum++}.png`)
-    this.screenRecordingBuffer.addToBuffer(snapshotCanvas, filepath)
+    this.screenRecordingBuffer.addToBuffer(snapshotCanvases, filepath)
   }
 
   stop() {
@@ -89,6 +90,10 @@ class RecordingStrategyFrameRatio {
   }
 
   isFrameRecorded() {
+    if(this.dropFrameCount === 0) {
+      this.screenRecordingFrameNum++
+      return true
+    }
     return this.screenRecordingFrameNum++ % this.dropFrameCount === 0
   }
 }
