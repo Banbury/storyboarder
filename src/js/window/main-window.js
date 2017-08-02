@@ -44,7 +44,7 @@ const LAYER_INDEX_REFERENCE = 0
 const LAYER_INDEX_MAIN = 1
 const LAYER_INDEX_NOTES = 2
 
-const CanvasRecorder = require('../utils/canvas-recorder.js')
+const CanvasRecorder = require('../recording/canvas-recorder.js')
 let isRecording = false
 let canvasRecorder
 

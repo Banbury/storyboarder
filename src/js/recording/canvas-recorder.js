@@ -1,8 +1,8 @@
 const path = require('path')
 
-const CanvasBufferOutputFileStrategy = require('../utils/canvas-buffer-ouput-file.js')
-const CanvasBufferOutputGifStrategy = require('../utils/canvas-buffer-ouput-gif.js')
-const CanvasBuffer = require('../utils/canvas-buffer.js')
+const CanvasBufferOutputFileStrategy = require('./canvas-buffer-ouput-file.js')
+const CanvasBufferOutputGifStrategy = require('./canvas-buffer-ouput-gif.js')
+const CanvasBuffer = require('./canvas-buffer.js')
 
 class Recorder {
   constructor(options = {}) {
