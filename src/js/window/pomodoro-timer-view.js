@@ -146,7 +146,7 @@ class PomodorTimerView extends EventEmitter {
     let minutes = parseInt(this.minutesInput.value)
     this.pomodoroTimer.setDuration(minutes)
     this.pomodoroTimer.start()
-    this.emit("start")
+    this.emit("start", {duration: minutes})
   }
 
   cancelTimer() {

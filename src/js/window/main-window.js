@@ -882,7 +882,7 @@ let loadBoardUI = ()=> {
       }
     })
 
-    pomodoroTimerView.addListener('start', ()=>{
+    pomodoroTimerView.addListener('start', (data)=>{
       toolbar.startPomodoroTimer()
 
       isRecording = true
@@ -891,7 +891,7 @@ let loadBoardUI = ()=> {
         exportsPath: exportsPath,
         outputStrategy: "CanvasBufferOutputGifStrategy",
         recordingStrategy: "RecordingStrategyTimeRatio",
-        recordingTime: 10,
+        recordingTime: data.duration,
         outputTime: 1,
       })
       canvasRecorder.start()

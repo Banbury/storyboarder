@@ -19,7 +19,7 @@ class CanvasBufferOutputGifStrategy {
     encoder.createReadStream().pipe(fs.createWriteStream(this.filepath))
     encoder.start()
     encoder.setRepeat(0)   // 0 for repeat, -1 for no-repeat
-    encoder.setDelay(33)  // frame delay in ms
+    encoder.setDelay(100)  // frame delay in ms
     let i = 0;
     while(buffer.length) {
       let bufferData = buffer.splice(0, 1)[0]
