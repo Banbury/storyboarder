@@ -389,6 +389,7 @@ class Toolbar extends EventEmitter {
         break
       case 'open-in-editor':
         this.emit('open-in-editor')
+        break
       case 'pomodoro-rest':
         sfx.playEffect('metal')
         this.emit('pomodoro-rest')
