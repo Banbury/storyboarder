@@ -26,7 +26,8 @@ class Recorder {
     this.exportsPath = options.exportsPath
     switch(options.outputStrategy) {
       case "CanvasBufferOutputGifStrategy":
-        let filepath = path.join(options.exportsPath, `recording.gif`)
+        let filepath = path.join(options.exportsPath, options.filename + '.gif')
+        
         outputStrategy = new CanvasBufferOutputGifStrategy({filepath: filepath, width: 400, height: 225})
         break
       case "CanvasBufferOutputFileStrategy":

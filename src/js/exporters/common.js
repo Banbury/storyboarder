@@ -1,5 +1,6 @@
 const fs = require('fs')
 const path = require('path')
+const moment = require('moment')
 
 const {
   boardFileImageSize,
@@ -148,11 +149,25 @@ const ensureExportsPathExists = (projectFileAbsolutePath) => {
   return exportsPath
 }
 
+const filenameFromBoardFilename = (boardFilename) => {
+  let filename = boardFilename.split(path.sep)
+  filename = filename[filename.length-1]
+  return filename
+}
+
+const exportFilenameFromBoardFilename = (boardFilename) => {
+  let filename = boardFilename.split(path.sep)
+  filename = filename[filename.length-1]
+  return filename + moment().format('YYYY-MM-DD hh.mm.ss')
+}
+
 module.exports = {
   msecsToFrames,
   getImage,
   exportFlattenedBoard,
   flattenCanvasImageSourcesDataToContext,
   flattenBoardToCanvas,
-  ensureExportsPathExists
+  ensureExportsPathExists,
+  filenameFromBoardFilename,
+  exportFilenameFromBoardFilename
 }

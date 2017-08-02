@@ -887,8 +887,10 @@ let loadBoardUI = ()=> {
 
       isRecording = true
       let exportsPath = exporterCommon.ensureExportsPathExists(boardFilename)
+      let filename = exporterCommon.exportFilenameFromBoardFilename(boardFilename)
       canvasRecorder = new CanvasRecorder({
         exportsPath: exportsPath,
+        filename: filename,
         outputStrategy: "CanvasBufferOutputGifStrategy",
         recordingStrategy: "RecordingStrategyTimeRatio",
         recordingTime: data.duration,

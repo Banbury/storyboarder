@@ -12,7 +12,7 @@ class CanvasBufferOutputFileStrategy {
     let i = 0;
     while(buffer.length) {
       let bufferData = buffer.splice(0, 1)[0]
-      let filepath = path.join(this.exportsPath, `recording-${bufferData.metaData.frameNum}.png`)
+      let filepath = path.join(this.exportsPath, `${bufferData.metaData.filename}-${bufferData.metaData.frameNum}.png`)
       let imageData = bufferData.canvas
         .toDataURL('image/png')
         .replace(/^data:image\/\w+;base64,/, '')
