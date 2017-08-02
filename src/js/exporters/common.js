@@ -152,13 +152,8 @@ const ensureExportsPathExists = (projectFileAbsolutePath) => {
 const filenameFromBoardFilename = (boardFilename) => {
   let filename = boardFilename.split(path.sep)
   filename = filename[filename.length-1]
+  filename = filename.replace(".storyboarder", "")
   return filename
-}
-
-const exportFilenameFromBoardFilename = (boardFilename) => {
-  let filename = boardFilename.split(path.sep)
-  filename = filename[filename.length-1]
-  return filename + moment().format('YYYY-MM-DD hh.mm.ss')
 }
 
 module.exports = {
@@ -168,6 +163,5 @@ module.exports = {
   flattenCanvasImageSourcesDataToContext,
   flattenBoardToCanvas,
   ensureExportsPathExists,
-  filenameFromBoardFilename,
-  exportFilenameFromBoardFilename
+  filenameFromBoardFilename
 }

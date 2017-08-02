@@ -45,6 +45,7 @@ const LAYER_INDEX_MAIN = 1
 const LAYER_INDEX_NOTES = 2
 
 const CanvasRecorder = require('../recording/canvas-recorder.js')
+const moment = require('moment')
 let isRecording = false
 let canvasRecorder
 
@@ -887,7 +888,7 @@ let loadBoardUI = ()=> {
 
       isRecording = true
       let exportsPath = exporterCommon.ensureExportsPathExists(boardFilename)
-      let filename = exporterCommon.exportFilenameFromBoardFilename(boardFilename)
+      let filename = exporterCommon.filenameFromBoardFilename(boardFilename) + ".timelapse." + moment().format('YYYY-MM-DD hh.mm.ss')
       canvasRecorder = new CanvasRecorder({
         exportsPath: exportsPath,
         filename: filename,
