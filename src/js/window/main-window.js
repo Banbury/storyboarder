@@ -985,15 +985,6 @@ let newBoard = (position, shouldAddToUndoStack = true) => {
     notifications.notify({message: "Added a new board. Let's make it a great one!", timing: 5})
   }
 
-  if(isRecording) {
-    // make sure we capture the last frame
-    canvasRecorder.capture([
-      storyboarderSketchPane.sketchPane.getLayerCanvas(0),
-      storyboarderSketchPane.sketchPane.getLayerCanvas(1),
-      storyboarderSketchPane.sketchPane.getLayerCanvas(3)
-    ], {force: true, duration: 500})
-  }
-
   if (typeof position == "undefined") position = currentBoard + 1
 
   // create array entry
@@ -1603,6 +1594,15 @@ let goNextBoard = (direction, shouldPreserveSelections = false)=> {
 let animatedScrollingTimer = +new Date()
 
 let gotoBoard = (boardNumber, shouldPreserveSelections = false) => {
+  if(isRecording) {
+    // make sure we capture the last frame
+    canvasRecorder.capture([
+      storyboarderSketchPane.sketchPane.getLayerCanvas(0),
+      storyboarderSketchPane.sketchPane.getLayerCanvas(1),
+      storyboarderSketchPane.sketchPane.getLayerCanvas(3)
+    ], {force: true, duration: 500})
+  }
+
   toolbar.emit('cancelTransform')
   return new Promise((resolve, reject) => {
     clearTimeout(drawIdleTimer)
