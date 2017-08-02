@@ -31,7 +31,7 @@ class Recorder {
         break
       case "CanvasBufferOutputFileStrategy":
       default:
-        outputStrategy = new CanvasBufferOutputFileStrategy()
+        outputStrategy = new CanvasBufferOutputFileStrategy(options)
         break
     }
     this.screenRecordingBuffer = new CanvasBuffer({outputStrategy})
@@ -50,9 +50,9 @@ class Recorder {
       return
     }
 
-    
-    let filepath = path.join(this.exportsPath, `recording-${this.screenRecordingFrameNum++}.png`)
-    this.screenRecordingBuffer.addToBuffer(snapshotCanvases, filepath)
+    let frameNum = this.screenRecordingFrameNum++
+    options.frameNum = frameNum
+    this.screenRecordingBuffer.addToBuffer(snapshotCanvases, options)
   }
 
   stop() {

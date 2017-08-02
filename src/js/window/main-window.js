@@ -871,13 +871,12 @@ let loadBoardUI = ()=> {
       toolbar.updatePomodoroTimer(data)
 
       if(isRecording && data.state === "completed") {
-        let snapshotCanvases = [
+        // make sure we capture the last frame
+        canvasRecorder.capture([
           storyboarderSketchPane.sketchPane.getLayerCanvas(0),
           storyboarderSketchPane.sketchPane.getLayerCanvas(1),
           storyboarderSketchPane.sketchPane.getLayerCanvas(3)
-        ]
-        // make sure we capture the last frame
-        canvasRecorder.capture(snapshotCanvas, {force: true})
+        ], {force: true})
         canvasRecorder.stop()
         isRecording = false
       }
@@ -984,6 +983,15 @@ let newBoard = (position, shouldAddToUndoStack = true) => {
     saveImageFile() // force-save any current work
     storeUndoStateForScene(true)
     notifications.notify({message: "Added a new board. Let's make it a great one!", timing: 5})
+  }
+
+  if(isRecording) {
+    // make sure we capture the last frame
+    canvasRecorder.capture([
+      storyboarderSketchPane.sketchPane.getLayerCanvas(0),
+      storyboarderSketchPane.sketchPane.getLayerCanvas(1),
+      storyboarderSketchPane.sketchPane.getLayerCanvas(3)
+    ], {force: true, duration: 500})
   }
 
   if (typeof position == "undefined") position = currentBoard + 1

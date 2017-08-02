@@ -25,8 +25,11 @@ class CanvasBufferOutputGifStrategy {
       let bufferData = buffer.splice(0, 1)[0]
       context.fillRect(0, 0, this.width, this.height)
       context.drawImage(bufferData.canvas, 0, 0, this.width, this.height)
+      if(bufferData.metaData.duration) {
+        encoder.setDelay(bufferData.metaData.duration)
+      }
       if(buffer.length === 0) { // hold on the last frame for a second.
-        encoder.setDelay(1000)
+        encoder.setDelay(500)
       }
       encoder.addFrame(context)
       if(pool) {
