@@ -2,6 +2,7 @@ const {ipcRenderer} = require('electron')
 const EventEmitter = require('events').EventEmitter
 const Tether = require('tether')
 const PomodoroTimer = require('../pomodoro-timer.js')
+const prefsModule = require('electron').remote.require('./prefs.js')
 
 class PomodorTimerView extends EventEmitter {
   constructor() {
@@ -10,6 +11,8 @@ class PomodorTimerView extends EventEmitter {
     this.el = null
     this.innerEl = null
     this.minutesInput = null
+
+    this.pomodoroTimerMinutes = prefsModule.getPrefs('main')['pomodoroTimerMinutes']
 
     this.pomodoroTimer = new PomodoroTimer()
     this.pomodoroTimer.on('update', (data)=>{
@@ -26,7 +29,7 @@ class PomodorTimerView extends EventEmitter {
       <div id="context-menu" class="pomodoro-timer">
         <h3 id="pomodoro-timer-title">Pomodoro Timer</h3>
         <label id="pomodoro-timer-minutes-label" for="username">Minutes</label>
-        <input id="pomodoro-timer-minutes-input" class="pomodoro-timer-minutes-input" type="number" id="minutesInput" value="25">
+        <input id="pomodoro-timer-minutes-input" class="pomodoro-timer-minutes-input" type="number" id="minutesInput" value="${this.pomodoroTimerMinutes}">
         <div id="pomodoro-timer-remaining" class="pomodoro-timer-remaining" style="display: none"></div>
         <div id="pomodoro-timer-success" class="pomodoro-timer-success" style="display: none">
           <div>🎊</div>
@@ -143,10 +146,12 @@ class PomodorTimerView extends EventEmitter {
 
   // Timer Controls
   startTimer() {
-    let minutes = parseInt(this.minutesInput.value)
-    this.pomodoroTimer.setDuration(minutes)
+    this.pomodoroTimerMinutes = parseInt(this.minutesInput.value)
+    this.pomodoroTimer.setDuration(this.pomodoroTimerMinutes)
     this.pomodoroTimer.start()
-    this.emit("start", {duration: minutes})
+    this.emit("start", {duration: this.pomodoroTimerMinutes})
+
+    prefsModule.set('pomodoroTimerMinutes', this.pomodoroTimerMinutes)
   }
 
   cancelTimer() {
