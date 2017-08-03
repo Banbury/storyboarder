@@ -1,8 +1,9 @@
-const {ipcRenderer} = require('electron')
+const {shell, ipcRenderer} = require('electron')
 const EventEmitter = require('events').EventEmitter
 const Tether = require('tether')
 const PomodoroTimer = require('../pomodoro-timer.js')
 const prefsModule = require('electron').remote.require('./prefs.js')
+const userDataHelper = require('../files/user-data-helper.js')
 
 class PomodorTimerView extends EventEmitter {
   constructor() {
@@ -21,10 +22,39 @@ class PomodorTimerView extends EventEmitter {
     })
     this.state = this.pomodoroTimer.state
     this.create()
+
+    userDataHelper.getData('recordings.json')
+      .then(recordings => {
+        this.recordings = recordings
+        let recordingsView
+        if(this.recordings && this.recordings.length) {
+          let isMain = true
+          recordingsView = this.recordings.map(recordingPath => {
+            if(isMain) {
+              return `<img class="pomodoro-timer-recording pomodoro-timer-recording-main" src="${recordingPath}"></img>`
+              isMain = false
+            }
+            return `<img class="pomodoro-timer-recording pomodoro-timer-recording-small" src="${recordingPath}"></img>`
+          })
+          this.el.querySelector('#pomodoro-timer-recordings').innerHTML = recordingsView
+          
+          let recordingImages = this.el.querySelectorAll(".pomodoro-timer-recording")
+          for(let recordingImage of recordingImages) {
+            recordingImage.addEventListener('click', (event)=>{
+              event.preventDefault()
+              // fails
+              shell.showItemInFolder(event.target.src)
+              // shell.openExternal(event.target.src)
+            })
+          }
+        }
+      })
+      .catch(error => {
+        this.recordings = []
+      })
   }
 
   template() {
-    let state = (this.pomodoroTimer && this.pomodoroTimer.state) || "rest";
     return `<div class="pomodoro-timer-container popup-container">
       <div id="context-menu" class="pomodoro-timer">
         <h3 id="pomodoro-timer-title">Pomodoro Timer</h3>
@@ -38,6 +68,8 @@ class PomodorTimerView extends EventEmitter {
         <button id="pomodoro-timer-start-button">Start</button>
         <button id="pomodoro-timer-cancel-button" style="display: none">Cancel</button>
         <button id="pomodoro-timer-continue-button" style="display: none">Continue</button>
+        <div id="pomodoro-timer-recordings">
+        </div>
       </div>
     </div>`
   }
@@ -90,17 +122,17 @@ class PomodorTimerView extends EventEmitter {
     let startButton = this.el.querySelector('#pomodoro-timer-start-button')
     startButton.addEventListener('click', (event)=>{
       this.startTimer()
-    });
+    })
 
     let cancelButton = this.el.querySelector('#pomodoro-timer-cancel-button')
     cancelButton.addEventListener('click', (event)=>{
       this.cancelTimer()
-    });
+    })
     
     let continueButton = this.el.querySelector('#pomodoro-timer-continue-button')
     continueButton.addEventListener('click', (event)=>{
       this.continue()
-    });
+    })
 
     this.el.addEventListener('pointerleave', this.onPointerLeave.bind(this))
     

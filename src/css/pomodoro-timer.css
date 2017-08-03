@@ -34,3 +34,11 @@
   align-items: center;
   text-align: center;
 }
+
+.pomodoro-timer-recording-main {
+  max-width: 100%
+}
+
+.pomodoro-timer-recording-small {
+  max-width: 45%
+}

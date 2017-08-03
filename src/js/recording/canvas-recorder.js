@@ -3,6 +3,7 @@ const path = require('path')
 const CanvasBufferOutputFileStrategy = require('./canvas-buffer-ouput-file.js')
 const CanvasBufferOutputGifStrategy = require('./canvas-buffer-ouput-gif.js')
 const CanvasBuffer = require('./canvas-buffer.js')
+const userDataHelper = require('../files/user-data-helper.js')
 
 class Recorder {
   constructor(options = {}) {
@@ -11,6 +12,7 @@ class Recorder {
     this.dropFrameCount = options.dropFrameCount || 0
     this.options = options
     this.options.filename = options.filename || `timelapse ${(new Date()).toString()}`
+    this.options.filepath = options.filepath || path.join(options.exportsPath, options.filename + '.gif')
     this.initCanvasBuffer(options)
   }
 
@@ -31,9 +33,7 @@ class Recorder {
     this.exportsPath = options.exportsPath
     switch(options.outputStrategy) {
       case "CanvasBufferOutputGifStrategy":
-        let filepath = path.join(options.exportsPath, options.filename + '.gif')
-        
-        outputStrategy = new CanvasBufferOutputGifStrategy({filepath: filepath, width: 400, height: 225})
+        outputStrategy = new CanvasBufferOutputGifStrategy({filepath: options.filepath, width: 400, height: 225})
         break
       case "CanvasBufferOutputFileStrategy":
       default:
@@ -64,6 +64,20 @@ class Recorder {
   stop() {
     this.screenRecordingBuffer.flushBuffer()
     this.isRecording = false
+
+    userDataHelper.getData('recordings.json')
+      .then(recordings => {
+        recordings.unshift(this.options.filepath)
+        userDataHelper.saveData('recordings.json', recordings)
+          .then(()=>{})
+          .catch(console.error)
+      })
+      .catch(error => {
+        let recordings = [this.options.filepath]
+        userDataHelper.saveData('recordings.json', recordings)
+          .then(()=>{})
+          .catch(console.error)
+      })
   }
   
   cancel() {
@@ -87,7 +101,6 @@ class RecordingStrategyTimeRatio {
       return true
     }
 
-    console.log(`${now} - ${this.lastRecordingTime} > ${this.timeAllowance}`)
     let isPass = now - this.lastRecordingTime > this.timeAllowance
     if(isPass) this.lastRecordingTime = now
     return isPass

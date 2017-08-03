@@ -5,8 +5,8 @@ const { getImage } = require('../exporters/common.js')
 class CanvasBufferOutputGifStrategy {
   constructor(options) {
     this.filepath = options.filepath || ""
-    this.width = options.width || 1600
-    this.height = options.height || 900
+    this.width = options.width || 400
+    this.height = options.height || 225
   }
 
   flush(buffer, pool) {
