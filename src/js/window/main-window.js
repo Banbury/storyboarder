@@ -897,7 +897,7 @@ let loadBoardUI = ()=> {
 
       isRecording = true
       let exportsPath = exporterCommon.ensureExportsPathExists(boardFilename)
-      let filename = exporterCommon.filenameFromBoardFilename(boardFilename) + ".timelapse." + moment().format('YYYY-MM-DD hh.mm.ss')
+      let filename = exporterCommon.filenameFromBoardFilename(boardFilename) + " timelapse " + moment().format('YYYY-MM-DD hh.mm.ss')
       canvasRecorder = new CanvasRecorder({
         exportsPath: exportsPath,
         filename: filename,
