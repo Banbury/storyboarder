@@ -151,6 +151,7 @@ class PomodorTimerView extends EventEmitter {
 
   cancelTimer() {
     this.pomodoroTimer.cancel()
+    this.emit("cancel")
   }
   
   continue() {

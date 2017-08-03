@@ -47,6 +47,7 @@ const LAYER_INDEX_NOTES = 2
 const CanvasRecorder = require('../recording/canvas-recorder.js')
 const moment = require('moment')
 let isRecording = false
+let isRecordingStarted = false
 let canvasRecorder
 
 let boardFilename
@@ -416,6 +417,7 @@ let loadBoardUI = ()=> {
         storyboarderSketchPane.sketchPane.getLayerCanvas(3),
       ]
       canvasRecorder.capture(snapshotCanvases)
+      if(!isRecordingStarted) isRecordingStarted = true
     }
   })
   storyboarderSketchPane.on('pointerdown', () => {
@@ -880,7 +882,14 @@ let loadBoardUI = ()=> {
         ], {force: true})
         canvasRecorder.stop()
         isRecording = false
+        isRecordingStarted = false
       }
+    })
+
+    pomodoroTimerView.addListener('cancel', (data)=>{
+      canvasRecorder.cancel()
+      isRecording = false
+      isRecordingStarted = false
     })
 
     pomodoroTimerView.addListener('start', (data)=>{
@@ -1597,7 +1606,7 @@ let goNextBoard = (direction, shouldPreserveSelections = false)=> {
 let animatedScrollingTimer = +new Date()
 
 let gotoBoard = (boardNumber, shouldPreserveSelections = false) => {
-  if(isRecording) {
+  if(isRecording && isRecordingStarted) {
     // make sure we capture the last frame
     canvasRecorder.capture([
       storyboarderSketchPane.sketchPane.getLayerCanvas(0),
@@ -2678,6 +2687,7 @@ window.onkeydown = (e)=> {
           canvasRecorder.capture(snapshotCanvases, {force: true})
           canvasRecorder.stop()
           isRecording = false
+          isRecordingStarted = false
         } else {
           isRecording = true
 

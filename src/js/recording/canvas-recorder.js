@@ -9,7 +9,12 @@ class Recorder {
     this.screenRecordingFrameNum = 0
     this.isRecording = false
     this.dropFrameCount = options.dropFrameCount || 0
+    this.options = options
+    this.options.filename = options.filename || `timelapse ${(new Date()).toString()}`
+    this.initCanvasBuffer(options)
+  }
 
+  initCanvasBuffer(options) {
     let recordingStrategy
     switch(options.recordingStrategy) {
       case "RecordingStrategyTimeRatio":
@@ -58,6 +63,11 @@ class Recorder {
 
   stop() {
     this.screenRecordingBuffer.flushBuffer()
+    this.isRecording = false
+  }
+  
+  cancel() {
+    this.initCanvasBuffer(this.options)
     this.isRecording = false
   }
 }
