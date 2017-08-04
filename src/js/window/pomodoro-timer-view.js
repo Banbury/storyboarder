@@ -31,10 +31,10 @@ class PomodorTimerView extends EventEmitter {
           let isMain = true
           recordingsView = this.recordings.map(recordingPath => {
             if(isMain) {
-              return `<img class="pomodoro-timer-recording pomodoro-timer-recording-main" src="${recordingPath}"></img>`
+              return `<img class="pomodoro-timer-recording pomodoro-timer-recording-main" src="${recordingPath}" data-filepath="${recordingPath}"></img>`
               isMain = false
             }
-            return `<img class="pomodoro-timer-recording pomodoro-timer-recording-small" src="${recordingPath}"></img>`
+            return `<img class="pomodoro-timer-recording pomodoro-timer-recording-small" src="${recordingPath}" data-filepath="${recordingPath}"></img>`
           })
           this.el.querySelector('#pomodoro-timer-recordings').innerHTML = recordingsView
           
@@ -42,9 +42,7 @@ class PomodorTimerView extends EventEmitter {
           for(let recordingImage of recordingImages) {
             recordingImage.addEventListener('click', (event)=>{
               event.preventDefault()
-              // fails
-              shell.showItemInFolder(event.target.src)
-              // shell.openExternal(event.target.src)
+              shell.showItemInFolder(event.target.dataset.filepath)
             })
           }
         }
