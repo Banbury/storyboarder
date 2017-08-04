@@ -1,6 +1,7 @@
 .pomodoro-timer-container {
   pointer-events: none; /* no pointer events until animated visible */
   z-index: 999;
+  width: 240px
 }
 
 .pomodoro-timer {
@@ -8,6 +9,21 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding: 20px;
+  background: rgb(218, 218, 218);
+  color: black;
+}
+
+#pomodoro-timer-title {
+  font-size: 2em;
+  line-height: 1em;
+  margin: 1em 0 0 0;
+}
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
 }
 
 .pomodoro-timer-minutes-input {
@@ -35,10 +51,43 @@
   text-align: center;
 }
 
-.pomodoro-timer-recording-main {
-  max-width: 100%
+.pomodoro-timer-button {
+  background: #3a3a3a;
+  padding: 10px 15px 10px 10px;
+  border-radius: 4px;
+  margin-bottom: 5px;
+  font-size: 1.25em;
+  border-width: 0px;
+  color: white;
+  height: 60px;
+  width: 100%;
+  margin-top: 20px;
 }
 
-.pomodoro-timer-recording-small {
-  max-width: 45%
+#pomodoro-timer-recordings-label {
+  align-self: flex-start;
+  margin-top: 30px;
+}
+
+#pomodoro-timer-recordings {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 4px;
+}
+
+#pomodoro-timer-recordings div {
+  position: relative;
+  overflow: hidden;
+  border-radius: 3px;
+}
+
+#pomodoro-timer-recordings div:nth-of-type(1){
+  grid-column: span 2;
+}
+
+#pomodoro-timer-recordings img {
+  width: 100%;
+  border: 0px solid #444;
+  box-sizing: border-box;
+  display: block;
 }

@@ -26,20 +26,20 @@ class PomodorTimerView extends EventEmitter {
     userDataHelper.getData('recordings.json')
       .then(recordings => {
         this.recordings = recordings
-        let recordingsView
+        let recordingsView = ''
         if(this.recordings && this.recordings.length) {
           let isMain = true
-          recordingsView = this.recordings.map(recordingPath => {
+          for(let recordingPath of recordings) {
             if(isMain) {
-              return `<img class="pomodoro-timer-recording pomodoro-timer-recording-main" src="${recordingPath}" data-filepath="${recordingPath}"></img>`
+              recordingsView += `<div><img class="pomodoro-timer-recording pomodoro-timer-recording-main" src="${recordingPath}" data-filepath="${recordingPath}"></img></div>`
               isMain = false
             }
-            return `<img class="pomodoro-timer-recording pomodoro-timer-recording-small" src="${recordingPath}" data-filepath="${recordingPath}"></img>`
-          })
+            recordingsView += `<div><img class="pomodoro-timer-recording pomodoro-timer-recording-small" src="${recordingPath}" data-filepath="${recordingPath}"></img></div>`
+          }
           this.el.querySelector('#pomodoro-timer-recordings').innerHTML = recordingsView
-          
           let recordingImages = this.el.querySelectorAll(".pomodoro-timer-recording")
-          for(let recordingImage of recordingImages) {
+          for(let i=0; i<recordingImages.length && i<5; i++) {
+            let recordingImage = recordingImages[i]
             recordingImage.addEventListener('click', (event)=>{
               event.preventDefault()
               shell.showItemInFolder(event.target.dataset.filepath)
@@ -53,19 +53,20 @@ class PomodorTimerView extends EventEmitter {
   }
 
   template() {
-    return `<div class="pomodoro-timer-container popup-container">
+    return `<div id="pomodoro-timer-container" class="pomodoro-timer-container popup-container">
       <div id="context-menu" class="pomodoro-timer">
-        <h3 id="pomodoro-timer-title">Pomodoro Timer</h3>
-        <label id="pomodoro-timer-minutes-label" for="username">Minutes</label>
+        <h3 id="pomodoro-timer-title">Sketch Sprint</h3>
         <input id="pomodoro-timer-minutes-input" class="pomodoro-timer-minutes-input" type="number" id="minutesInput" value="${this.pomodoroTimerMinutes}">
+        <label id="pomodoro-timer-minutes-label" for="username">minutes</label>
         <div id="pomodoro-timer-remaining" class="pomodoro-timer-remaining" style="display: none"></div>
         <div id="pomodoro-timer-success" class="pomodoro-timer-success" style="display: none">
           <div>🎊</div>
           <div>Break time!</div>
         </div>
-        <button id="pomodoro-timer-start-button">Start</button>
-        <button id="pomodoro-timer-cancel-button" style="display: none">Cancel</button>
-        <button id="pomodoro-timer-continue-button" style="display: none">Continue</button>
+        <button id="pomodoro-timer-start-button" class="pomodoro-timer-button">Start</button>
+        <button id="pomodoro-timer-cancel-button"  class="pomodoro-timer-button" style="display: none">Cancel</button>
+        <button id="pomodoro-timer-continue-button"  class="pomodoro-timer-button" style="display: none">Continue</button>
+        <div id="pomodoro-timer-recordings-label">Latest Timelapses</div>
         <div id="pomodoro-timer-recordings">
         </div>
       </div>
@@ -146,8 +147,8 @@ class PomodorTimerView extends EventEmitter {
       this.tethered = new Tether({
         element: this.el,
         target: this.target,
-        attachment: 'top right',
-        targetAttachment: 'bottom right',
+        attachment: 'top center',
+        targetAttachment: 'bottom center',
         offset: '-18px 0'
       })
     }
