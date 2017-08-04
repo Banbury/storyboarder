@@ -2,7 +2,7 @@ const EventEmitter = require('events').EventEmitter
 const moment = require('moment')
 
 class PomodoroTimer extends EventEmitter {
-  constructor(options={duration: 25*60*1000, updateInterval: 1000}) {
+  constructor(options={duration: 25*60*1000, updateInterval: 100}) {
     super()
     this.state = "rest"
     this.startTime = null
