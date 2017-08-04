@@ -235,7 +235,7 @@ class Exporter extends EventEmitter {
           if (boards[i].dialogue) {
             let text = boards[i].dialogue
             let fontSize = 22
-            context.font = "bold " + fontSize + "px proximanova";
+            context.font = "300 " + fontSize + "px proximanova";
             context.textAlign = "center";
             context.fillStyle = "white"
             context.miterLimit = 1
@@ -251,23 +251,29 @@ class Exporter extends EventEmitter {
             lines.forEach((line, i)=> {
               let xOffset = (i + 1) * (fontSize + 6) + (destSize.height - ((lines.length+1) * (fontSize + 6)))-20
               let textWidth = context.measureText(line).width/2
-              outlinecontext.lineWidth = 50
-              outlinecontext.lineCap = "round"
+              outlinecontext.lineWidth = 15
+              outlinecontext.lineCap = "square"
+              outlinecontext.lineJoin = "round"
               outlinecontext.strokeStyle = "rgba(0,0,0,1)"
-              outlinecontext.beginPath()
-              outlinecontext.moveTo((destWidth/2)-textWidth, xOffset-(6))
-              outlinecontext.lineTo((destWidth/2)+textWidth, xOffset-(6))
-              outlinecontext.stroke()
+              let padding = 35
+              outlinecontext.fillRect((destWidth/2)-textWidth-(padding/2), xOffset-(6)-(padding/2), textWidth*2+padding, padding)
+              outlinecontext.strokeRect((destWidth/2)-textWidth-(padding/2), xOffset-(6)-(padding/2), textWidth*2+padding, padding)
+
+
+              // outlinecontext.beginPath()
+              // outlinecontext.moveTo((destWidth/2)-textWidth, xOffset-(6))
+              // outlinecontext.lineTo((destWidth/2)+textWidth, xOffset-(6))
+              // outlinecontext.stroke()
             })
 
-            context.globalAlpha = 0.4
+            context.globalAlpha = 0.5
             context.drawImage(outlinecanvas, 0, 0)
             context.globalAlpha = 1
 
             lines.forEach((line, i)=> {
               let xOffset = (i + 1) * (fontSize + 6) + (destSize.height - ((lines.length+1) * (fontSize + 6)))-20
-              context.lineWidth = 6
-              context.strokeStyle = "rgb(0,0,0)"
+              context.lineWidth = 4
+              context.strokeStyle = "rgba(0,0,0,0.8)"
               context.strokeText(line.trim(), destWidth/2, xOffset)
               context.strokeStyle = "rgba(0,0,0,0.2)"
               context.strokeText(line.trim(), destWidth/2, xOffset+2)

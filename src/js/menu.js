@@ -48,6 +48,9 @@ const template = [
         }
       },
       {
+        type: 'separator'
+      },
+      {
         label: 'Clean Up Scene …',
         click (item, focusedWindow, event) {
           ipcRenderer.send('exportCleanup')
@@ -97,6 +100,11 @@ const template = [
       },
       {
         type: 'separator'
+      },
+      {
+        label: 'Cut',
+        accelerator: 'CmdOrCtrl+X',
+        role: 'cut'
       },
       {
         label: 'Copy',

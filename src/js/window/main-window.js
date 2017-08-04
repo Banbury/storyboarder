@@ -1,4 +1,5 @@
 const {ipcRenderer, shell, remote, nativeImage, clipboard} = require('electron')
+const { app } = require('electron').remote
 const child_process = require('child_process')
 //const electronLocalshortcut = require('electron-localshortcut');
 const fs = require('fs')
@@ -35,6 +36,8 @@ const FileHelper = require('../files/file-helper.js')
 const writePsd = require('ag-psd').writePsd;
 const readPsd = require('ag-psd').readPsd;
 const initializeCanvas = require('ag-psd').initializeCanvas;
+
+const StsSidebar = require('./sts-sidebar.js')
 
 const pkg = require('../../../package.json')
 
@@ -163,11 +166,20 @@ const load = (event, args) => {
   }
 
   loadBoardUI()
-  updateBoardUI()
-  resize()
-  setTimeout(()=>{storyboarderSketchPane.resize()}, 500)
-  // wait for reflow
-  setTimeout(() => { remote.getCurrentWindow().show() }, 200)
+  updateBoardUI().then(() => {
+    resize()
+    setTimeout(() => {
+      storyboarderSketchPane.resize()
+
+      setImmediate(() =>
+        requestAnimationFrame(() =>
+          requestAnimationFrame(() =>
+            remote.getCurrentWindow().show()
+          )
+        )
+      )
+    }, 500) // TODO hack, remove this #440
+  })
 }
 ipcRenderer.on('load', load)
 
@@ -371,8 +383,7 @@ let loadBoardUI = ()=> {
   
   window.addEventListener('resize', () => {
     resize()
-    storyboarderSketchPane.resize()
-    setTimeout(()=>{storyboarderSketchPane.resize()}, 500)
+    setTimeout(() => storyboarderSketchPane.resize(), 500) // TODO hack, remove this #440
   })
 
   window.ondragover = () => { return false }
@@ -930,10 +941,18 @@ let loadBoardUI = ()=> {
 
   window.addEventListener('beforeunload', event => {
     console.log('Close requested! Saving ...')
+
     // TODO THIS IS SLOW AS HELL. NEED TO FIX PREFS
     toolbar.savePrefs()
     saveImageFile() // NOTE image is saved first, which ensures layers are present in data
     saveBoardFile() // ... then project data can be saved
+
+    // still dirty?
+    if (boardFileDirty) {
+      // pass the electron-specific flag
+      // to trigger `will-prevent-unload` handler in main.js
+      event.returnValue = false
+    }
   })
 
   // text input mode on blur, to prevent menu trigger on preferences typing
@@ -948,12 +967,26 @@ let loadBoardUI = ()=> {
     }
   })
 
+  StsSidebar.init({ width: size[0], height: size[1] })
+  StsSidebar.on('select', (img, params) => {
+    let board = boardData.boards[currentBoard]
+
+    board.sts = {
+      params
+    }
+    markBoardFileDirty()
+
+    if (!img) return
+
+    storyboarderSketchPane.replaceLayer(LAYER_INDEX_REFERENCE, img)
+  })
+
   // for debugging:
   //
   // remote.getCurrentWebContents().openDevTools()
 }
 
-let updateBoardUI = ()=> {
+let updateBoardUI = () => {
   document.querySelector('#canvas-caption').style.display = 'none'
   renderViewMode()
 
@@ -961,13 +994,20 @@ let updateBoardUI = ()=> {
     // create a new board
     newBoard(0, false)
   }
+
+  let sequence = Promise.resolve()
+
   // update sketchpane
-  updateSketchPaneBoard()
+  sequence = sequence.then(() => updateSketchPaneBoard())
+
   // update thumbail drawer
-  renderThumbnailDrawer()
   // update timeline
+  sequence = sequence.then(() => renderThumbnailDrawer())
+
   // update metadata
-  gotoBoard(currentBoard)
+  sequence = sequence.then(() => gotoBoard(currentBoard))
+
+  return sequence
 }
 
 ///////////////////////////////////////////////////////////////
@@ -1109,7 +1149,7 @@ let markBoardFileDirty = () => {
   boardFileDirtyTimer = setTimeout(saveBoardFile, 5000)
 }
 
-let saveBoardFile = () => {
+let saveBoardFile = (opt = { force: false }) => {
   // are we still drawing?
   if (storyboarderSketchPane.getIsDrawingOrStabilizing()) {
     // wait, then retry
@@ -1117,13 +1157,14 @@ let saveBoardFile = () => {
     return
   }
 
-
   if (boardFileDirty) {
     clearTimeout(boardFileDirtyTimer)
     boardData.version = pkg.version
-    fs.writeFileSync(boardFilename, JSON.stringify(boardData, null, 2))
-    boardFileDirty = false
-    console.log('saved board file:', boardFilename)
+    if (opt.force || prefsModule.getPrefs()['enableAutoSave']) {
+      fs.writeFileSync(boardFilename, JSON.stringify(boardData, null, 2))
+      boardFileDirty = false
+      console.log('saved board file:', boardFilename)
+    }
   }
 }
 
@@ -1667,6 +1708,8 @@ let gotoBoard = (boardNumber, shouldPreserveSelections = false) => {
 
     renderMetaData()
     renderMarkerPosition()
+
+    StsSidebar.reset(boardData.boards[currentBoard].sts)
 
     let opacity = Number(document.querySelector('.layers-ui-reference-opacity').value)
     if (opacity !== 72) {
@@ -2666,15 +2709,25 @@ const resize = () => {
 
 window.onkeydown = (e)=> {
   if (!textInputMode) {
-    //console.log(e)
+    console.log(e)
     switch (e.keyCode) {
-      // C
+      // C - Copy
       case 67:
         if (e.metaKey || e.ctrlKey) {
           copyBoards()
           e.preventDefault()
         }
         break
+      // X - Cut
+      case 88:
+        if (e.metaKey || e.ctrlKey) {
+          copyBoards()
+          deleteBoards()
+          notifications.notify({message: 'Copied boards to clipboard.', timing: 5})
+          e.preventDefault()
+        }
+        break
+
       // r
       case 82:
         if(isRecording) {
@@ -3275,10 +3328,15 @@ const exportCleanup = () => {
 
 let save = () => {
   saveImageFile()
-  saveBoardFile()
+  saveBoardFile({ force: true })
   sfx.positive()
-  notifications.notify({message: "Saving is automatic. I already saved before you pressed this, so you don't really need to save at all. \n\nBut I did want you to know, that I think you're special - and I like you just the way you are.\n\nHere's a story tip..." , timing: 15})
-  setTimeout(()=>{storyTips.show()}, 1000)
+
+  if (prefsModule.getPrefs()['enableAutoSave']) {
+    notifications.notify({message: "Saving is automatic. I already saved before you pressed this, so you don't really need to save at all. \n\nBut I did want you to know, that I think you're special - and I like you just the way you are.\n\nHere's a story tip..." , timing: 15})
+    setTimeout(()=>{storyTips.show()}, 1000)
+  } else {
+    notifications.notify({ message: "Saved." })
+  }
 }
 
 
