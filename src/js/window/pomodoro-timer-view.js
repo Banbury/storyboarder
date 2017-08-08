@@ -80,6 +80,7 @@ class PomodorTimerView extends EventEmitter {
         startButton.addEventListener('click', (event)=>{
           this.startTimer()
         })
+        this.updateRecordingsView()
         break
       case "running":
         content = `
@@ -97,6 +98,7 @@ class PomodorTimerView extends EventEmitter {
         cancelButton.addEventListener('click', (event)=>{
           this.cancelTimer()
         })
+        this.updateRecordingsView()
         break
       case "completed":
         content = `
@@ -140,7 +142,8 @@ class PomodorTimerView extends EventEmitter {
     let recordingsView = ''
     if(this.recordings && this.recordings.length) {
       let isMain = true
-      for(let i=0; i<recordings.length && i<5; i++) {
+      for(let i=0; i<this.recordings.length && i<5; i++) {
+        let recordingPath = this.recordings[i]
         recordingsView += `<div><img class="pomodoro-timer-recording" src="${recordingPath}" data-filepath="${recordingPath}"></img></div>`
       }
       this.el.querySelector('#pomodoro-timer-recordings').innerHTML = recordingsView
