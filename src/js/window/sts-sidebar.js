@@ -1,9 +1,11 @@
 const EventEmitter = require('events').EventEmitter
 
 const ShotTemplateSystem = require('../shot-template-system')
+const sfx = require('../wonderunit-sound')
 
 let shotTemplateSystem
 let emitter = new EventEmitter()
+let aspectRatio
 
 let attachListeners = () => {
   for (let element of document.querySelectorAll('#sts-select select')) {
@@ -31,15 +33,58 @@ let generateShot = (params) => {
   document.querySelector("#sts-shots").insertBefore(div, document.querySelector("#sts-shots div"))
   div.addEventListener('dblclick', onShotDblclick)
   div.addEventListener("click", onShotClick)
+  renderPlaceholders()
 }
+
+const resetImages = () => {
+  document.querySelector('#sts-shots').innerHTML = ''
+  renderPlaceholders()
+}
+
+const addShot = () => {
+  var shotParams = shotTemplateSystem.parseParamsText(document.querySelector("#sts-input1").value)
+  generateShot(shotParams)
+  sfx.bip('c5')
+  document.querySelector("#sts-select").innerHTML = shotTemplateSystem.getParamSelects(shotParams)
+  attachListeners()
+}
+
+const renderPlaceholders = () => {
+  let maxPlaceholders = 7
+
+  let images = document.querySelectorAll('#sts-shots > div:not(.placeholder)')
+  let placeholders = document.querySelectorAll('#sts-shots > div.placeholder')
+
+  let numRequired = maxPlaceholders - images.length
+  let numRendered = placeholders.length
+
+  if (numRequired > numRendered) {
+    // add some
+    for (let i = numRendered; i < numRequired; i++) {
+      var div = document.createElement('div')
+      div.classList.add('placeholder')
+      document.querySelector("#sts-shots").appendChild(div)
+      // preserve aspect ratio of image
+      let pct = 1 / aspectRatio * 100
+      div.style.paddingBottom = pct + "%"
+    }
+  } else {
+    if (numRendered > 0) {
+      // remove some
+      let numToRemove = numRendered - numRequired
+      for (let i = 0; i < numToRemove; i++) {
+        let el = document.querySelector('#sts-shots > div.placeholder:last-child')
+        el.parentNode.removeChild(el)
+      }
+    }
+  }
+}
+
+/* events */
 
 const onInputKeyDown = event => {
   if (event.keyCode == 13) {
-    var shotParams = shotTemplateSystem.parseParamsText(document.querySelector("#sts-input1").value)
-    generateShot(shotParams)
-    document.querySelector("#sts-select").innerHTML = ''
-    document.querySelector("#sts-select").innerHTML = shotTemplateSystem.getParamSelects(shotParams)
-    attachListeners()
+    addShot()
   }
 }
 
@@ -53,11 +98,11 @@ const onSelectChange = event => {
   let params = getAllSTSParamSelections()
   document.querySelector("#sts-input1").value = shotTemplateSystem.getTextString(params)
   generateShot(params)
+  sfx.bip('c6')
 }
 
 const onShotClick = event => {
   let shotParams = JSON.parse(event.target.firstChild.dataset.shotParams)
-  document.querySelector("#sts-select").innerHTML = ''
   document.querySelector("#sts-select").innerHTML = shotTemplateSystem.getParamSelects(shotParams)
   document.querySelector("#sts-input1").value = shotTemplateSystem.getTextString(shotParams)
   attachListeners()
@@ -66,29 +111,43 @@ const onShotClick = event => {
 const onShotDblclick = event => {
   let shotParams = JSON.parse(event.target.firstChild.dataset.shotParams)
   let img = event.target.firstChild
+  sfx.playEffect('fill')
   emitter.emit('select', img, shotParams)
 }
 
-const onReset = event => {
-  reset()
-  emitter.emit('select', null, {})
+const onRandom = event => {
+  document.querySelector("#sts-input1").value = ''
+  addShot()
 }
 
+/* exports */
+
 const init = config => {
+  aspectRatio = config.width / config.height
   shotTemplateSystem = new ShotTemplateSystem(config)
   window.shotTemplateSystem = shotTemplateSystem
 
   document.querySelector("#sts-input1").addEventListener('keydown', onInputKeyDown)
-  document.querySelector('#sts-reset').addEventListener('click', onReset)
+  document.querySelector('#sts-random').addEventListener('click', onRandom)
 }
 
 const reset = sts => {
-  let shotParams = (sts && sts.params) ? sts.params : null
+  let shotParams
+
+  // if there is no data ...
+  if (!sts || !sts.params) {
+    // ... populate from existing select boxes ...
+    shotParams = getAllSTSParamSelections()
+    // document.querySelector("#sts-input1").value = shotTemplateSystem.getTextString(params)
+  } else {
+    // ... otherwise, populate from data
+    shotParams = sts.params
+    // ... and reset any current images
+    resetImages()
+  }
 
   document.querySelector("#sts-select").innerHTML = shotTemplateSystem.getParamSelects(shotParams)
   document.querySelector("#sts-input1").value = shotTemplateSystem.getTextString(shotParams)
-
-  document.querySelector('#sts-shots').innerHTML = ''
   attachListeners()
 }
 
