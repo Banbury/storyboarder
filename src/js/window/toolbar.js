@@ -541,11 +541,13 @@ class Toolbar extends EventEmitter {
     sfx.rollover()
   }
 
-  startPomodoroTimer() {
+  startPomodoroTimer(data) {
     let elRest = document.querySelector('#toolbar-pomodoro-rest')
     elRest.style.display = 'none'
     let elRunning = document.querySelector('#toolbar-pomodoro-running')
-    elRunning.style.display = 'block'    
+    elRunning.style.display = 'flex'
+    let elRunningStatus = document.querySelector('#toolbar-pomodoro-running-status')
+    elRunningStatus.innerHTML = data.remainingFriendly
   }
 
   updatePomodoroTimer(data={remaining:0}) {
@@ -557,11 +559,11 @@ class Toolbar extends EventEmitter {
         elRunningStatus.innerHTML = data.remainingFriendly
         break
       case "completed":
-        elRest.style.display = 'block'
+        elRest.style.display = 'flex'
         elRunning.style.display = 'none'
         break
       case "rest":
-        elRest.style.display = 'block'
+        elRest.style.display = 'flex'
         elRunning.style.display = 'none'
     }
   }

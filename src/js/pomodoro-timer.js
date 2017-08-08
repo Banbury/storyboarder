@@ -2,7 +2,7 @@ const EventEmitter = require('events').EventEmitter
 const moment = require('moment')
 
 class PomodoroTimer extends EventEmitter {
-  constructor(options={duration: 25*60*1000, updateInterval: 1000}) {
+  constructor(options={duration: 25*60*1000, updateInterval: 500}) {
     super()
     this.state = "rest"
     this.startTime = null
@@ -55,7 +55,7 @@ class PomodoroTimer extends EventEmitter {
       this.complete()
     } else {
       let mm = moment.duration(remaining)
-      let remainingFriendly = `${mm.minutes()}:${mm.seconds()}`
+      let remainingFriendly = `${mm.minutes()}:${mm.seconds() > 9 ? mm.seconds() : '0'+mm.seconds()}`
       this.emit("update", {"elapsed": this.elapsed, "remaining": remaining, "state": this.state, "remainingFriendly": remainingFriendly})
     }
   }
@@ -82,8 +82,6 @@ class PomodoroTimer extends EventEmitter {
         break;
       case "running":
         switch(nextState) {
-          case "paused":
-            break
           case "completed":
             update = {"elapsed": this.elapsed, "remaining": this.getRemaining()}
             break
@@ -91,13 +89,6 @@ class PomodoroTimer extends EventEmitter {
             this.rest()
             break
         }
-        break;
-      case "paused":
-        switch(nextState) {
-          case "running":
-            break
-        }
-        this.state = nextState
         break;
       case "completed":
         switch(nextState) {

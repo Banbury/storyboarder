@@ -904,7 +904,7 @@ let loadBoardUI = ()=> {
     })
 
     pomodoroTimerView.addListener('start', (data)=>{
-      toolbar.startPomodoroTimer()
+      toolbar.startPomodoroTimer(data)
 
       isRecording = true
       let exportsPath = exporterCommon.ensureExportsPathExists(boardFilename)
