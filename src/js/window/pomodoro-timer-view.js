@@ -115,12 +115,17 @@ class PomodorTimerView extends EventEmitter {
           <div id="pomodoro-timer-success-message">
             Or at least smarter than Donald Trump's kids. That's a great session you just had, and that's a great timelapse.
           </div>
+          <button id="pomodoro-timer-tweet-button"  class="pomodoro-timer-button">Tweet</button>
           <button id="pomodoro-timer-continue-button"  class="pomodoro-timer-button">Continue</button>
         `
         this.el.querySelector('#pomodoro-timer').innerHTML = content
         let continueButton = this.el.querySelector('#pomodoro-timer-continue-button')
         continueButton.addEventListener('click', (event)=>{
           this.continue()
+        })
+        let tweetButton = this.el.querySelector('#pomodoro-timer-tweet-button')
+        tweetButton.addEventListener('click', (event)=>{
+          this.tweet()
         })
         break
     }
@@ -193,7 +198,7 @@ class PomodorTimerView extends EventEmitter {
         target: this.target,
         attachment: 'top center',
         targetAttachment: 'bottom center',
-        offset: '-18px 19px'
+        offset: '-18px -10px'
       })
     }
     ipcRenderer.send('textInputMode', true)
@@ -238,6 +243,10 @@ class PomodorTimerView extends EventEmitter {
   
   continue() {
     this.pomodoroTimer.reset()
+  }
+
+  tweet() {
+    shell.openExternal('https://twitter.com/intent/tweet?text=I just finished a sketch sprint with Storyboarder!')
   }
   
   getStartTimeFriendly() {

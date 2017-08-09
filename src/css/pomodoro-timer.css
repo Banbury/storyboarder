@@ -1,7 +1,7 @@
 .pomodoro-timer-container {
   pointer-events: none; /* no pointer events until animated visible */
   z-index: 999;
-  width: 240px;
+  width: 300px;
 }
 
 .pomodoro-timer {
