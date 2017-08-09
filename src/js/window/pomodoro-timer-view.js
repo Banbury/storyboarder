@@ -148,7 +148,7 @@ class PomodorTimerView extends EventEmitter {
       let isMain = true
       for(let i=0; i<this.recordings.length && i<5; i++) {
         let recordingPath = this.recordings[i]
-        recordingsView += `<div><img class="pomodoro-timer-recording" src="${recordingPath}" data-filepath="${recordingPath}"></img></div>`
+        recordingsView += `<div><img class="pomodoro-timer-recording" src="${recordingPath}" data-filepath="${recordingPath}" draggable=false></img></div>`
       }
       this.el.querySelector('#pomodoro-timer-recordings').innerHTML = recordingsView
       let recordingImages = this.el.querySelectorAll(".pomodoro-timer-recording")
@@ -169,7 +169,7 @@ class PomodorTimerView extends EventEmitter {
     if(filepaths && filepaths.length) {
       let recordingPath = filepaths[0]
       this.recordings = filepaths.concat(this.recordings)
-      let recordingsView = `<div><img class="pomodoro-timer-recording" src="${recordingPath}" data-filepath="${recordingPath}"></img></div>`
+      let recordingsView = `<div><img class="pomodoro-timer-recording" src="${recordingPath}" data-filepath="${recordingPath}" draggable=false></img></div>`
       this.el.querySelector('#pomodoro-timer-recordings').innerHTML = recordingsView
       let recordingImages = this.el.querySelectorAll(".pomodoro-timer-recording")
       for(let i=0; i<recordingImages.length && i<5; i++) {
