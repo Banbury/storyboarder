@@ -17,7 +17,7 @@
   position: relative;
   background: rgba(20,20,20,1);
   color: white;
-  padding: 10px;
+  padding: 20px;
   border-radius: 8px;
   max-width: 300px;
   
@@ -105,6 +105,7 @@ input[type=number]::-webkit-outer-spin-button {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-gap: 4px;
+  padding-top: 10px;
 }
 
 #pomodoro-timer-recordings div {
@@ -117,7 +118,7 @@ input[type=number]::-webkit-outer-spin-button {
   grid-column: span 2;
 }
 
-#pomodoro-timer-recordings img {
+.pomodoro-timer-recording {
   width: 100%;
   border: 0px solid #444;
   box-sizing: border-box;
@@ -126,4 +127,16 @@ input[type=number]::-webkit-outer-spin-button {
 
 #pomodoro-timer-success-message {
   padding-top: 20px;
+}
+
+#pomodoro-timer-success-headline {
+  line-height: 1em;
+  padding-top: 10px;
+}
+
+#pomodoro-timer-success-recordings {
+    padding-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 4px;
 }

@@ -105,8 +105,10 @@ class PomodorTimerView extends EventEmitter {
         content = `
           <h3 id="pomodoro-timer-title">Sketch Sprint</h3>
           <div id="pomodoro-timer-success" class="pomodoro-timer-success">
-            <div>U R</div>
-            <div>SMART!</div>
+            <div id="pomodoro-timer-success-headline">
+              U R<br/>
+              SMART!
+            </div>
           </div>
           <div id="pomodoro-timer-recordings">
           </div>
@@ -157,6 +159,9 @@ class PomodorTimerView extends EventEmitter {
           shell.showItemInFolder(event.target.dataset.filepath)
         })
       }
+      this.el.querySelector('#pomodoro-timer-recordings-label').innerHTML = `Latest Timelapses`
+    } else {
+      this.el.querySelector('#pomodoro-timer-recordings-label').innerHTML = `Your timelapse recordings will show up here!`
     }
   }
 
@@ -188,7 +193,7 @@ class PomodorTimerView extends EventEmitter {
         target: this.target,
         attachment: 'top center',
         targetAttachment: 'bottom center',
-        offset: '-18px 9px'
+        offset: '-18px 19px'
       })
     }
     ipcRenderer.send('textInputMode', true)
