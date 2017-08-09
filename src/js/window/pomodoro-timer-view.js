@@ -161,7 +161,7 @@ class PomodorTimerView extends EventEmitter {
       }
       this.el.querySelector('#pomodoro-timer-recordings-label').innerHTML = `Latest Timelapses`
     } else {
-      this.el.querySelector('#pomodoro-timer-recordings-label').innerHTML = `Your timelapse recordings will show up here!`
+      this.el.querySelector('#pomodoro-timer-recordings-label').innerHTML = `Your sprint recordings will show up here!`
     }
   }
 
@@ -222,7 +222,7 @@ class PomodorTimerView extends EventEmitter {
   // Timer Controls
   startTimer() {
     this.pomodoroTimerMinutes = parseInt(this.minutesInput.value)
-    this.pomodoroTimer.setDuration(this.pomodoroTimerMinutes/4)
+    this.pomodoroTimer.setDuration(this.pomodoroTimerMinutes)
     this.pomodoroTimer.start()
     this.emit("start", {duration: this.pomodoroTimerMinutes, remainingFriendly: this.getStartTimeFriendly()})
     this.transitionToState("running")
