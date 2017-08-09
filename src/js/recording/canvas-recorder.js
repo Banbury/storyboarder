@@ -1,12 +1,13 @@
 const path = require('path')
-
+const EventEmitter = require('events').EventEmitter
 const CanvasBufferOutputFileStrategy = require('./canvas-buffer-ouput-file.js')
 const CanvasBufferOutputGifStrategy = require('./canvas-buffer-ouput-gif.js')
 const CanvasBuffer = require('./canvas-buffer.js')
 const userDataHelper = require('../files/user-data-helper.js')
 
-class Recorder {
+class Recorder extends EventEmitter {
   constructor(options = {}) {
+    super()
     this.screenRecordingFrameNum = 0
     this.isRecording = false
     this.dropFrameCount = options.dropFrameCount || 0
@@ -63,6 +64,9 @@ class Recorder {
 
   stop() {
     this.screenRecordingBuffer.flushBuffer()
+      .then((filepaths)=>{
+        this.emit("recording-ready", filepaths)
+      })
     this.isRecording = false
 
     userDataHelper.getData('recordings.json')

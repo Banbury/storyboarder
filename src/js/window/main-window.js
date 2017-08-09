@@ -910,6 +910,10 @@ let loadBoardUI = ()=> {
         recordingTime: data.duration,
         outputTime: 1,
       })
+
+      canvasRecorder.on('recording-ready', (filepaths)=> {
+        pomodoroTimerView.newRecordingReady(filepaths)
+      })
       canvasRecorder.start()
     })
 

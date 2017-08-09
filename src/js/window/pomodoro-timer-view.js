@@ -56,7 +56,8 @@ class PomodorTimerView extends EventEmitter {
       case "paused":
         break
       case "completed":
-        this.fadeIn()
+        // wait for the recording filepath to come in before showing.
+        // this.fadeIn()
         break
     }
     
@@ -107,7 +108,9 @@ class PomodorTimerView extends EventEmitter {
             <div>U R</div>
             <div>SMART!</div>
           </div>
-          <div>
+          <div id="pomodoro-timer-recordings">
+          </div>
+          <div id="pomodoro-timer-success-message">
             Or at least smarter than Donald Trump's kids. That's a great session you just had, and that's a great timelapse.
           </div>
           <button id="pomodoro-timer-continue-button"  class="pomodoro-timer-button">Continue</button>
@@ -117,7 +120,6 @@ class PomodorTimerView extends EventEmitter {
         continueButton.addEventListener('click', (event)=>{
           this.continue()
         })
-        this.fadeIn()
         break
     }
     this.state = newState
@@ -158,6 +160,24 @@ class PomodorTimerView extends EventEmitter {
     }
   }
 
+  newRecordingReady(filepaths) {
+    if(filepaths && filepaths.length) {
+      let recordingPath = filepaths[0]
+      this.recordings = filepaths.concat(this.recordings)
+      let recordingsView = `<div><img class="pomodoro-timer-recording" src="${recordingPath}" data-filepath="${recordingPath}"></img></div>`
+      this.el.querySelector('#pomodoro-timer-recordings').innerHTML = recordingsView
+      let recordingImages = this.el.querySelectorAll(".pomodoro-timer-recording")
+      for(let i=0; i<recordingImages.length && i<5; i++) {
+        let recordingImage = recordingImages[i]
+        recordingImage.addEventListener('click', (event)=>{
+          event.preventDefault()
+          shell.showItemInFolder(event.target.dataset.filepath)
+        })
+      }
+      this.fadeIn()
+    }
+  }
+
   attachTo (target) {
     if (this.target !== target) {
       if (this.tethered) this.remove()
@@ -168,7 +188,7 @@ class PomodorTimerView extends EventEmitter {
         target: this.target,
         attachment: 'top center',
         targetAttachment: 'bottom center',
-        offset: '-18px 0'
+        offset: '-18px 9px'
       })
     }
     ipcRenderer.send('textInputMode', true)
@@ -197,7 +217,7 @@ class PomodorTimerView extends EventEmitter {
   // Timer Controls
   startTimer() {
     this.pomodoroTimerMinutes = parseInt(this.minutesInput.value)
-    this.pomodoroTimer.setDuration(this.pomodoroTimerMinutes)
+    this.pomodoroTimer.setDuration(this.pomodoroTimerMinutes/4)
     this.pomodoroTimer.start()
     this.emit("start", {duration: this.pomodoroTimerMinutes, remainingFriendly: this.getStartTimeFriendly()})
     this.transitionToState("running")

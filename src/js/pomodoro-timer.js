@@ -34,10 +34,6 @@ class PomodoroTimer extends EventEmitter {
     this.transitionToState("rest")
   }
 
-  pause() {
-    throw new Error("Not implemented")
-  }
-
   getElapsed() {
     return this.elapsed
   }

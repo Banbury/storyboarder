@@ -25,7 +25,7 @@ class CanvasBuffer {
   }
 
   flushBuffer() {
-    this.strategy.flush(this.buffer, this.canvasPool)
+    return this.strategy.flush(this.buffer, this.canvasPool)
   }
 
   _getCanvasForBuffer() {

@@ -9,18 +9,23 @@ class CanvasBufferOutputFileStrategy {
   }
 
   flush(buffer, pool) {
-    let i = 0;
-    while(buffer.length) {
-      let bufferData = buffer.splice(0, 1)[0]
-      let filepath = path.join(this.exportsPath, `${bufferData.metaData.filename}-${bufferData.metaData.frameNum}.png`)
-      let imageData = bufferData.canvas
-        .toDataURL('image/png')
-        .replace(/^data:image\/\w+;base64,/, '')
-      forked.send({ file: filepath, data: imageData, options:'base64' })
-      if(pool) {
-        pool.push(bufferData.canvas)
+    return new Promise((fulfill, reject) => {
+      let i = 0;
+      let result = []
+      while(buffer.length) {
+        let bufferData = buffer.splice(0, 1)[0]
+        let filepath = path.join(this.exportsPath, `${bufferData.metaData.filename}-${bufferData.metaData.frameNum}.png`)
+        result.push(filepath)
+        let imageData = bufferData.canvas
+          .toDataURL('image/png')
+          .replace(/^data:image\/\w+;base64,/, '')
+        forked.send({ file: filepath, data: imageData, options:'base64' })
+        if(pool) {
+          pool.push(bufferData.canvas)
+        }
       }
-    }
+      fulfill(result)
+    })
   }
 }
 
